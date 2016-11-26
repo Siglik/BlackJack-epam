@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  background: #212121;
+  color: #f2f2f2;
+}
+main, aside, nav.left-menu {
+  background-color: #2f2f2f;
+}
+div.header-top{
+  background-color: #242424;
+  height: 40px;
+}
+nav.navigate-row{
+  background-color: #f6cd0f;
+  height: 40px;
+}
+nav.left-menu{
+}
+.menu-icom{
+  font-family: "icons";
+}
+.selected {
+  background-color: #e64d24;
+}
+.selector{
+  background-color: #595959;
+}
+.time-left-true{
+  font-weight: 700;
+  color: #bf3b24;
+}
+.time-left-false{
+  font-weight: 700;
+  color: #4bad2b;
+}
