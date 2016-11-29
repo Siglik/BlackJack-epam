@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
 
 <head>
@@ -9,37 +8,68 @@
 </head>
 
 <body>
-    <header>
-        <div class="header-top">&nbsp;</div>
-        <nav class="navigate-row">&nbsp;</nav>
-    </header>
-    <nav class="left-menu">
-    </nav>
-    <main>
-        <h1>Title</h1>
-        <figure style="display:inline-block;float:left;">
-            <img src="image.jpg" width="400" height="300" alt="IMAGE" />
-            <figcaption>Sunset image</figcaption>
-        </figure>
-        <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-            irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br> Lorem ipsum dolor sit amet, consectetur
-            adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-            eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <div id="game">
-            <div id="black-jack">empty</div>
-        </div>
-    </main>
-    <aside>
-
-    </aside>
-    <div id="chat">
+    <div id="shadow">
     </div>
-    <footer>
+    <header>
+        <div class="header-top">
+            <img src="img/main-logo.png" alt="logo" class="logo">
+            <p class="tm">THE QASINO</p>
+            <ul class="gorizontal-menu right" id="login-buttons">
+                <li><a href="#" class="button login">LOGIN</a> </li>
+                <li><a href="#" class="button join">JOIN NOW</a></li>
+            </ul>
+        </div>
+        <div class="header-bottom">
+            <a href="#" class="button" id="show-menu">Menu</a>
+            <h1><span class="nav-elem">Black Jack</span> &gt; <span class="nav-elem">Multiplayer game</span></h1>
+            <a href="#" class="button language">En</a>
+        </div>
+    </header>
+    <div class="container">
+        <nav class="left-menu column-left" id="left-menu">
+            <ul class="vertical-menu top">
+                <li><a href="#" class="button menu-item">Play solo</a></li>
+                <li><a href="#" class="button menu-item">Play multiplayer</a></li>
+                <li><a href="#" class="button menu-item">Game rules</a></li>
+            </ul>
+            <ul class="vertical-menu">
+                <li><a href="#" class="button menu-item">About</a></li>
+                <li><a href="#" class="button menu-item">Player statistic</a></li>
+                <li><a href="#" class="button menu-item">Account balance</a></li>
+            </ul>
+        </nav>
+        <main class="column-center" id="black-jack">
+        </main>
+        <aside class="column-right">
+            <article>
+                <h3>Topic</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+                   labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation...<br><a href="#">(see more)</a></p>
+            </article>
+        </aside>
+    </div>
+    <div id="chat">
+        <form method="post" action="/" id="send-message">
+            <input type="text" name="" value="" size="80">
+            <input type="button" name="" value="send">
+        </form>
+        <div class="messages">
+            <p class="message"><span class="sender"><img src="img/pl_three.jpg" alt="player" class="chat-logo" > Plaer Three</span>:<span class="message-text"> Some text@! </span></p>
+            <p class="message"><span class="sender"><img src="img/p_one.jpg" alt="player" class="chat-logo"> Player One</span>:<span class="message-text"> Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</span></p>
+            <p class="message"><span class="sender"><img src="img/pl_three.jpg" alt="player" class="chat-logo"> Plaer Three</span>:<span class="message-text"> Some text@! </span></p>
+            <p class="message"><span class="sender"><img src="img/pl_two.png" alt="player" class="chat-logo"> Plaer Two</span>:<span class="message-text"> Hello, my dear friend! </span></p>
+            <p class="message"><span class="sender"><img src="img/pl_three.jpg" alt="player" class="chat-logo">  Three</span>:<span class="message-text"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </span></p>
+            <p class="message"><span class="sender"><img src="img/pl_two.png" alt="player" class="chat-logo"> Plaer Two</span>:<span class="message-text"> Some text@! </span></p>
+        </div>
+    </div>
 
+    <footer>
+        <div class="copyright">
+            &copy; Maksim Mikhalkou
+            <a href="mailto:maxim.exe@gmail.com">maxim.exe@gmail.com</a>
+        </div>
     </footer>
-    <script src="build/bljack.js" type="text/javascript"></script>
+    <script src="build/bljack.js" charset="utf-8"></script>
 </body>
 
 </html>

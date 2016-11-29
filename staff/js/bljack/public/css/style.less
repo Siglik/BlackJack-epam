@@ -3,30 +3,26 @@
     src: url('../fonts/Planewalker.eot');
     src: local('Planewalker'), url('../fonts/Planewalker.woff') format('woff'), url('../fonts/Planewalker.ttf') format('truetype');
 }
-@font-face {
-    font-family: 'CashCurrency';
-    src: url('../fonts/CashCurrency.ttf') format('truetype');
-}
 
 body {
     margin: 0;
     padding: 0;
-    background-color: #212121;
-    color: #f2f2f2;
+    background-color: @bg-color;
+    color: @text-color ;
     font-family: 'Verdana', sans-serif;
     min-width: 680px;
 }
 
-a{
-  color: #ffdd1f;
+main, aside, nav.left-menu {
+    background-color: @secondary-bg-color;
 }
 
-main, aside, nav.left-menu {
-    background-color: #2f2f2f;
+a{
+  color: @active-main-color;
 }
 
 div.header-top {
-    background-color: #242424;
+    background-color: @header-top-bg-color;
     height: 60px;
 }
 
@@ -42,13 +38,13 @@ p.tm {
     float: left;
     font-family: 'Planewalker';
     font-size: 36px;
-    color: red;
+    color: @casino-header-text-color;
     padding-left: 35px;
     margin-bottom: 0;
 }
 
 div.header-bottom {
-    background-color: #f6cd0f;
+    background-color: @header-bottom-bg-color;
     height: 42px;
 }
 
@@ -68,7 +64,7 @@ span.nav-elem {
 }
 
 a.button#show-menu {
-    background-color: rgba(0, 0, 0, 0.13);
+    background-color: @button-top-bg-color;
     display: none;
     float: left;
     margin-top: 4px;
@@ -76,7 +72,7 @@ a.button#show-menu {
 }
 
 a.button.language {
-    background-color: rgba(0, 0, 0, 0.13);
+    background-color: @button-top-bg-color;
     float: right;
     margin-top: 4px;
     margin-right: 80px;
@@ -84,7 +80,7 @@ a.button.language {
 }
 
 a.button.language:hover {
-    background-color: rgba(0, 0, 0, 0.10);
+    background-color: @button-top-hover-bg-color;
 }
 
 nav.left-menu {
@@ -122,14 +118,14 @@ nav.left-menu {
 }
 
 a.button:hover {
-    background-color: #bf3b24;
-    color: white;
+    background-color: @button-hover-bg-color;
+    color: @secondary-text-color;
 }
 
 a.button {
-    background-color: #88909B;
+    background-color: @button-bg-color;
     display: block;
-    color: #f2f2f2;
+    color: @text-color;
     text-align: center;
     padding: 14px 16px;
     margin: 0px 6px;
@@ -153,13 +149,13 @@ a.menu-item {
 
 a.button.login {
     padding: 10px 30px;
-    background-color: #bf3b24;
+    background-color: @button-login-bg-color;
     margin-top: 12px;
     margin-right: 25px;
 }
 
 a.button.login:hover {
-    background-color: #df4b34;
+    background-color: @button-hover-bg-color;
 }
 
 a.button.join {
@@ -169,7 +165,7 @@ a.button.join {
 }
 
 a.button.join:hover {
-    background-color: #98a0aB;
+    background-color: @button-join-hover-bg-color;
 }
 
 .right {
@@ -178,6 +174,10 @@ a.button.join:hover {
 
 main {
     width: 100%;
+}
+
+div.game {
+    text-align: center;
 }
 
 .container {
@@ -221,8 +221,8 @@ aside {
 }
 
 .player-info.active {
-    border: 2px dotted #dfc;
-    color: #ffdd1f;
+    border: 2px dotted @active-secondary-color;
+    color: @active-main-color;
     border-radius: 6px;
 }
 
@@ -243,7 +243,7 @@ a.control-key:hover {
 a.control-key.not-active {
     pointer-events: none;
     cursor: default;
-    background-color: #53606B;
+    background-color: @button-not-active-bg-color;
 }
 
 a.control-key.not-active:hover {
@@ -257,17 +257,17 @@ a.bid {
     align-content: center;
     padding: 14px;
     margin: 6px;
-    background-color: rgb(75, 173, 43);
+    background-color: @button-bid-bg-collor;
 }
 
 a.bid:hover {
     padding: 18px;
     margin: 2px;
-    background-color: #e64d24;
+    background-color: @menu-hover-bg-color;
 }
 
 .card {
-    border: 1px solid black;
+    border: 1px solid @img-border-color ;
     margin-left: -31px;
     width: 51px;
     height: 73px;
@@ -292,11 +292,9 @@ a.bid:hover {
 }
 
 .hand.active {
-    border: 1px solid yellow;
+    border: 1px solid @active-main-color;
     border-radius: 5px;
 }
-
-
 
 .active {
     font-weight: bolder;
@@ -305,8 +303,8 @@ a.bid:hover {
 div.messages {
     min-height: 120px;
     overflow-y: scroll;
-    border: 1px solid rgba(255,255,255, 0.2);
-    background-color: rgba(255, 200, 170, 0.1);
+    border: 1px solid @messages-border-color;
+    background-color: @messages-bg-color;
 }
 
 #send-message {
@@ -315,12 +313,12 @@ div.messages {
 #send-message input[type="text"] {
   padding: 6px;
   border: none;
-  border-bottom: solid 2px #c9c9c9;
+  border-bottom: solid 2px @third-bg-color;
   transition: border 0.3s;
 }
 #send-message input[type="text"]:focus,
 #send-message input[type="text"].focus {
-  border-bottom: solid 2px #969696;
+  border-bottom: solid 2px @button-join-hover-bg-color;
 }
 
 #send-message input[type="button"]{
@@ -329,14 +327,14 @@ div.messages {
   font-size: 16px;
   text-decoration: none;
   margin: 4px;
-  color: #fff;
+  color: @secondary-text-color;
   position: relative;
   display: inline-block;
-  background-color: #e64d24;
-  box-shadow: 0px 3px 0px 0px #df4b34;
+  background-color: @button-hover-bg-color;
+  box-shadow: 0px 3px 0px 0px @menu-hover-bg-color;
 }
 #send-message input[type="button"]:hover{
-  background-color: #bf3b24;
+  background-color: @button-login-bg-color;
 }
 
 #send-message input[type="button"]:active {
@@ -353,7 +351,7 @@ div.messages {
 
 span.sender {
     font-style: oblique;
-    color: #ffdd1f;
+    color: @active-main-color;
 }
 
 span.message-text {}
@@ -363,6 +361,7 @@ span.message-text {}
     padding: 7px;
     float: right;
 }
+
 div#shadow {
     position: absolute;
     top: 100px;
@@ -370,12 +369,7 @@ div#shadow {
     height: 250%;
     z-index: 10;
     display: none;
-    background-color: rgba(0, 0, 0, 0.35);
-}
-
-aside {
-  text-align: justify;
-  padding: 10px 5px 0 0;
+    background-color: @shadow-color;
 }
 
 @media screen and (max-width: 800px) {

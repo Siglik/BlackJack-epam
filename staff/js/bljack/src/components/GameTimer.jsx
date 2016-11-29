@@ -1,52 +1,56 @@
 import React from 'react';
 
-import './GameTimer.css';
+import './GameTimer.less';
 
 export default class GameTimer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      secondsLeft: this.props.initialTime
-    };
-  }
-
-
-  reset(){
-    this.state = {
-      secondsLeft: this.props.initialTime
-    };
-  }
-
-  tick() {
-    this.setState((prevState) => ({
-      secondsLeft: this.decrease(prevState.secondsLeft)
-    }));
-  }
-
-  decrease(seconds){
-    if(seconds === 0){
-      this.stopTimer();
+    constructor(props) {
+        super(props);
+        this.reset();
     }
-    return (seconds - 1 > 0) ? seconds - 1 : 0;
-  }
 
-  componentDidMount() {
-    this.timer = setInterval(() => this.tick(), 1000);
-  }
+    reset() {
+        this.state = {
+            secondsLeft: this.props.stateValues.timeLimit,
+            classNames: "game-timer"
+        };
+    }
 
-  componentWillUnmount() {
-    this.stopTimer();
-  }
+    tick() {
+        let classNames = "game-timer";
+        if (this.state.secondsLeft <= 15) {
+            classNames += " time-almost-off"
+        }
+        this.setState((prevState) => ({
+            secondsLeft: this.decrease(prevState.secondsLeft),
+            classNames: classNames
+        }));
+    }
 
-  stopTimer(){
-    clearInterval(this.timer);
-    console.log("time is off");
-    this.props.onTimeOff();
-  }
+    decrease(seconds) {
+        if (seconds === 0) {
+            this.stopTimer();
+        }
+        return (seconds - 1 > 0)
+            ? seconds - 1
+            : 0;
+    }
 
-  render() {
-    return (
-      <div className="game-timer">Time left: {Math.floor(this.state.secondsLeft/60)}:{this.state.secondsLeft%60}</div>
-    );
-  }
+    componentDidMount() {
+        this.timer = setInterval(() => this.tick(), 1000);
+    }
+
+    componentWillUnmount() {
+        this.stopTimer();
+    }
+
+    stopTimer() {
+        clearInterval(this.timer);
+        this.props.onTimeOff();
+    }
+
+    render() {
+        return (
+            <div className={this.state.classNames} ref="timer">{this.props.initValues.text} {Math.floor(this.state.secondsLeft / 60)}:{this.state.secondsLeft % 60}</div>
+        );
+    }
 }
