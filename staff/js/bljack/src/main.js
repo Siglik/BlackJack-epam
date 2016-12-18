@@ -12,7 +12,7 @@ import ControlKey from './components/ControlKey.jsx'
 
 import "./dev-data/some_structures.js"
 
-const game = {
+let game = {
     "dealer": {
         "hand": {
             "score": 10,
@@ -22,7 +22,7 @@ const game = {
     "timer": {
         "timeLimit": 5
     },
-    "result": "",
+    "result": null,
     "players": [
         {
             "id": 0,
@@ -80,11 +80,11 @@ const game = {
     ],
     "controls": {
         "balance": {
-            "value": 514.25
+            "value": 0.25
         },
         "actions": {
             "surrender": {
-                "isActive": true
+                "isActive": false
             },
             "split": {
                 "isActive": true

@@ -36,16 +36,28 @@ export default class GameTimer extends React.Component {
     }
 
     componentDidMount() {
-        this.timer = setInterval(() => this.tick(), 1000);
+        this.startTimer();
     }
 
     componentWillUnmount() {
         this.stopTimer();
     }
 
+    startTimer(){
+      this.timer = setInterval(() => this.tick(), 1000);
+    }
+
     stopTimer() {
         clearInterval(this.timer);
         this.props.onTimeOff();
+        setTimeout(()=>{
+        this.setState({
+            secondsLeft: this.props.stateValues.timeLimit,
+            classNames: "game-timer"
+        });
+        if (this.props.stateValues.timeLimit > 0){
+          this.startTimer();
+        }}, 100);
     }
 
     render() {
