@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.persistence;
+package org.qqq175.blackjack.persistence.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,22 +8,23 @@ import java.util.concurrent.BlockingQueue;
 
 import org.qqq175.blackjack.util.Settings;
 
-class ConnectionPool {
+public class ConnectionPool {
 	private static volatile ConnectionPool instance;
 	private BlockingQueue<ConnectionWrapper> availableConns;
 	private String url;
 
 	private ConnectionPool() {
 		Settings settings = Settings.getInstance();
-		availableConns = new ArrayBlockingQueue<>(settings.getDatabase().getPool().getMaxPoolSize());
+		availableConns = new ArrayBlockingQueue<>(settings.getDatabase().getMaxPoolSize());
 
+		//todo change this class load to driver load
 		try {
 			Class.forName(settings.getDatabase().getDriver());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		this.url = settings.getDatabase().getUrl();
-		for (int i = 0; i < settings.getDatabase().getPool().getMinPoolSize(); i++) {
+		for (int i = 0; i < settings.getDatabase().getMinPoolSize(); i++) {
 			availableConns.add(getConnection());
 		}
 	}
@@ -58,7 +59,9 @@ class ConnectionPool {
 	}
 
 	public ConnectionWrapper retrieve() throws SQLException, InterruptedException {
-		return availableConns.take();
+		ConnectionWrapper conn = availableConns.take();
+		conn.setOpen(true);
+		return conn;
 	}
 
 	void putback(ConnectionWrapper cw) throws NullPointerException, InterruptedException {

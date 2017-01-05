@@ -1,6 +1,6 @@
-package org.qqq175.blackjack.persistence.dto;
+package org.qqq175.blackjack.persistence.entity;
 
-import org.qqq175.blackjack.persistence.dto.id.EntityId;
+import org.qqq175.blackjack.persistence.entity.id.EntityId;
 
 public abstract class Entity<ID extends EntityId> {
 

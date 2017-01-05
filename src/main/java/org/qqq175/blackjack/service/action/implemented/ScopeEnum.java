@@ -8,17 +8,17 @@ public enum ScopeEnum {
 	},
 	GAME {
 		{
-			this.scope = MainActionEnum.class;
+			this.scope = GameActionEnum.class;
 		}
 	},
 	CHAT {
 		{
-			this.scope = MainActionEnum.class;
+			this.scope = ChatActionEnum.class;
 		}
 	},
 	ADMIN {
 		{
-			this.scope = MainActionEnum.class;
+			this.scope = AdminActionEnum.class;
 		}
 	};
 	Class<? extends Enum> scope;

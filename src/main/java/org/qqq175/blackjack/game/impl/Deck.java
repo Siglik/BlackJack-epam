@@ -10,6 +10,7 @@ import java.util.Random;
 public class Deck {
 	// deck is 52 cards, most popular is six-deck game (312 card)
 	private Deque<Card> cards;
+	private int redeckIndex;
 
 	/**
 	 * creates standard six decks game
@@ -19,11 +20,12 @@ public class Deck {
 	}
 
 	public Deck(int decksCount) {
-		List<Card> cards = new ArrayList<>(decksCount*52+1);
+		int cardCount = decksCount * 52;
+		List<Card> cards = new ArrayList<>(cardCount);
 		for (Card.Suit s : Card.Suit.values()) {
 			for (Card.Rank r : Card.Rank.values()) {
-				for(int i = 0; i < decksCount; i++){
-					cards.add(new Card(s,r));
+				for (int i = 0; i < decksCount; i++) {
+					cards.add(new Card(s, r));
 				}
 			}
 		}
@@ -31,9 +33,11 @@ public class Deck {
 		rand.setSeed(System.currentTimeMillis());
 		Collections.shuffle(cards, rand);
 		this.cards = new ArrayDeque<>(cards);
+		// update this index according to bl rules (min - max values)
+		this.redeckIndex = rand.nextInt(cardCount);
 	}
-	
-	public Card pullCard(){
+
+	public Card pullCard() {
 		return cards.getFirst();
 	}
 }

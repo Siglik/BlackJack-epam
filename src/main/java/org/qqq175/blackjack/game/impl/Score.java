@@ -1,6 +1,6 @@
 package org.qqq175.blackjack.game.impl;
 
-public class Score {
+public class Score implements Comparable<Score> {
 	private int value;
 	private boolean isBlackJack;
 
@@ -32,5 +32,46 @@ public class Score {
 	 */
 	public void setBlackJack(boolean isBlackJack) {
 		this.isBlackJack = isBlackJack;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (isBlackJack ? 1231 : 1237);
+		result = prime * result + value;
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Score other = (Score) obj;
+		if (isBlackJack != other.isBlackJack)
+			return false;
+		if (value != other.value)
+			return false;
+		return true;
+	}
+
+	@Override
+	public int compareTo(Score o) {
+		if this.isBlackJack
+		return 0;
 	}
 }

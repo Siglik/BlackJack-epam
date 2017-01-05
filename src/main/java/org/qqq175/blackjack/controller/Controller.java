@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.qqq175.blackjack.service.SessionRequestContent;
 import org.qqq175.blackjack.service.action.Action;
 import org.qqq175.blackjack.service.action.implemented.ActionFactory;
+import org.qqq175.blackjack.util.Settings;
 
 /**
  * Servlet implementation class MainServlet
@@ -49,14 +50,14 @@ public class Controller extends HttpServlet {
 	}
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setLocale(new Locale("ru-RU"));
-		response.setCharacterEncoding("UTF-8");
-		request.setCharacterEncoding("UTF-8");
-
 		String[] query = request.getPathInfo().trim().replaceFirst("^/", "").split("/");
 		String actionScope = null;
 		String action = null;
 		switch (query.length) {
+		case 0:
+			actionScope = "main";
+			action = "index";
+			break;
 		case 1:
 			actionScope = "main";
 			action = !query[0].isEmpty() ? query[0] : "index";
@@ -64,10 +65,6 @@ public class Controller extends HttpServlet {
 		case 2:
 			actionScope = query[0];
 			action = query[1];
-			break;
-		case 0:
-			actionScope = "main";
-			action = "index";
 			break;
 		default:
 			// redirect to error page
@@ -78,19 +75,10 @@ public class Controller extends HttpServlet {
 		Action concreteAction = actionFactory.defineAction(actionScope, action);
 
 		sessionRequestContent = concreteAction.execute(sessionRequestContent);
-		sessionRequestContent.insertAttributes(request);
+		// sessionRequestContent.insertAttributes(request);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher((String) request.getAttribute("page"));
-		// dispatcher.forward(request, response);
-
-		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		out.println("<body>");
-		out.println("<h2> Scope: " + query.length + "</h2>");
-		out.println("<h2> Scope: " + actionScope + "</h2>");
-		out.println("<h2> Action: " + action + "</h2>");
-		out.println("</body>");
-		out.println("</html>");
+		dispatcher.forward(request, response);
 	}
 
 	/*
@@ -101,7 +89,7 @@ public class Controller extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		// Settings.getInstance().setRealPath(this.getServletContext().getRealPath("/"));
+		Settings.getInstance().setRealPath(this.getServletContext().getRealPath("/"));
 	}
 
 }

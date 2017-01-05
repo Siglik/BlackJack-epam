@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.qqq175.blackjack.exception.GameActionDeniedException;
 import org.qqq175.blackjack.game.impl.Player;
-import org.qqq175.blackjack.persistence.dto.User;
+import org.qqq175.blackjack.persistence.entity.User;
 
 public interface Game {
 	void hit(Player player) throws GameActionDeniedException;
@@ -19,7 +19,7 @@ public interface Game {
 
 	void insurance(Player player) throws GameActionDeniedException;
 
-	void join(User user);
+	Game join(User user);
 
-	void leave(User user);
+	void leave(Player player);
 }

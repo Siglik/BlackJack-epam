@@ -3,96 +3,103 @@ package org.qqq175.blackjack.game.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.qqq175.blackjack.exception.GameActionDeniedException;
-import org.qqq175.blackjack.game.GameActions;
-import org.qqq175.blackjack.persistence.dto.User;
+import org.qqq175.blackjack.game.PlayerAction;
+import org.qqq175.blackjack.persistence.entity.User;
 
-public class Player implements GameActions {
+public class Player implements PlayerAction {
 	private User user;
 	private State state;
 	private List<Hand> hands;
 	private Hand activeHand = null;
 
-	private abstract class State implements GameActions {
+	private void nextHand() {
+		int handId = activeHand != null ? hands.indexOf(activeHand) : 0;
+		boolean foundNext = false;
+
+		while (!foundNext || handId < hands.size()) {
+			Hand hand = hands.get(handId);
+			if (hand != null && hand.isActive()) {
+				activeHand = hand;
+				foundNext = true;
+			} else {
+				handId++;
+			}
+		}
+
+		if (!foundNext) {
+			activeHand = null;
+			state.nextState();
+		}
+	}
+
+	public enum States {
+		DEAL(new DealState()), PLAY(new PlayState()), DONE(new DoneState());
+
+		private States(State state) {
+			this.state = state;
+		}
+
+		private final State state;
+
+		/**
+		 * @return the state
+		 */
+		public State getState() {
+			return state;
+		}
+	}
+
+	private abstract class State implements PlayerAction {
 		abstract void nextState();
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.qqq175.blackjack.game.GameActions#hit()
-		 */
 		@Override
-		public void hit() throws GameActionDeniedException {
-			throw new GameActionDeniedException("Unable to perform action at current player state");
+		public boolean canHit() {
+			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.qqq175.blackjack.game.GameActions#doubleBet()
-		 */
 		@Override
-		public void doubleBet() throws GameActionDeniedException {
-			throw new GameActionDeniedException("Unable to perform action at current player state");
+		public boolean canDouble() {
+			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.qqq175.blackjack.game.GameActions#split()
-		 */
 		@Override
-		public void split() throws GameActionDeniedException {
-			throw new GameActionDeniedException("Unable to perform action at current player state");
+		public boolean canSplit() {
+			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.qqq175.blackjack.game.GameActions#surrender()
-		 */
 		@Override
-		public void surrender() throws GameActionDeniedException {
-			throw new GameActionDeniedException("Unable to perform action at current player state");
+		public boolean canSurrender() {
+			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.qqq175.blackjack.game.GameActions#deal(java.math.BigDecimal)
-		 */
 		@Override
-		public void deal(BigDecimal betSize) throws GameActionDeniedException {
-			throw new GameActionDeniedException("Unable to perform action at current player state");
+		public boolean canDeal(BigDecimal betSize) {
+			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.qqq175.blackjack.game.GameActions#insurance()
-		 */
 		@Override
-		public void insurance() throws GameActionDeniedException {
-			throw new GameActionDeniedException("Unable to perform action at current player state");
+		public boolean canInsurance() {
+			return false;
 		}
 	}
 
 	private class DealState extends State {
 
 		@Override
-		public void surrender() throws GameActionDeniedException {
+		public boolean canSurrender() {
 			state = new DoneState();
+			return true;
 		}
 
 		@Override
-		public void deal(BigDecimal betSize) throws GameActionDeniedException {
+		public boolean canDeal(BigDecimal betSize) {
 			if (user.getBalance().compareTo(betSize) >= 0) {
 				Hand hand = new Hand();
 				hand.setBid(betSize);
 				addHand(hand);
 				nextState();
 			} else {
-				throw new GameActionDeniedException("Bet greater than user balance");
+				return false;
 			}
 		}
 
@@ -135,47 +142,54 @@ public class Player implements GameActions {
 	}
 
 	@Override
-	public void hit() throws GameActionDeniedException {
-		state.hit();
+	public boolean canHit() {
+		state.canHit();
 	}
 
 	@Override
-	public void doubleBet() throws GameActionDeniedException {
-		state.doubleBet();
+	public boolean canDouble() {
+		state.canDouble();
 	}
 
 	@Override
-	public void split() throws GameActionDeniedException {
+	public boolean canSplit() {
 		if (getHands().size() <= 4) {
-			state.split();
+			state.canSplit();
 		} else {
 			// TODO exception
 		}
 	}
 
 	@Override
-	public void surrender() throws GameActionDeniedException {
-		state.surrender();
+	public boolean canSurrender() {
+		state.canSurrender();
 	}
 
 	@Override
-	public void deal(BigDecimal betSize) throws GameActionDeniedException {
-		state.deal(betSize);
+	public boolean canDeal(BigDecimal betSize) {
+		state.canDeal(betSize);
 	}
 
 	@Override
-	public void insurance() throws GameActionDeniedException {
-		state.insurance();
+	public boolean canInsurance() {
+		state.canInsurance();
 	}
 
 	/**
 	 * @return the isActive
 	 */
-	public boolean isActive() {
+	public boolean isDone() {
 		return !(state instanceof DoneState);
 	}
 
 	private void addHand(Hand hand) {
 		hands.add(hand);
+	}
+
+	/**
+	 * @return the hands
+	 */
+	public List<Hand> getHands() {
+		return hands;
 	}
 }

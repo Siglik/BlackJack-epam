@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.persistence;
+package org.qqq175.blackjack.persistence.connection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,8 +7,17 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 
 public class ConnectionWrapper implements AutoCloseable {
-	Connection connection;
-	ConnectionPool pool;
+	private Connection connection;
+	private ConnectionPool pool;
+	private boolean isOpen;
+
+	public boolean isOpen() {
+		return isOpen;
+	}
+
+	void setOpen(boolean isOpen) {
+		this.isOpen = isOpen;
+	}
 
 	ConnectionWrapper(Connection connection, ConnectionPool pool) {
 		this.connection = connection;
@@ -16,8 +25,16 @@ public class ConnectionWrapper implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
-		pool.putback(this);
+	public void close() {
+		if (isOpen) {
+		try {
+			if (pool != null) {
+				pool.putback(this);
+				setOpen(false);
+			}
+		} catch (InterruptedException e) {
+			//TODO handle exception
+		}}
 	}
 
 	/**
@@ -45,7 +62,8 @@ public class ConnectionWrapper implements AutoCloseable {
 	 * @throws SQLException
 	 * @see java.sql.Connection#createStatement(int, int, int)
 	 */
-	public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+	public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+			throws SQLException {
 		return connection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
 	}
 
@@ -70,7 +88,8 @@ public class ConnectionWrapper implements AutoCloseable {
 	 * @see java.sql.Connection#prepareStatement(java.lang.String, int, int,
 	 *      int)
 	 */
-	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+			int resultSetHoldability) throws SQLException {
 		return connection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 	}
 
@@ -82,7 +101,8 @@ public class ConnectionWrapper implements AutoCloseable {
 	 * @throws SQLException
 	 * @see java.sql.Connection#prepareStatement(java.lang.String, int, int)
 	 */
-	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+			throws SQLException {
 		return connection.prepareStatement(sql, resultSetType, resultSetConcurrency);
 	}
 

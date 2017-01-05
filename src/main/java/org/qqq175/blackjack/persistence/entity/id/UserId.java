@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.persistence.dto.id;
+package org.qqq175.blackjack.persistence.entity.id;
 
 public class UserId extends EntityId {
 

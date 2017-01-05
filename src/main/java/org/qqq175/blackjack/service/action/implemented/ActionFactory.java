@@ -18,7 +18,8 @@ public class ActionFactory {
 			try {
 				scopeEnum = ScopeEnum.valueOf(scope.toUpperCase()).getScope();
 			} catch (IllegalArgumentException e) {
-				// TODO catch
+				// TODO log warning
+				concreteAction = MainActionEnum.UNKNOWN.getAction();
 			}
 			try {
 				Enum concreteActionItem = Enum.valueOf(scopeEnum, action.toUpperCase());
@@ -28,8 +29,7 @@ public class ActionFactory {
 					throw new RuntimeException();
 				}
 			} catch (IllegalArgumentException e) {
-				// Logger.getInstance().log(e);
-				// if unknown action
+				// TODO log warning
 				concreteAction = MainActionEnum.UNKNOWN.getAction();
 			}
 		} else {

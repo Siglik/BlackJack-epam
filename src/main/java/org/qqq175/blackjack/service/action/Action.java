@@ -11,4 +11,5 @@ import org.qqq175.blackjack.service.SessionRequestContent;
  */
 public interface Action {
 	SessionRequestContent execute(SessionRequestContent requestContent);
+	SessionRequestContent execute(HttpServletRequest requestContent);
 }
