@@ -1,33 +1,41 @@
 package org.qqq175.blackjack.persistence.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.qqq175.blackjack.persistence.entity.id.GameId;
 
 /**
  * The persistent class for the game database table.
  * 
  */
 @Entity
-@Table(name="game")
-@NamedQuery(name="Game.findAll", query="SELECT g FROM Game g")
-public class Game extends implements Serializable {
+@Table(name = "game")
+@NamedQuery(name = "Game.findAll", query = "SELECT g FROM Game g")
+public class Game extends Entity<GameId> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="creation_time")
+	@Column(name = "creation_time")
 	private Date creationTime;
 
-	//bi-directional many-to-one association to User
+	// bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name = "user_id")
 	private User user;
 
-	//bi-directional many-to-one association to Message
-	@OneToMany(mappedBy="game")
+	// bi-directional many-to-one association to Message
+	@OneToMany(mappedBy = "game")
 	private List<Message> messages;
 
 	public Game() {

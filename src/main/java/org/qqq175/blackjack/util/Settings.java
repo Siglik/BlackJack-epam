@@ -7,11 +7,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.qqq175.blackjack.persistence.dao.DAOFactory;
+import org.qqq175.blackjack.persistence.dao.impl.DAOFactorySQL;
+
 /**
  * @author qqq175
  *
  */
 public class Settings {
+	private final DAOFactory daoFactory;
 	private final Database database;
 	private String realPath = null;
 	private final String salt;
@@ -19,7 +23,8 @@ public class Settings {
 
 	/** Constructor */
 	private Settings() {
-		database = new Database();
+		this.database = new Database();
+		this.daoFactory = new DAOFactorySQL();
 		Properties props = new Properties();
 		try (FileInputStream in = new FileInputStream("conf/app.properties")) {
 			props.load(in);
@@ -146,6 +151,13 @@ public class Settings {
 	 */
 	public Database getDatabase() {
 		return database;
+	}
+
+	/**
+	 * @return the daoFactory
+	 */
+	public DAOFactory getDaoFactory() {
+		return daoFactory;
 	}
 
 }

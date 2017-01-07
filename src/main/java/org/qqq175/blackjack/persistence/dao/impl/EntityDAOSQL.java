@@ -17,13 +17,13 @@ import org.qqq175.blackjack.persistence.entity.Entity;
 import org.qqq175.blackjack.persistence.entity.id.EntityId;
 import org.qqq175.blackjack.util.SQLQueryManager;
 
-public abstract class EntityDAOMySQL<T extends Entity<I>, I extends EntityId> implements EntityDAO<T, I> {
+public abstract class EntityDAOSQL<T extends Entity<I>, I extends EntityId> implements EntityDAO<T, I> {
 	private String tableName;
 	private int colCount;
 	protected ConnectionPool connPool;
 	protected SQLQueryManager sqlQuery;
 
-	public EntityDAOMySQL(String tableName, int colCount) {
+	public EntityDAOSQL(String tableName, int colCount) {
 		this.tableName = tableName;
 		this.colCount = colCount;
 		this.sqlQuery = SQLQueryManager.getInstance();
