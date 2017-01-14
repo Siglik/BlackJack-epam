@@ -2,7 +2,7 @@ package org.qqq175.blackjack.game;
 
 import java.util.Set;
 
-import org.qqq175.blackjack.util.Settings;
+import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 public class GamePool {
 	private Set<Game> games;

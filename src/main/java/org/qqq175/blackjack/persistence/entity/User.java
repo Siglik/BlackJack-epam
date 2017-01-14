@@ -3,9 +3,6 @@ package org.qqq175.blackjack.persistence.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-
-import javax.persistence.*;
 
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
@@ -13,52 +10,42 @@ import org.qqq175.blackjack.persistence.entity.id.UserId;
  * The persistent class for the user database table.
  * 
  */
-@Entity
-@Table(name = "user")
-@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
 public class User extends Entity<UserId> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "account_balance")
 	private BigDecimal accountBalance;
 
-	@Column(name = "display_name")
 	private String displayName;
 
 	private String email;
 
-	@Column(name = "first_name")
 	private String firstName;
 
-	@Column(name = "last_name")
 	private String lastName;
+
+	private BigDecimal lockedBalance;
 
 	private String password;
 
 	private double rating;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date registred;
 
-	private String type;
+	private Type type;
 
-	// bi-directional many-to-one association to AccountOperation
-	@OneToMany(mappedBy = "user")
-	private List<AccountOperation> accountOperations;
-
-	// bi-directional many-to-one association to Game
-	@OneToMany(mappedBy = "user")
-	private List<Game> games;
-
-	// bi-directional many-to-one association to Message
-	@OneToMany(mappedBy = "user")
-	private List<Message> messages;
-
-	// bi-directional one-to-one association to Userstat
-	@OneToOne(mappedBy = "user")
-	private Userstat userstat;
+	private boolean isActive;
 
 	public User() {
+	}
+
+	public enum Type {
+		ADMIN, PLAYER;
+
+		@Override
+		public String toString() {
+			return super.toString().toLowerCase();
+		}
+
 	}
 
 	public BigDecimal getAccountBalance() {
@@ -125,86 +112,42 @@ public class User extends Entity<UserId> implements Serializable {
 		this.registred = registred;
 	}
 
-	public String getType() {
-		return this.type;
+	/**
+	 * @return the isActive
+	 */
+	public boolean isActive() {
+		return isActive;
 	}
 
-	public void setType(String type) {
+	/**
+	 * @param isActive
+	 *            the isActive to set
+	 */
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
 		this.type = type;
 	}
 
-	public List<AccountOperation> getAccountOperations() {
-		return this.accountOperations;
+	/**
+	 * @return the lockedBalance
+	 */
+	public BigDecimal getLockedBalance() {
+		return lockedBalance;
 	}
 
-	public void setAccountOperations(List<AccountOperation> accountOperations) {
-		this.accountOperations = accountOperations;
-	}
-
-	public AccountOperation addAccountOperation(AccountOperation accountOperation) {
-		getAccountOperations().add(accountOperation);
-		accountOperation.setUser(this);
-
-		return accountOperation;
-	}
-
-	public AccountOperation removeAccountOperation(AccountOperation accountOperation) {
-		getAccountOperations().remove(accountOperation);
-		accountOperation.setUser(null);
-
-		return accountOperation;
-	}
-
-	public List<Game> getGames() {
-		return this.games;
-	}
-
-	public void setGames(List<Game> games) {
-		this.games = games;
-	}
-
-	public Game addGame(Game game) {
-		getGames().add(game);
-		game.setUser(this);
-
-		return game;
-	}
-
-	public Game removeGame(Game game) {
-		getGames().remove(game);
-		game.setUser(null);
-
-		return game;
-	}
-
-	public List<Message> getMessages() {
-		return this.messages;
-	}
-
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
-
-	public Message addMessage(Message message) {
-		getMessages().add(message);
-		message.setUser(this);
-
-		return message;
-	}
-
-	public Message removeMessage(Message message) {
-		getMessages().remove(message);
-		message.setUser(null);
-
-		return message;
-	}
-
-	public Userstat getUserstat() {
-		return this.userstat;
-	}
-
-	public void setUserstat(Userstat userstat) {
-		this.userstat = userstat;
+	/**
+	 * @param lockedBalance
+	 *            the lockedBalance to set
+	 */
+	public void setLockedBalance(BigDecimal lockedBalance) {
+		this.lockedBalance = lockedBalance;
 	}
 
 }

@@ -1,21 +1,16 @@
 package org.qqq175.blackjack.persistence.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
-import org.qqq175.blackjack.persistence.entity.id.AccountOperationId;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.qqq175.blackjack.persistence.entity.id.AccountOperationId;
+import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 /**
  * The persistent class for the account_operation database table.
  * 
  */
-@Entity
-@Table(name="account_operation")
-@NamedQuery(name="AccountOperation.findAll", query="SELECT a FROM AccountOperation a")
 public class AccountOperation extends Entity<AccountOperationId> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,17 +18,22 @@ public class AccountOperation extends Entity<AccountOperationId> implements Seri
 
 	private String comment;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 
-	private String type;
+	private Type type;
 
-	//bi-directional many-to-one association to User
-	@ManyToOne
-	@JoinColumn(name="user_id")
-	private User user;
+	private UserId userId;
 
 	public AccountOperation() {
+	}
+
+	public enum Type {
+		PAYMENT, WITHDRAWAL, WIN, LOSS;
+
+		@Override
+		public String toString() {
+			return super.toString().toLowerCase();
+		}
 	}
 
 	public BigDecimal getAmmount() {
@@ -60,20 +60,20 @@ public class AccountOperation extends Entity<AccountOperationId> implements Seri
 		this.time = time;
 	}
 
-	public String getType() {
+	public Type getType() {
 		return this.type;
 	}
 
-	public void setType(String type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
-	public User getUser() {
-		return this.user;
+	public UserId getUserId() {
+		return this.userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(UserId userId) {
+		this.userId = userId;
 	}
 
 }

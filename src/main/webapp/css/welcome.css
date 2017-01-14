@@ -1,0 +1,27 @@
+h2.title{
+	color: red;
+	margin-left: 10%;
+}
+
+span.tm{
+	font-family: 'Planewalker';
+}
+.pad-left{
+	padding-left: 30px;
+	
+}
+span.info{
+	font-style: oblique;
+	font-size: 90%;
+	text-align: justify;
+}
+span.data{
+	font-weight: 400;
+	font-size: 105%;
+	font-style: normal;
+	color: #bf3b24;
+}
+main{
+	font-size: 95%;
+	padding: 10px 30px 10px;
+}

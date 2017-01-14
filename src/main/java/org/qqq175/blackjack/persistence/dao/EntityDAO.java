@@ -1,23 +1,21 @@
 package org.qqq175.blackjack.persistence.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
-import org.qqq175.blackjack.exception.EntityNotFoundException;
-import org.qqq175.blackjack.exception.UnsupportedOperation;
+import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.entity.Entity;
 import org.qqq175.blackjack.persistence.entity.id.EntityId;
 
 public interface EntityDAO<T extends Entity<I>, I extends EntityId> {
-	boolean create(T entity) throws SQLException, UnsupportedOperation;
+	I create(T entity) throws DAOException, UnsupportedOperationException;
 
-	List<T> findAll() throws SQLException;
+	List<T> findAll() throws DAOException;
 
-	T findEntityById(I id) throws SQLException, EntityNotFoundException;
+	T findEntityById(I id) throws DAOException, DAOException;
 
-	boolean update(T entity) throws SQLException, UnsupportedOperation;
+	boolean update(T entity) throws DAOException, UnsupportedOperationException;
 
-	boolean delete(I id) throws SQLException;
+	boolean delete(I id) throws DAOException;
 
-	boolean delete(T entity) throws SQLException;
+	boolean delete(T entity) throws DAOException;
 }

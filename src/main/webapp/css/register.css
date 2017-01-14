@@ -1,0 +1,78 @@
+form#register {
+    margin: auto;
+    width: 500px;
+    display: block;
+}
+
+form#register legend {
+    margin-left: 15%;
+    color: red;
+    padding: 3px 36px 3px 3px;
+    border-bottom: 1px solid #f6cd0f;
+    font-family: fantasy;
+    font-size: 34px;
+}
+
+form#register fieldset {
+    border: 0;
+    display: inline-block;
+}
+
+form#register ul {
+    text-align: right;
+    list-style-type: none;
+}
+
+form#register li {
+    margin: 8px;
+}
+
+form#register input {
+    margin-left: 10px;
+}
+
+form#register button {
+    background-color: #88909B;
+    color: #f2f2f2;
+    font-size: 13px;
+    margin: 7px;
+    padding: 3px 20px;
+    border: 0;
+}
+
+form#register button:hover {
+    background-color: #98a0aB;
+}
+
+form#register button:active {
+    background-color: #2f2f2f;
+}
+
+form#register button.submit {
+    margin-top: 24px;
+    font-weight: bold;
+    padding: 10px 24px;
+}
+
+form#register .center {
+    text-align: center;
+}
+
+ .error {
+    font-size: 60%;
+    font-style: oblique;
+    color: yellow;
+    padding: 0;
+    margin: 0;
+}
+
+form#register label.required:after {
+    content: "*";
+    /* Добавляемый текст */
+    color: red;
+    /* Цвет фона */
+    font-size: 80%;
+    /* Размер шрифта */
+    padding: 2px;
+    /* Поля вокруг текста */
+}

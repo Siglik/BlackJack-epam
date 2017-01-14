@@ -6,26 +6,25 @@ import java.sql.SQLException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import org.qqq175.blackjack.util.Settings;
+import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 public class ConnectionPool {
-	private static volatile ConnectionPool instance;
-	private BlockingQueue<ConnectionWrapper> availableConns;
-	private String url;
+	private static ConnectionPool instance;
+	private BlockingQueue<Connection> availableConnections;
 
 	private ConnectionPool() {
 		Settings settings = Settings.getInstance();
-		availableConns = new ArrayBlockingQueue<>(settings.getDatabase().getMaxPoolSize());
+		availableConnections = new ArrayBlockingQueue<>(settings.getDatabase().getMaxPoolSize());
+		System.out.println();
 
-		//todo change this class load to driver load
 		try {
-			Class.forName(settings.getDatabase().getDriver());
-		} catch (Exception e) {
+			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.url = settings.getDatabase().getUrl();
 		for (int i = 0; i < settings.getDatabase().getMinPoolSize(); i++) {
-			availableConns.add(getConnection());
+			availableConnections.add(createConnection());
 		}
 	}
 
@@ -48,27 +47,42 @@ public class ConnectionPool {
 		return localInstance;
 	}
 
-	private ConnectionWrapper getConnection() {
+	private Connection createConnection() {
 		Connection conn = null;
+		Settings.Database dbSettings = Settings.getInstance().getDatabase();
 		try {
-			conn = DriverManager.getConnection(url);
-		} catch (Exception e) {
+			conn = DriverManager.getConnection(dbSettings.getDBUrl(), dbSettings.getUser(), dbSettings.getPassword());
+		} catch (SQLException ex) {
 			// TODO: catch
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
 		}
-		return new ConnectionWrapper(conn, this);
-	}
-
-	public ConnectionWrapper retrieve() throws SQLException, InterruptedException {
-		ConnectionWrapper conn = availableConns.take();
-		conn.setOpen(true);
 		return conn;
 	}
 
-	void putback(ConnectionWrapper cw) throws NullPointerException, InterruptedException {
-		availableConns.put(cw);
+	public ConnectionWrapper retrieveConnection() {
+		Connection conn = null;
+		try {
+			conn = availableConnections.take();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return new ConnectionWrapper(conn);
 	}
 
-	public int getAvailableConnsCnt() {
-		return availableConns.size();
+	void putbackConnection(Connection cw) {
+		try {
+			availableConnections.put(cw);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public int getAvailableConnectionsCount() {
+		return availableConnections.size();
 	}
 }

@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+div#error{
+	border: 2px solid #333333;
+	background: rgba(20,20,0,0.3);
+	width: 60%;
+	min-height: 300px;
+	margin: 5% auto 0;
+	padding: 7px 14px;
+}
+div#error h1{
+	font-size: 200%;
+	color: white;
+	font-style: none;
+}
+div#error p.code{
+	font-size: 110%;
+}
+div#error p.description{
+	font-size: 95%;
+}
+
+div#error a.button{
+	width: 20%;
+	margin: auto;
+
+}

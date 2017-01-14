@@ -1,25 +1,30 @@
 package org.qqq175.blackjack.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Locale;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.qqq175.blackjack.service.SessionRequestContent;
-import org.qqq175.blackjack.service.action.Action;
-import org.qqq175.blackjack.service.action.implemented.ActionFactory;
-import org.qqq175.blackjack.util.Settings;
+import org.qqq175.blackjack.action.Action;
+import org.qqq175.blackjack.action.ActionFactory;
+import org.qqq175.blackjack.action.ActionResult;
+import org.qqq175.blackjack.action.implemented.ActionFactoryImpl;
+import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 /**
- * Servlet implementation class MainServlet
+ * Servlet implementation class Controller
  */
-@WebServlet("/*")
+@WebServlet(urlPatterns = { "/$/*" })
+@MultipartConfig(fileSizeThreshold = 1024 * 512, // 512 KB
+		maxFileSize = 1024 * 512, // 512 KB
+		maxRequestSize = 1024 * 528 // 520 KB (512 KB for image + 16 KB for
+									// other data
+)
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -50,35 +55,32 @@ public class Controller extends HttpServlet {
 	}
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String[] query = request.getPathInfo().trim().replaceFirst("^/", "").split("/");
-		String actionScope = null;
-		String action = null;
-		switch (query.length) {
-		case 0:
-			actionScope = "main";
-			action = "index";
-			break;
-		case 1:
-			actionScope = "main";
-			action = !query[0].isEmpty() ? query[0] : "index";
-			break;
-		case 2:
-			actionScope = query[0];
-			action = query[1];
-			break;
-		default:
-			// redirect to error page
+		String query = request.getPathInfo();
+
+		CommandParser cp = new CommandParser();
+		CommandParser.CommandContext comandContext = cp.parse(query);
+
+		if (!comandContext.isEmpty()) {
+			ActionFactory actionFactory = new ActionFactoryImpl();
+			Action concreteAction = actionFactory.defineAction(comandContext.getScope(), comandContext.getAction());
+
+			ActionResult result = concreteAction.execute(request);
+
+			switch (result.getType()) {
+			case FORWARD:
+				RequestDispatcher dispatcher = request.getRequestDispatcher(result.getContent());
+				dispatcher.forward(request, response);
+				break;
+			case REDIRECT:
+				response.sendRedirect(result.getContent());
+				break;
+			case SENDERROR:
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, result.getContent());
+				break;
+			}
+		} else {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
-
-		SessionRequestContent sessionRequestContent = new SessionRequestContent(request);
-		ActionFactory actionFactory = new ActionFactory();
-		Action concreteAction = actionFactory.defineAction(actionScope, action);
-
-		sessionRequestContent = concreteAction.execute(sessionRequestContent);
-		// sessionRequestContent.insertAttributes(request);
-
-		RequestDispatcher dispatcher = request.getRequestDispatcher((String) request.getAttribute("page"));
-		dispatcher.forward(request, response);
 	}
 
 	/*
@@ -90,6 +92,7 @@ public class Controller extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		Settings.getInstance().setRealPath(this.getServletContext().getRealPath("/"));
+		Settings.getInstance().setContextPath(this.getServletContext().getContextPath());
 	}
 
 }

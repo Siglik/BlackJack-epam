@@ -1,0 +1,405 @@
+@font-face {
+    font-family: 'Planewalker';
+    src: url('../fonts/Planewalker.eot');
+    src: local('Planewalker'), url('../fonts/Planewalker.woff') format('woff'), url('../fonts/Planewalker.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'CashCurrency';
+    src: url('../fonts/CashCurrency.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #212121;
+    color: #f2f2f2;
+    font-family: 'Verdana', sans-serif;
+    min-width: 680px;
+}
+
+a{
+  color: #ffdd1f;
+}
+
+main, aside, nav.left-menu, div.container{
+    background-color: #2f2f2f;
+}
+
+div.header-top {
+    background-color: #242424;
+    height: 60px;
+}
+
+img.logo {
+    margin-left: 20px;
+    height: 60px;
+    width: 60px;
+    float: left;
+}
+
+p.tm {
+    margin-top: 10px;
+    float: left;
+    font-family: 'Planewalker';
+    font-size: 36px;
+    color: red;
+    padding-left: 35px;
+    margin-bottom: 0;
+}
+
+div.header-bottom {
+    background-color: #f6cd0f;
+    height: 42px;
+}
+
+h1 {
+    margin-top: 3px;
+    font-size: 25px;
+    font-weight: 100;
+    font-family: "Tahoma", sans-serif;
+    font-style: italic;
+    display: inline-block;
+    color: rgb(36, 36, 36);
+}
+
+span.nav-elem {
+    font-size: 30px;
+    font-weight: 100;
+}
+
+a.button#show-menu {
+    background-color: rgba(0, 0, 0, 0.13);
+    display: none;
+    float: left;
+    margin-top: 4px;
+    padding: 8px;
+}
+
+a.button.language {
+    background-color: rgba(0, 0, 0, 0.13);
+    float: right;
+    margin-top: 4px;
+    margin-right: 80px;
+    padding: 8px;
+}
+
+a.button.language:hover {
+    background-color: rgba(0, 0, 0, 0.10);
+}
+
+nav.left-menu {
+    padding: 20px 0px 0px 10px;
+    margin: 0;
+}
+
+.menu-icon {
+    font-family: "icons";
+}
+
+.vertical-menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.gorizontal-menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.gorizontal-menu li {
+    float: left;
+}
+
+#login-buttons {
+    float: right;
+    margin: auto;
+    height: 60px;
+    display: block;
+}
+
+a.button {
+    background-color: #88909B;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    margin: 0px 6px;
+    text-decoration: none;
+}
+
+a.button:hover {
+    background-color: #bf3b24;
+    color: white;
+}
+
+a.menu-item {
+    background-color: inherit;
+    text-align: left;
+    width: 120px;
+    margin: 0px;
+    padding: 10px 0 10px 6px;
+}
+
+.vertical-menu.top menu-item {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+a.button.login {
+    padding: 10px 30px;
+    background-color: #bf3b24;
+    margin-top: 12px;
+    margin-right: 25px;
+}
+
+a.button.login:hover {
+    background-color: #df4b34;
+}
+
+a.button.join {
+    padding: 10px 30px;
+    margin-top: 12px;
+    margin-right: 40px;
+}
+
+a.button.join:hover {
+    background-color: #98a0aB;
+}
+
+.right {
+    float: right;
+}
+
+main {
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    min-height: 450px;
+}
+
+.column-left {
+    order: 1;
+}
+
+.column-center {
+    order: 5;
+}
+
+.column-right {
+    order: 10;
+}
+
+aside {
+    width: 220px;
+}
+
+.player {
+    margin: 0 20px 0 20px;
+}
+
+.player-info {
+    padding: 5px;
+    font-family: "Garamond", serif;
+    font-size: 120%;
+}
+
+.dealer .player-info {
+    font-size: 140%;
+}
+
+.player-logo {
+    border-radius: 50%;
+}
+
+.player-info.active {
+    border: 2px dotted #dfc;
+    color: #ffdd1f;
+    border-radius: 6px;
+}
+
+.controls {
+    margin-top: 15px;
+}
+
+a.control-key {
+    border-radius: 20px/50%;
+    margin: 3px 6px;
+}
+
+a.control-key:hover {
+    margin: 1px 4px;
+    padding: 16px 18px;
+}
+
+a.control-key.not-active {
+    pointer-events: none;
+    cursor: default;
+    background-color: #53606B;
+}
+
+a.control-key.not-active:hover {
+    margin: 3px 6px;
+    padding: 14px 16px;
+}
+
+a.bid {
+    border-radius: 50%;
+    vertical-align: middle;
+    align-content: center;
+    padding: 14px;
+    margin: 6px;
+    background-color: rgb(75, 173, 43);
+}
+
+a.bid:hover {
+    padding: 18px;
+    margin: 2px;
+    background-color: #e64d24;
+}
+
+.card {
+    border: 1px solid black;
+    margin-left: -31px;
+    width: 51px;
+    height: 73px;
+}
+
+.card.first-card {
+    margin-left: 0;
+}
+
+.hand {
+    display: inline-block;
+    padding: 5px 0 0 5px;
+}
+
+.dealer .hand {
+    padding-top: 15px;
+    margin-left: -25px;
+}
+
+.hand div {
+    display: inline-block;
+}
+
+.hand.active {
+    border: 1px solid yellow;
+    border-radius: 5px;
+}
+
+
+
+.active {
+    font-weight: bolder;
+}
+
+div.messages {
+    min-height: 120px;
+    overflow-y: scroll;
+    border: 1px solid rgba(255,255,255, 0.2);
+    background-color: rgba(255, 200, 170, 0.1);
+}
+
+#send-message {
+    width: auto;
+}
+#send-message input[type="text"] {
+  padding: 6px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+}
+#send-message input[type="text"]:focus,
+#send-message input[type="text"].focus {
+  border-bottom: solid 2px #969696;
+}
+
+#send-message input[type="button"]{
+  border-radius: 4px;
+  padding: 4px 20px;
+  font-size: 16px;
+  text-decoration: none;
+  margin: 4px;
+  color: #fff;
+  position: relative;
+  display: inline-block;
+  background-color: #e64d24;
+  box-shadow: 0px 3px 0px 0px #df4b34;
+}
+#send-message input[type="button"]:hover{
+  background-color: #bf3b24;
+}
+
+#send-message input[type="button"]:active {
+  transform: translate(0px, 5px);
+  -webkit-transform: translate(0px, 5px);
+  box-shadow: 0px 1px 0px 0px;
+}
+
+.chat-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+span.sender {
+    font-style: oblique;
+    color: #ffdd1f;
+}
+
+span.message-text {}
+
+.copyright {
+    display: inline-block;
+    padding: 7px;
+    float: right;
+}
+div#shadow {
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    height: 250%;
+    z-index: 10;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+aside {
+  text-align: justify;
+  padding: 20px 15px 5px 0;
+}
+
+@media screen and (max-width: 800px) {
+    h1{
+      font-size: 22px;
+    }
+    span.nav-elem{
+      font-size: 24px;
+    }
+    a.button#show-menu {
+        display: inline-block;
+    }
+    nav.left-menu {
+        height: 100%;
+        display: none;
+        position: absolute;
+        top: 110px;
+        z-index: 99;
+    }
+    nav.left-menu:hover {}
+}
+@media screen and (max-width: 600px) {
+  div.players.container {
+      flex-direction: column;
+  }
+}

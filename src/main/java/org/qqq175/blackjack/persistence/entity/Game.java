@@ -2,51 +2,22 @@ package org.qqq175.blackjack.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.qqq175.blackjack.persistence.entity.id.GameId;
+import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 /**
  * The persistent class for the game database table.
  * 
  */
-@Entity
-@Table(name = "game")
-@NamedQuery(name = "Game.findAll", query = "SELECT g FROM Game g")
 public class Game extends Entity<GameId> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "creation_time")
 	private Date creationTime;
 
-	// bi-directional many-to-one association to User
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
-
-	// bi-directional many-to-one association to Message
-	@OneToMany(mappedBy = "game")
-	private List<Message> messages;
+	private UserId userId;
 
 	public Game() {
-	}
-
-	public String getGameId() {
-		return this.gameId;
-	}
-
-	public void setGameId(String gameId) {
-		this.gameId = gameId;
 	}
 
 	public Date getCreationTime() {
@@ -57,34 +28,11 @@ public class Game extends Entity<GameId> implements Serializable {
 		this.creationTime = creationTime;
 	}
 
-	public User getUser() {
-		return this.user;
+	public UserId getUserId() {
+		return this.userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(UserId userId) {
+		this.userId = userId;
 	}
-
-	public List<Message> getMessages() {
-		return this.messages;
-	}
-
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
-
-	public Message addMessage(Message message) {
-		getMessages().add(message);
-		message.setGame(this);
-
-		return message;
-	}
-
-	public Message removeMessage(Message message) {
-		getMessages().remove(message);
-		message.setGame(null);
-
-		return message;
-	}
-
 }

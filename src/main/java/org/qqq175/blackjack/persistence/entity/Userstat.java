@@ -1,18 +1,13 @@
 package org.qqq175.blackjack.persistence.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
 import org.qqq175.blackjack.persistence.entity.id.UserId;
-
 
 /**
  * The persistent class for the userstat database table.
  * 
  */
-@Entity
-@Table(name="userstat")
-@NamedQuery(name="Userstat.findAll", query="SELECT u FROM Userstat u")
 public class Userstat extends Entity<UserId> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,11 +18,6 @@ public class Userstat extends Entity<UserId> implements Serializable {
 	private int tie;
 
 	private int win;
-
-	//bi-directional one-to-one association to User
-	@OneToOne
-	@JoinColumn(name="user_id")
-	private User user;
 
 	public Userstat() {
 	}
@@ -63,13 +53,4 @@ public class Userstat extends Entity<UserId> implements Serializable {
 	public void setWin(int win) {
 		this.win = win;
 	}
-
-	public User getUser() {
-		return this.user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 }

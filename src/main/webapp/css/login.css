@@ -1,0 +1,123 @@
+#lean_overlay {
+	position: fixed;
+	z-index: 100;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background: #000;
+	display: none;
+}
+
+/* Modal box or Popup box */
+.popupContainer {
+	position: absolute;
+	width: 330px;
+	height: auto;
+	left: 45%;
+	top: 80px;
+	background: #242424;
+}
+
+#modal_trigger {
+	margin: 100px auto;
+	width: 100px;
+	display: block;
+}
+
+.btn {
+	padding: 10px 20px;
+	background: #F4F4F2;
+}
+
+.btn_red {
+	background: #bf3b24;
+	color: #FFF;
+}
+
+.btn:hover {
+	background: #E4E4E2;
+}
+
+.btn_red:hover {
+	background: #df4b34;
+}
+
+a.btn {
+	color: #666;
+	text-align: center;
+	text-decoration: none;
+}
+
+a.btn_red {
+	color: #FFF;
+}
+
+.one_half {
+	width: 50%;
+	display: block;
+	float: left;
+}
+
+.one_half.last {
+	width: 45%;
+	margin-left: 5%;
+}
+
+.popupHeader {
+	font-size: 16px;
+	text-transform: uppercase;
+}
+
+.popupHeader {
+	background: #212121;
+	position: relative;
+	padding: 10px 20px;
+	border-bottom: 1px solid #444;
+	font-weight: bold;
+}
+
+.popupHeader .modal_close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 10px 15px;
+	background: #88909B;
+	cursor: pointer;
+	color: #f2f2f2;
+	font-size: 16px;
+}
+
+.popupBody {
+	padding: 20px;
+}
+
+/* User Login Form */
+.user_login label {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.user_login input[type="text"], .user_login input[type="email"],
+	.user_login input[type="password"] {
+	display: block;
+	width: 90%;
+	padding: 10px;
+	border: 1px solid #DDD;
+	color: #666;
+}
+
+p.error {
+	font-size: 90%;
+	font-style: oblique;
+	color: yellow;
+}
+
+div.error {
+	display: block;
+	clear:both;
+	position: relative;
+	left: 0;
+	bottom: 0;
+	border: 1px solid rgba(0,0,0,0);
+}

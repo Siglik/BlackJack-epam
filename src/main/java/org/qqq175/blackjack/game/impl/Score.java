@@ -71,7 +71,7 @@ public class Score implements Comparable<Score> {
 
 	@Override
 	public int compareTo(Score o) {
-		if this.isBlackJack
-		return 0;
+		if (this.isBlackJack)
+			return 0;
 	}
 }

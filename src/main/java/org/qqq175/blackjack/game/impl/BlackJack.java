@@ -11,7 +11,7 @@ import org.qqq175.blackjack.persistence.entity.User;
 
 public class BlackJack implements Game {
 	private static final int MAX_PLAYERS = 3;
-	private final int id;
+	private int id;
 	private AtomicInteger modifyCount;
 	private Deck deck;
 	private List<Player> players;
