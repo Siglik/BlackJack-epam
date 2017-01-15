@@ -15,6 +15,7 @@ body {
     color: #f2f2f2;
     font-family: 'Verdana', sans-serif;
     min-width: 680px;
+    font-size:105%;
 }
 
 a{
@@ -200,7 +201,7 @@ main {
 }
 
 aside {
-    width: 220px;
+    width: 230px;
 }
 
 .player {
@@ -376,8 +377,35 @@ div#shadow {
 
 aside {
   text-align: justify;
-  padding: 20px 15px 5px 0;
+  padding: 70px 12px 5px 0;
 }
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    float: right;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #d6b20d;
+    min-width: 50px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
 
 @media screen and (max-width: 800px) {
     h1{

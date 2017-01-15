@@ -20,6 +20,7 @@ import javax.servlet.http.Part;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
+import org.qqq175.blackjack.persistence.dao.util.PhotoManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.Userstat;
@@ -59,7 +60,7 @@ public class RegisterLogic {
 					}
 					// try to save photo, if unable - register anyway
 					if (userId != null && part != null) {
-						FileUploader uploader = new FileUploader();
+						PhotoManager uploader = new PhotoManager();
 						uploader.uploadPhoto(part, userId);
 					}
 				} else {

@@ -2,8 +2,7 @@
 	pageEncoding="UTF-8"%>
 <link href="/blackjack/css/register.css" rel="stylesheet" />
 <main class="column-center main-content">
-<form action="/blackjack/$/register" method="post"
-	onsubmit="validateForm(this)" id="register"
+<form action="/blackjack/$/register" method="post" id="register"
 	enctype="multipart/form-data">
 	<fieldset>
 		<legend>Registration</legend>
@@ -32,7 +31,7 @@
 				pattern="[а-яА-ЯёЁa-zA-Z0-9][а-яА-ЯёЁa-zA-Z0-9_\.-]{2,255}[а-яА-ЯёЁa-zA-Z0-9]" /></li>
 			<li class="center">
 				<button name="submit"
-					onclick="validateForm(document.forms['register'])" title="Register"
+					onclick="validate(document.forms['register'])" title="Register"
 					class="submit" id="submit">Register</button>
 			</li>
 		</ul>

@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.logic.main;
+package org.qqq175.blackjack.persistence.dao.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +8,9 @@ import java.util.regex.Pattern;
 import javax.servlet.http.Part;
 
 import org.qqq175.blackjack.StringConstant;
-import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
-public class FileUploader {
+public class PhotoManager {
 
 	public enum Result {
 		OK("OK"), WRONG_FILETYPE("Wrong file filetype."), IO_ERROR("Unable to save file.");
@@ -24,6 +23,25 @@ public class FileUploader {
 		public String getMessage() {
 			return message;
 		}
+	}
+
+	public String findPhotoRelativePath(UserId userId) {
+		Settings settings = Settings.getInstance();
+		String photoDirPath = settings.getRealPath() + settings.getPhotoFolder() + File.separator;
+		String photoFilePath = null;
+		for (String extension : settings.getPhotoExtensions()) {
+			File photo = new File(photoDirPath + userId.getValue() + extension);
+			if (photo.exists()) {
+				photoFilePath = settings.getContextPath() + File.separator + settings.getPhotoFolder() + File.separator + userId.getValue()
+						+ extension;
+			}
+		}
+
+		if (photoFilePath == null) {
+			photoFilePath = settings.getContextPath() + File.separator + settings.getPhotoFolder() + File.separator + settings.getDefaultPhoto();
+		}
+
+		return photoFilePath;
 	}
 
 	public Result uploadPhoto(Part part, UserId userId) {

@@ -1,0 +1,2 @@
+$('#scene').parallax();
+$('#bender').parallax();

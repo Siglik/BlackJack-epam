@@ -6,50 +6,44 @@ import org.qqq175.blackjack.action.implemented.main.IndexAction;
 import org.qqq175.blackjack.action.implemented.player.BalanceAction;
 import org.qqq175.blackjack.action.implemented.player.ChangePasswordAction;
 import org.qqq175.blackjack.action.implemented.player.ChangePersonalAction;
-import org.qqq175.blackjack.action.implemented.player.PayAction;
+import org.qqq175.blackjack.action.implemented.player.PaymentAction;
 import org.qqq175.blackjack.action.implemented.player.SettingsAction;
-import org.qqq175.blackjack.action.implemented.player.StatsAction;
-import org.qqq175.blackjack.action.implemented.player.WithdrawalAction;
+import org.qqq175.blackjack.action.implemented.player.ShowStatsAction;
 
-public enum PlayerActionEnum implements ActionEnum{
+public enum PlayerActionEnum implements ActionEnum {
 	UNKNOWN {
 		{
 			this.action = new IndexAction();
 		}
 	},
-	BALANCE{
+	BALANCE {
 		{
 			this.action = new BalanceAction();
 		}
 	},
-	CHANGEPASSWORD{
+	CHANGEPASSWORD {
 		{
 			this.action = new ChangePasswordAction();
 		}
 	},
-	CHANGEPERSONAL{
+	CHANGEPERSONAL {
 		{
 			this.action = new ChangePersonalAction();
 		}
 	},
-	PAY{
-		{
-			this.action = new PayAction();
-		}
-	},
-	SETTINGS{
+	SETTINGS {
 		{
 			this.action = new SettingsAction();
 		}
 	},
-	STATS{
+	SHOWSTATS {
 		{
-			this.action = new StatsAction();
+			this.action = new ShowStatsAction();
 		}
 	},
-	WITHDRAWAL{
+	PAYMENT {
 		{
-			this.action = new WithdrawalAction();
+			this.action = new PaymentAction();
 		}
 	};
 

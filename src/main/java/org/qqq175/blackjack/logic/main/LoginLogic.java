@@ -40,7 +40,7 @@ public class LoginLogic {
 		try {
 			user = userDAO.findUser(email, saltedPassword);
 		} catch (DAOException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		if (user != null) {
 			if (user.isActive()) {

@@ -1,3 +1,5 @@
+$('form').on('submit', validateForm);
+
 let formMessages = {
     "email": "Email can contain latin letters, digits, '.', '-' and '_' characters. Also it must contain '@' and '.'",
     "first-name": "Name must be at least 2 characters. You can use latin or cyrillyc letters.",
@@ -21,7 +23,7 @@ function showMessage(input) {
     input.parentNode.appendChild(errorMessage);
 }
 
-function validateForm(form) {
+function validate(form) {
     let valid = true;
     deleteErrors();
     inputs = form.getElementsByTagName('input');
@@ -36,7 +38,27 @@ function validateForm(form) {
             valid = false;
         }
     }
-    if (valid) {
-        form.submit();
+    return valid;
+}
+
+function validateForm(event) {
+    let valid = true;
+    let form = document.forms['register'];
+    inputs = form.getElementsByTagName('input');
+    for (input of inputs) {
+        if (input.name === 'passrepeat') {
+            if (input.value !== form['password'].value) {
+                valid = false;
+            }
+            valid = false;
+        }
     }
+    if (!valid) {
+    	if(event.preventDefault){
+            event.preventDefault();
+        }else{
+            event.returnValue = false;
+        }
+    }
+    return valid;
 }

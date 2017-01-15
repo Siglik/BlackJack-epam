@@ -48,11 +48,11 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	public User findUser(String login, String password) throws DAOException {
+	public User findUser(String email, String password) throws DAOException {
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			String query = prepareQueryString(getSqlQuery().getQuery("sql.user.findBy.login.password"));
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
-				prepStatment.setString(1, login);
+				prepStatment.setString(1, email.toLowerCase());
 				prepStatment.setString(2, password);
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
 					return toDTO(resultSet);
@@ -64,11 +64,11 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	public User findUserWithHash(String login, String passwordHash) throws DAOException {
+	public User findUserWithHash(String email, String passwordHash) throws DAOException {
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			String query = prepareQueryString(getSqlQuery().getQuery("sql.user.findBy.login.passwordHash"));
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
-				prepStatment.setString(1, login);
+				prepStatment.setString(1, email.toLowerCase());
 				prepStatment.setString(2, passwordHash);
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
 					return toDTO(resultSet);
@@ -85,7 +85,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 			String query = prepareQueryString(getSqlQuery().getQuery("sql.user.findBy.email"));
 			System.out.println(query);
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
-				prepStatment.setString(1, email);
+				prepStatment.setString(1, email.toLowerCase());
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
 					return toDTO(resultSet);
 				}
@@ -103,7 +103,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	@Override
 	protected void prepareWithEntity(PreparedStatement prepStatment, User entity) throws UnsupportedOperationException, DAOException {
 		try {
-			prepStatment.setString(1, entity.getEmail());
+			prepStatment.setString(1, entity.getEmail().toLowerCase());
 			prepStatment.setString(2, entity.getPassword());
 			prepStatment.setString(3, entity.getFirstName());
 			prepStatment.setString(4, entity.getLastName());

@@ -20,6 +20,11 @@ public enum ScopeEnum {
 		{
 			this.scope = AdminActionEnum.class;
 		}
+	},
+	PLAYER {
+		{
+			this.scope = PlayerActionEnum.class;
+		}
 	};
 	Class<? extends Enum> scope;
 

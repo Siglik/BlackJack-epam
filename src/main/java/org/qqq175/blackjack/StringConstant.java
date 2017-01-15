@@ -5,6 +5,7 @@ public interface StringConstant {
 	public static final String ATTRIBUTE_ERROR_LOGIN = "loginError";
 	public static final String ATTRIBUTE_ERROR_REGISTRATION = "regError";
 	public static final String ATTRIBUTE_MAIN_FORM = "mainform";
+	public static final String ATTRIBUTE_USERSTAT = "userstat";
 
 	public static final String PARAMETER_EMAIL = "email";
 	public static final String PARAMETER_PASSWORD = "password";

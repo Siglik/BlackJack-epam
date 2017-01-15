@@ -20,6 +20,10 @@ td.stat-value{
 	font-weight: bold;
 	font-size: 95%;
 }
+tr.important-row{
+    font-size: 120%;
+    color: gold;
+}
 figure.player-logo{
 
 }
@@ -27,4 +31,9 @@ figure.player-logo img{
 	width: 100px;
 	height: 100px;
 	border-radius: 50%;
+}
+span.data{
+    font-size: 105%;
+    font-style: normal;
+    color: #bf3b24;
 }

@@ -16,4 +16,15 @@ public class UserId extends EntityId {
 		super(value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		System.out.println("finalize user " + this.getValue());
+		super.finalize();
+	}
+
 }

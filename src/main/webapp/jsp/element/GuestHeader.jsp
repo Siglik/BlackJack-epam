@@ -16,6 +16,12 @@
 		<h1>
 			<span class="nav-elem">Black Jack</span>
 		</h1>
-		<a href="#" class="button language">En</a>
+		<div class="dropdown">
+            <a href="#" class="button language" id="lang-btn">En</a>
+            <div class="dropdown-content" id="lang-menu">
+                <a href="/blackjack/setlocale?locale=En">En</a> 
+                <a href="/blackjack/setlocale?locale=Ru">Ru</a>
+            </div>
+        </div>
 	</div>
 </header>

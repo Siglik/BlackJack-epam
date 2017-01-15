@@ -7,6 +7,7 @@ public abstract class Entity<ID extends EntityId> {
 	private ID id;
 
 	public ID getId() {
+		System.out.println("Id getter^ " + id);
 		return this.id;
 	}
 
@@ -16,5 +17,6 @@ public abstract class Entity<ID extends EntityId> {
 	 */
 	public void setId(ID id) {
 		this.id = id;
+		System.out.println("Id SETTER^ " + id);
 	}
 }

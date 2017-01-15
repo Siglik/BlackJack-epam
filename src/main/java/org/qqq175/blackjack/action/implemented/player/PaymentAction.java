@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 
-public class StatsAction implements Action {
+public class PaymentAction implements Action{
 
-	public StatsAction() {
+	public PaymentAction() {
 		// TODO Auto-generated constructor stub
 	}
 

@@ -29,7 +29,6 @@ figure.player-logo img{
 tr.important-row{
 	font-size: 120%;
 	color: gold;
-
 }
 form.payment{
 	background: rgba(255,255,255,0.2);
@@ -59,7 +58,19 @@ a.button.payment{
 	max-width: 16em;
 }
 button.button{
-	padding: 8px 27px;
-	margin: 14px auto 4px;
-	display:block;
+	padding: 10px 20px;
+    background: #bf3b24;
+    color: #FFF;
+	margin: 14px 15px 4px;
+	border-radius: 3%;
+	border: 0;
+	font-size:95%;
+}
+button.button:hover {
+    background: #df4b34;
+}
+span.data{
+    font-size: 105%;
+    font-style: normal;
+    color: #bf3b24;
 }

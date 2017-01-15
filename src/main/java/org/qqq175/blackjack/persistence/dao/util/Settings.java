@@ -3,10 +3,10 @@
  */
 package org.qqq175.blackjack.persistence.dao.util;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Semaphore;
@@ -20,12 +20,15 @@ import org.qqq175.blackjack.persistence.dao.impl.DAOFactoryImpl;
  *
  */
 public class Settings {
+	private static final String PROPS_DELIMETER = ";";
+	private static final String APP_PROPS_PATH = "conf/app.properties";
 	private final DAOFactory DAO_FACTORY;
 	private final Database DATABASE;
 	private String realPath = null;
 	private String contextPath = null;
 	private final String SALT;
 	private final String PHOTO_FOLDER;
+	private final String DEFAULT_PHOTO;
 	private final List<String> PHOTO_EXTENSIONS;
 
 	private static AtomicReference<Settings> instance = new AtomicReference<>();;
@@ -36,16 +39,18 @@ public class Settings {
 		this.DATABASE = new Database();
 		this.DAO_FACTORY = new DAOFactoryImpl();
 		Properties props = new Properties();
-		try (FileInputStream in = new FileInputStream("conf/app.properties")) {
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		try (InputStream in = classLoader.getResourceAsStream(APP_PROPS_PATH);) {
 			props.load(in);
 		} catch (IOException e) {
+			throw new RuntimeException("Unable to read " + APP_PROPS_PATH);
 		}
 		SALT = "Unds&4s>dfuPMdqmx84Yfagt=274bfa#fdsa64q1";
-		PHOTO_FOLDER = "/img/user";
+		PHOTO_FOLDER = props.getProperty("img.dir");
+		DEFAULT_PHOTO = props.getProperty("img.default");
 
-		PHOTO_EXTENSIONS = new ArrayList<>(2);
-		PHOTO_EXTENSIONS.add(".png");
-		PHOTO_EXTENSIONS.add(".jpg");
+		String[] extensions = props.getProperty("img.extensions").split(PROPS_DELIMETER);
+		PHOTO_EXTENSIONS = new ArrayList<>(Arrays.asList(extensions));
 	}
 
 	/**
@@ -89,6 +94,7 @@ public class Settings {
 			try (InputStream in = classLoader.getResourceAsStream(DBPROPS_PATH);) {
 				props.load(in);
 			} catch (IOException e) {
+				throw new RuntimeException("Unable to read " + DBPROPS_PATH);
 			}
 
 			DB_URL = props.getProperty("dburl");
@@ -205,6 +211,10 @@ public class Settings {
 	 */
 	public List<String> getPhotoExtensions() {
 		return PHOTO_EXTENSIONS;
+	}
+
+	public String getDefaultPhoto() {
+		return DEFAULT_PHOTO;
 	}
 
 }
