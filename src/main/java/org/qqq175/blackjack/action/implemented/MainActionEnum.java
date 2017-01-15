@@ -41,7 +41,7 @@ public enum MainActionEnum implements ActionEnum {
 			this.action = new RegisterAction();
 		}
 	},
-	SET_LOCALE {
+	SETLOCALE {
 		{
 			this.action = new SetLocaleAction();
 		}

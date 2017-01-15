@@ -6,6 +6,7 @@ public interface StringConstant {
 	public static final String ATTRIBUTE_ERROR_REGISTRATION = "regError";
 	public static final String ATTRIBUTE_MAIN_FORM = "mainform";
 	public static final String ATTRIBUTE_USERSTAT = "userstat";
+	public static final String ATTRIBUTE_LOCALE = "curLocale";
 
 	public static final String PARAMETER_EMAIL = "email";
 	public static final String PARAMETER_PASSWORD = "password";
@@ -15,6 +16,8 @@ public interface StringConstant {
 	public static final String PARAMETER_LAST_NAME = "last-name";
 	public static final String PARAMETER_DISPLAY_NAME = "display-name";
 	public static final String PARAMETER_PHOTO = "photo";
+
+	public static final String COOKIE_LOCALE = "locale";
 
 	public static final String SCOPE_DEFAULT = "main";
 	public static final String ACTION_DEFAULT = "index";

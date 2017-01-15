@@ -17,10 +17,10 @@
 			<span class="nav-elem">Black Jack</span>
 		</h1>
 		<div class="dropdown">
-            <a href="#" class="button language" id="lang-btn">En</a>
+            <a href="#" class="button language" id="lang-btn">${sessionScope.curLocale.language}</a>
             <div class="dropdown-content" id="lang-menu">
-                <a href="/blackjack/setlocale?locale=En">En</a> 
-                <a href="/blackjack/setlocale?locale=Ru">Ru</a>
+                <a href="/blackjack/$/setlocale?locale=En">En</a> 
+                <a href="/blackjack/$/setlocale?locale=Ru">Ru</a>
             </div>
         </div>
 	</div>

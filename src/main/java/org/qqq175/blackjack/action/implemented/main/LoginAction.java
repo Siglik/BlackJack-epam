@@ -3,6 +3,7 @@ package org.qqq175.blackjack.action.implemented.main;
 import static org.qqq175.blackjack.action.ActionResult.ActionType.REDIRECT;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
@@ -13,7 +14,7 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 public class LoginAction implements Action {
 
 	@Override
-	public ActionResult execute(HttpServletRequest request) {
+	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
 		LoginLogic logic = new LoginLogic();
 		String email = request.getParameter(StringConstant.PARAMETER_EMAIL);
 		String password = request.getParameter(StringConstant.PARAMETER_PASSWORD);

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.qqq175.blackjack.StringConstant;
@@ -20,7 +21,7 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 public class RegisterAction implements Action {
 
 	@Override
-	public ActionResult execute(HttpServletRequest request) {
+	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
 		ActionResult result = null;
 		Map<String, String[]> params = request.getParameterMap();
 

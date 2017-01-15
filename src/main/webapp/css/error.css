@@ -1,26 +1,57 @@
 @CHARSET "UTF-8";
-div#error{
+
+body {
+	min-width: 400px;
+}
+
+div#error {
 	border: 2px solid #333333;
-	background: rgba(20,20,0,0.3);
+	background: rgba(20, 20, 0, 0.3);
 	width: 60%;
 	min-height: 300px;
-	margin: 5% auto 0;
+	margin: 3% auto 0;
 	padding: 7px 14px;
 }
-div#error h1{
+
+div#error h1 {
 	font-size: 200%;
 	color: white;
 	font-style: none;
 }
-div#error p.code{
+
+div#error p.code {
 	font-size: 110%;
 }
-div#error p.description{
+
+div#error p.description {
 	font-size: 95%;
 }
 
-div#error a.button{
+div#error a.button {
 	width: 20%;
 	margin: auto;
-
+}
+div.error-logo{
+	text-align: center;
+}
+img.error-logo {
+	width: 385px;
+	height: 273px;
+	margin: auto;
+}
+div#error span.data {
+    color: #e64d24;
+}
+@media screen and (max-width: 1000px) {
+    img.error-logo {
+        width: 255px;
+        height: 180px;
+    }
+    div#error {
+    width: 75%;
+}
+@media screen and (max-width: 600px) {
+	div#error {
+    width: 85%;
+}
 }

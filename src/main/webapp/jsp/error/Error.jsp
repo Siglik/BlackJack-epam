@@ -10,18 +10,26 @@
 </head>
 <body>
 	<div id="error">
-		<h1>Opps! Something happens!</h1>
+		<h1>Opps! Something is wrong!</h1>
 		<p class="code">
-			Request from ${pageContext.errorData.requestURI} is failed <br />
-			Servlet name: ${pageContext.errorData.servletName} <br /> 
-			Status code: ${pageContext.errorData.statusCode} <br /> 
-			Exception: ${pageContext.exception} <br />
+			Request from <span class="data">${pageContext.errorData.requestURI}</span>
+			is failed <br />
+			<br /> Servlet name: <span class="data">${pageContext.errorData.servletName}</span>
+			<br /> <br /> Status code: <span class="data">${pageContext.errorData.statusCode}</span>
+			<br /> <br /> Exception: <span class="data">${pageContext.exception}</span>
+			<br />
 		</p>
-		<p class="description">Message from exception:
-			${pageContext.exception.message}</p>
+		<p class="description">
+			Message from exception: <span class="data">${pageContext.exception.message}</span>
+		</p>
 		<p>
 			<a href="/blackjack/$/" class="button">Go to main page</a>
 		</p>
+		<p>You will be redirected to main page in 5 seconds.</p>
 	</div>
+	<div class="error-logo">
+        <img src="/blackjack/img/bender-error.png" alt="Error page"
+            class="error-logo">
+    </div>
 </body>
 </html>

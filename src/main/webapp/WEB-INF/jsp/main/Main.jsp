@@ -18,25 +18,25 @@
 	${empty sessionScope.loginError ? "" : " onload=\"$('#modal_login').trigger('click')\""}>
 	<div id="shadow"></div>
 	<!-- IMPORT HEADER -->
-	<jsp:include page="/jsp/element/GuestHeader.jsp" />
+	<jsp:include page="/WEB-INF/jsp/element/GuestHeader.jsp" />
 	<div class="container">
 		<!-- IMPORT LEFT MENU -->
-		<jsp:include page="/jsp/element/GuestSideMenu.jsp" />
+		<jsp:include page="/WEB-INF/jsp/element/GuestSideMenu.jsp" />
 
-		<jsp:include page='${not empty mainform ? mainform : "/jsp/main/Welcome.jsp"}' />
+		<jsp:include page='${not empty mainform ? mainform : "/WEB-INF/jsp/main/Welcome.jsp"}' />
 
 
 		<!-- IMPORT ASIDE HERE -->
-		<jsp:include page="/jsp/element/Aside.jsp" />
+		<jsp:include page="/WEB-INF/jsp/element/Aside.jsp" />
 	</div>
 
 	<!-- chat is here (At game page)-->
 
 	<!-- IMPORT FOOTER -->
-	<jsp:include page="/jsp/element/Footer.jsp" />
+	<jsp:include page="/WEB-INF/jsp/element/Footer.jsp" />
 
 	<!-- LOGIN FORM -->
-	<jsp:include page="/jsp/main/Login.jsp" />
+	<jsp:include page="/WEB-INF/jsp/main/Login.jsp" />
 	<script type="text/javascript" src="/blackjack/script/page-style.js"
 		charset="utf-8"></script>
 </body>

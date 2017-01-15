@@ -18,12 +18,12 @@ import org.qqq175.blackjack.persistence.entity.User;
  * Servlet Filter implementation class PermissionChecker
  */
 @WebFilter("/*")
-public class PermissionCheckerFilter implements Filter {
+public class PermissionFilter implements Filter {
 
 	/**
 	 * Default constructor.
 	 */
-	public PermissionCheckerFilter() {
+	public PermissionFilter() {
 	}
 
 	/**

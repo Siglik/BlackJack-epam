@@ -17,21 +17,21 @@
 <body>
     <div id="shadow"></div>
     <!-- IMPORT HEADER -->
-    <jsp:include page="/jsp/element/LoggedHeader.jsp" />
+    <jsp:include page="/WEB-INF/jsp/element/LoggedHeader.jsp" />
     <div class="container">
         <!-- IMPORT LEFT MENU -->
-        <jsp:include page="/jsp/element/AdminSideMenu.jsp" />
+        <jsp:include page="/WEB-INF/jsp/element/PlayerSideMenu.jsp" />
         
-        <jsp:include page='${not empty mainform ? mainform : "/jsp/player/Welcome.jsp"}' />
+        <jsp:include page='${not empty mainform ? mainform : "/WEB-INF/jsp/player/Welcome.jsp"}' />
         
         <!-- IMPORT ASIDE HERE -->
-        <jsp:include page="/jsp/element/Aside.jsp" /> 
+        <jsp:include page="/WEB-INF/jsp/element/Aside.jsp" /> 
     </div>
     
     <!-- chat is here (At game page)-->
     
     <!-- IMPORT FOOTER -->
-    <jsp:include page="/jsp/element/Footer.jsp" />
+    <jsp:include page="/WEB-INF/jsp/element/Footer.jsp" />
     <script type="text/javascript" src="/blackjack/script/page-style.js"
         charset="utf-8"></script>
 </body>

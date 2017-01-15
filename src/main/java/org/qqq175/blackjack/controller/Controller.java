@@ -64,7 +64,7 @@ public class Controller extends HttpServlet {
 			ActionFactory actionFactory = new ActionFactoryImpl();
 			Action concreteAction = actionFactory.defineAction(comandContext.getScope(), comandContext.getAction());
 
-			ActionResult result = concreteAction.execute(request);
+			ActionResult result = concreteAction.execute(request, response);
 
 			switch (result.getType()) {
 			case FORWARD:
