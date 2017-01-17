@@ -2,12 +2,24 @@ package org.qqq175.blackjack.logic.player;
 
 import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_CARDHOLDER;
 import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_CARD_NUMBER;
+import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_CVV;
+import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_EXPR_MONTH;
+import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_EXPR_YEAR;
 import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_SUM;
 import static org.qqq175.blackjack.StringConstant.PARAMETER_PAYMENT_TYPE;
+import static org.qqq175.blackjack.StringConstant.PATTERN_CARD;
+import static org.qqq175.blackjack.StringConstant.PATTERN_CARDHOLDER;
+import static org.qqq175.blackjack.StringConstant.PATTERN_CARD_CVV;
+import static org.qqq175.blackjack.StringConstant.PATTERN_MONTH;
+import static org.qqq175.blackjack.StringConstant.PATTERN_PAYMENT_OPERATION;
+import static org.qqq175.blackjack.StringConstant.PATTERN_PAYMENT_SUM;
+import static org.qqq175.blackjack.StringConstant.PATTERN_YEAR_2;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.connection.ConnectionPool;
@@ -134,11 +146,37 @@ public class AccountOperationLogic {
 	}
 
 	private boolean isValid(Map<String, String[]> params) {
-		/*
-		 * sum=12.1 &number=5444444444445555 &exp-month=12 &expr-year=13
-		 * &swift=153 &cardholder=maxim+mihalkov &operation=payment
-		 */
+		return validateParameter(params, PARAMETER_PAYMENT_SUM, PATTERN_PAYMENT_SUM, true)
+				&& validateParameter(params, PARAMETER_PAYMENT_CARD_NUMBER, PATTERN_CARD, true)
+				&& validateParameter(params, PARAMETER_PAYMENT_EXPR_MONTH, PATTERN_MONTH, true)
+				&& validateParameter(params, PARAMETER_PAYMENT_EXPR_YEAR, PATTERN_YEAR_2, true)
+				&& validateParameter(params, PARAMETER_PAYMENT_CVV, PATTERN_CARD_CVV, true)
+				&& validateParameter(params, PARAMETER_PAYMENT_CARDHOLDER, PATTERN_CARDHOLDER, true)
+				&& validateParameter(params, PARAMETER_PAYMENT_TYPE, PATTERN_PAYMENT_OPERATION, true);
+	}
 
-		return true;
+	private boolean validateParameter(Map<String, String[]> params, String parameter, String pattern, boolean isRequired) {
+		boolean isValid = false;
+		if (params.containsKey(parameter)) {
+			String[] values = params.get(parameter);
+			if (values.length == 1) {
+				if (!values[0].isEmpty()) {
+					Pattern ptn = Pattern.compile(pattern);
+					Matcher matcher = ptn.matcher(values[0].toLowerCase());
+					isValid = matcher.matches();
+				} else {
+					isValid = !isRequired;
+				}
+			} else {
+				isValid = !isRequired;
+			}
+		} else {
+			isValid = !isRequired;
+		}
+
+		if (!isValid) {
+			System.out.print(parameter + " is not valid");
+		}
+		return isValid;
 	}
 }
