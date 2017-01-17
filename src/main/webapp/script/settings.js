@@ -18,7 +18,7 @@ function validate(form) {
     inputs = form.getElementsByTagName('input');
     for (input of inputs) {
         if (input.name === 'passrepeat') {
-            if (input.value !== form['password'].value) {
+            if (input.value !== form['new-password'].value) {
                 showMessage(input);
                 valid = false;
             }
@@ -33,15 +33,15 @@ function validate(form) {
     return valid;
 }
 
-let password = document.getElementById("password")
+let password = document.getElementById("new-password")
 , confirm_password = document.getElementById("passrepeat");
 
 function validatePassword(){
-if(password.value != confirm_password.value) {
-  confirm_password.setCustomValidity(validationMessages[confirm_password.name]);
-} else {
-  confirm_password.setCustomValidity('');
-}
+	if(password.value != confirm_password.value) {
+		confirm_password.setCustomValidity(validationMessages[confirm_password.name]);
+	} else {
+		confirm_password.setCustomValidity('');
+	}
 }
 
 password.onchange = validatePassword;

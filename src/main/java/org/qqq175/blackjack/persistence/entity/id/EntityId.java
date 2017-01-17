@@ -14,16 +14,16 @@ public class EntityId implements Comparable<EntityId> {
 	/**
 	 * @return the value
 	 */
-	public long getValue() {
+	final public long getValue() {
 		return value;
 	}
 
-	public static int hashCode(long value) {
+	final public static int hashCode(long value) {
 		return (int) (value ^ (value >>> 32));
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	final public boolean equals(Object obj) {
 		if (obj instanceof EntityId) {
 			return value == ((EntityId) obj).getValue();
 		}
@@ -31,7 +31,7 @@ public class EntityId implements Comparable<EntityId> {
 	}
 
 	@Override
-	public int compareTo(EntityId anotherId) {
+	final public int compareTo(EntityId anotherId) {
 		return Long.compare(this.value, anotherId.value);
 	}
 }

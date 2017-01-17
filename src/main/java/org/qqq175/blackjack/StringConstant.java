@@ -3,10 +3,13 @@ package org.qqq175.blackjack;
 public interface StringConstant {
 	public static final String ATTRIBUTE_USER = "user";
 	public static final String ATTRIBUTE_ERROR_LOGIN = "loginError";
+	public static final String ATTRIBUTE_ERROR_PAYMENT = "paymentError";
 	public static final String ATTRIBUTE_ERROR_REGISTRATION = "regError";
+	public static final String ATTRIBUTE_PHOTO_ERROR = "photoError";
 	public static final String ATTRIBUTE_MAIN_FORM = "mainform";
 	public static final String ATTRIBUTE_USERSTAT = "userstat";
 	public static final String ATTRIBUTE_LOCALE = "curLocale";
+	public static final String ATTRIBUTE_POPUP_MESSAGE = "popupMessage";
 
 	public static final String PARAMETER_EMAIL = "email";
 	public static final String PARAMETER_PASSWORD = "password";
@@ -16,6 +19,14 @@ public interface StringConstant {
 	public static final String PARAMETER_LAST_NAME = "last-name";
 	public static final String PARAMETER_DISPLAY_NAME = "display-name";
 	public static final String PARAMETER_PHOTO = "photo";
+
+	public static final String PARAMETER_PAYMENT_SUM = "sum";
+	public static final String PARAMETER_PAYMENT_CARD_NUMBER = "number";
+	public static final String PARAMETER_PAYMENT_EXPR_MONTH = "exp-month";
+	public static final String PARAMETER_PAYMENT_EXPR_YEAR = "expr-year";
+	public static final String PARAMETER_PAYMENT_CVV = "cvv";
+	public static final String PARAMETER_PAYMENT_CARDHOLDER = "cardholder";
+	public static final String PARAMETER_PAYMENT_TYPE = "operation";
 
 	public static final String COOKIE_LOCALE = "locale";
 

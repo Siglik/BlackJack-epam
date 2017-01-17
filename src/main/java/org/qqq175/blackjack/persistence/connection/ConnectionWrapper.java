@@ -216,4 +216,12 @@ public class ConnectionWrapper implements AutoCloseable {
 			throw new RuntimeException("Cannot perform operation: connection is closed.");
 		}
 	}
+
+	/**
+	 * @throws SQLException
+	 * @see java.sql.Connection#clearWarnings()
+	 */
+	public void clearWarnings() throws SQLException {
+		connection.clearWarnings();
+	}
 }

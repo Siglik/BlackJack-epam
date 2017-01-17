@@ -1,76 +1,107 @@
-main *{
+main * {
 	margin: 5px auto;
 	text-align: center;
 }
-h2.title{
+
+h2.title {
 	font-weight: 400;
 }
-table.stats{
+
+table.stats {
 	margin: 10px auto;
 }
-td.stat-name{
+
+td.stat-name {
 	text-align: right;
 	padding-right: 60px;
 }
-td.stat-value{
+
+td.stat-value {
 	padding-left: 0px;
 	text-align: left;
 	font-weight: bold;
 	font-size: 95%;
 }
-figure.player-logo{
 
+figure.player-logo {
+	
 }
-figure.player-logo img{
+
+figure.player-logo img {
 	width: 100px;
 	height: 100px;
 	border-radius: 50%;
 }
-tr.important-row{
+
+tr.important-row {
 	font-size: 120%;
 	color: gold;
 }
-form.payment{
-	background: rgba(255,255,255,0.2);
+
+form.payment {
+	background: rgba(255, 255, 255, 0.2);
 	display: inline-block;
 	border-radius: 3%;
 	border: 2px solid gold;
 	padding: 15px 20px;
 	text-align: left;
 }
-.hidden{
+
+.hidden {
 	display: none;
 }
-form.payment input{
+
+form.payment input {
 	display: inline;
 	clear: right;
 }
-form.payment label{
 
+form.payment label {
+	
 }
-span.wrapper{
+
+span.wrapper {
 	width: 25px;
 	display: inline-block;
 }
-a.button.payment{
+
+a.button.payment {
 	margin: 4px auto;
 	display: block;
 	max-width: 16em;
 }
-button.button{
+
+button.button {
 	padding: 10px 20px;
-    background: #bf3b24;
-    color: #FFF;
+	background: #bf3b24;
+	color: #FFF;
 	margin: 14px 15px 4px;
 	border-radius: 3%;
 	border: 0;
-	font-size:95%;
+	font-size: 95%;
 }
+
 button.button:hover {
-    background: #df4b34;
+	background: #df4b34;
 }
-span.data{
-    font-size: 105%;
-    font-style: normal;
-    color: #bf3b24;
+
+span.data {
+	font-size: 105%;
+	font-style: normal;
+	color: #bf3b24;
+}
+
+p.error {
+	font-size: 90%;
+	font-style: oblique;
+	color: yellow;
+}
+
+div.error {
+	display: block;
+	clear: both;
+	position: relative;
+	left: 0;
+	bottom: 0;
+	border: 1px solid rgba(0, 0, 0, 0);
 }

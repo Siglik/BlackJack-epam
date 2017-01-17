@@ -1,10 +1,11 @@
-form#register {
+@CHARSET "UTF-8";
+form.settings {
     margin: auto;
     width: 500px;
     display: block;
 }
 
-form#register legend {
+form.settings legend {
     margin-left: 15%;
     color: red;
     padding: 3px 36px 3px 3px;
@@ -13,25 +14,25 @@ form#register legend {
     font-size: 34px;
 }
 
-form#register fieldset {
+form.settings fieldset {
     border: 0;
     display: inline-block;
 }
 
-form#register ul {
+form.settings ul {
     text-align: right;
     list-style-type: none;
 }
 
-form#register li {
+form.settings li {
     margin: 8px;
 }
 
-form#register input {
+form.settings input {
     margin-left: 10px;
 }
 
-form#register button {
+form.settings button {
     background-color: #88909B;
     color: #f2f2f2;
     font-size: 13px;
@@ -40,7 +41,7 @@ form#register button {
     border: 0;
 }
 
-form#register button:hover {
+form.settings button:hover {
     background-color: #98a0aB;
 }
 
@@ -48,13 +49,13 @@ form#register button:active {
     background-color: #2f2f2f;
 }
 
-form#register button.submit {
+form.settings button.submit {
     margin-top: 24px;
     font-weight: bold;
     padding: 10px 24px;
 }
 
-form#register .center {
+form.settings .center {
     text-align: center;
 }
 
@@ -66,7 +67,7 @@ form#register .center {
     margin: 0;
 }
 
-form#register label.required:after {
+form.settings label.required:after {
     content: "*";
     /* Добавляемый текст */
     color: red;
@@ -75,4 +76,14 @@ form#register label.required:after {
     /* Размер шрифта */
     padding: 2px;
     /* Поля вокруг текста */
+}
+figure.player-logo{
+    margin: auto;
+}
+figure.player-logo img{
+	margin: auto;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display:block;
 }

@@ -43,6 +43,7 @@ public class Settings {
 		try (InputStream in = classLoader.getResourceAsStream(APP_PROPS_PATH);) {
 			props.load(in);
 		} catch (IOException e) {
+			// LOG fatal
 			throw new RuntimeException("Unable to read " + APP_PROPS_PATH);
 		}
 		SALT = "Unds&4s>dfuPMdqmx84Yfagt=274bfa#fdsa64q1";

@@ -7,7 +7,7 @@
 	<fieldset>
 		<legend>Registration</legend>
 		<ul>
-			<li><label for="photo">Select photo to upload: </label> <input
+			<li class="center"><label for="photo">Select photo to upload: </label> <input
 				type="file" name="photo" accept="image/jpeg,image/png" size="60" /></li>
 			<li><label for="email" class="required">E-mail:</label> <input
 				type="email" name="email" placeholder="Enter your e-mail" id="email"
@@ -35,7 +35,7 @@
 					class="submit" id="submit">Register</button>
 			</li>
 		</ul>
-		<p class="error">${regError}</p>
+		<p class="val-error">${regError}</p>
 	</fieldset>
 </form>
 </main>

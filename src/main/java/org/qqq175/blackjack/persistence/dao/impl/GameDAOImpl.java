@@ -23,7 +23,7 @@ public class GameDAOImpl extends EntityDAOImpl<Game, GameId> implements GameDAO 
 	}
 
 	@Override
-	protected void prepareWithEntity(PreparedStatement prepStatment, Game entity) throws UnsupportedOperationException, DAOException {
+	protected void prepareWithEntity(PreparedStatement prepStatment, Game entity) throws DAOException {
 		// INSERT INTO game (user_id) VALUES (?)
 		try {
 			prepStatment.setLong(1, entity.getId().getValue());
@@ -33,15 +33,13 @@ public class GameDAOImpl extends EntityDAOImpl<Game, GameId> implements GameDAO 
 	}
 
 	@Override
-	protected Game fillEntity(ResultSet resultSet) throws SQLException, DAOException {
+	protected Game fillEntity(ResultSet resultSet) throws DAOException {
 		Game game = new Game();
 		try {
 			game.setId(new GameId(resultSet.getLong(1)));
 			game.setCreationTime(this.stringToDate(resultSet.getString(2)));
 			game.setUserId(new UserId(resultSet.getLong(3)));
-		} catch (
-
-		SQLException e) {
+		} catch (SQLException e) {
 			throw new DAOException(EXCEPTION_MESSAGE_FILL, e);
 		}
 		return game;

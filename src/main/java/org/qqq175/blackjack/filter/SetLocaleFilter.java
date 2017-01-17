@@ -20,7 +20,7 @@ import org.qqq175.blackjack.logic.main.LocaleLogic;
 /**
  * Servlet Filter implementation class SetLocaleFilter
  */
-@WebFilter("/*")
+@WebFilter("/$/*")
 public class SetLocaleFilter implements Filter {
 
 	@Override
@@ -49,8 +49,11 @@ public class SetLocaleFilter implements Filter {
 				}
 			}
 			LocaleLogic localeLogic = new LocaleLogic();
-			session.setAttribute(StringConstant.ATTRIBUTE_LOCALE, localeLogic.getLocaleByString(localeStr));
+			locale = localeLogic.getLocaleByString(localeStr);
+			session.setAttribute(StringConstant.ATTRIBUTE_LOCALE, locale);
 		}
+		response.setLocale(locale);
+		System.out.println(locale.getLanguage());
 		chain.doFilter(request, response);
 	}
 

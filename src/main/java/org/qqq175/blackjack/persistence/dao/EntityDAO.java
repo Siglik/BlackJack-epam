@@ -7,13 +7,13 @@ import org.qqq175.blackjack.persistence.entity.Entity;
 import org.qqq175.blackjack.persistence.entity.id.EntityId;
 
 public interface EntityDAO<T extends Entity<I>, I extends EntityId> {
-	I create(T entity) throws DAOException, UnsupportedOperationException;
+	I create(T entity) throws DAOException;
 
 	List<T> findAll() throws DAOException;
 
 	T findEntityById(I id) throws DAOException, DAOException;
 
-	boolean update(T entity) throws DAOException, UnsupportedOperationException;
+	boolean update(T entity) throws DAOException;
 
 	boolean delete(I id) throws DAOException;
 

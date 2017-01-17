@@ -107,13 +107,13 @@ a.btn_red {
 	color: #666;
 }
 
-p.error {
+p.error-message {
 	font-size: 90%;
 	font-style: oblique;
 	color: yellow;
 }
 
-div.error {
+div.error-message {
 	display: block;
 	clear:both;
 	position: relative;

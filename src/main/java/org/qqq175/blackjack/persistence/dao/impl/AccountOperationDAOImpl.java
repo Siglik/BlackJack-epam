@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.qqq175.blackjack.exception.DAOException;
+import org.qqq175.blackjack.persistence.connection.ConnectionWrapper;
 import org.qqq175.blackjack.persistence.dao.AccountOperationDAO;
 import org.qqq175.blackjack.persistence.entity.AccountOperation;
 import org.qqq175.blackjack.persistence.entity.AccountOperation.Type;
@@ -24,15 +26,36 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 	}
 
 	@Override
-	protected void prepareWithEntity(PreparedStatement prepStatment, AccountOperation entity) throws UnsupportedOperationException, DAOException {
+	public AccountOperationId create(AccountOperation entity, ConnectionWrapper connection) throws DAOException {
+		String query = sqlQuery.getQuery("sql.account_operation.insert");
+		try (PreparedStatement prepStatment = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			prepareWithEntity(prepStatment, entity);
+			int affectedRows = prepStatment.executeUpdate();
+			if (affectedRows > 0) {
+				ResultSet indexKeys = prepStatment.getGeneratedKeys();
+				if (indexKeys.next()) {
+					long id = indexKeys.getLong(1);
+					return this.makeId(id);
+				} else {
+					return null;
+				}
+			} else {
+				throw new DAOException("Unable to insert: 0 rows are affected.");
+			}
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+	}
+
+	@Override
+	protected void prepareWithEntity(PreparedStatement prepStatment, AccountOperation entity) throws DAOException {
 		// INSERT INTO account_operation (user_id, ammount, type, time, comment)
 		// VALUES (?, ?, ?, ?, ?)
 		try {
 			prepStatment.setLong(1, entity.getUserId().getValue());
 			prepStatment.setBigDecimal(2, entity.getAmmount());
 			prepStatment.setString(3, entity.getType().toString());
-			prepStatment.setString(4, this.dateToString(entity.getTime()));
-			prepStatment.setString(5, entity.getComment());
+			prepStatment.setString(4, entity.getComment());
 		} catch (SQLException e) {
 			throw new DAOException(EXCEPTION_MESSAGE_PREPARE, e);
 		}

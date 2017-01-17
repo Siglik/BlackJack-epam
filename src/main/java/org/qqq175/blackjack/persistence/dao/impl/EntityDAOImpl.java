@@ -33,7 +33,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	}
 
 	@Override
-	public I create(T entity) throws DAOException, UnsupportedOperationException {
+	public I create(T entity) throws DAOException {
 		String query = sqlQuery.getQuery("sql." + tableName + ".insert");
 		System.out.println(query);
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
@@ -42,9 +42,12 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 				int affectedRows = prepStatment.executeUpdate();
 				if (affectedRows > 0) {
 					ResultSet indexKeys = prepStatment.getGeneratedKeys();
-					System.out.println(indexKeys.next());
-					long id = indexKeys.getLong(1);
-					return this.makeId(id);
+					if (indexKeys.next()) {
+						long id = indexKeys.getLong(1);
+						return this.makeId(id);
+					} else {
+						return null;
+					}
 				} else {
 					throw new DAOException("Unable to insert: 0 rows are affected.");
 				}
@@ -79,7 +82,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	}
 
 	@Override
-	public boolean update(T entity) throws DAOException, UnsupportedOperationException {
+	public boolean update(T entity) throws DAOException {
 		String query = sqlQuery.getQuery("sql." + tableName + ".update");
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
@@ -115,8 +118,13 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 		return delete(entity.getId());
 	}
 
-	private void prepareWithId(PreparedStatement prepStatment, I id) throws SQLException {
-		prepStatment.setLong(1, id.getValue());
+	private void prepareWithId(PreparedStatement prepStatment, I id) {
+		try {
+			prepStatment.setLong(1, id.getValue());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected String prepareQueryString(String query) {
@@ -128,7 +136,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 		return result;
 	}
 
-	protected abstract void prepareWithEntity(PreparedStatement prepStatment, T entity) throws UnsupportedOperationException, DAOException;
+	protected abstract void prepareWithEntity(PreparedStatement prepStatment, T entity) throws DAOException;
 
 	protected List<T> findMany(String query, Preparator preparator) throws DAOException {
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
@@ -151,10 +159,15 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 		}
 	}
 
-	protected List<T> toDTOList(ResultSet resultSet) throws DAOException, SQLException {
+	protected List<T> toDTOList(ResultSet resultSet) throws DAOException {
 		List<T> resultList = new ArrayList<>();
-		while (resultSet.next()) {
-			resultList.add(fillEntity(resultSet));
+		try {
+			while (resultSet.next()) {
+				resultList.add(fillEntity(resultSet));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return resultList;
 	}

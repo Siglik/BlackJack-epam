@@ -7,7 +7,7 @@
 		<ul class="gorizontal-menu right" id="login-buttons">
 			<li id="logout-top"><a href="/blackjack/$/logout"
 				class="button login">LOGOUT</a></li>
-			<li id="settings-top"><a href="/blackjack/$/settings"
+			<li id="settings-top"><a href="/blackjack/$/player/settings"
 				class="button join">SETTINGS</a></li>
 		</ul>
 	</div>

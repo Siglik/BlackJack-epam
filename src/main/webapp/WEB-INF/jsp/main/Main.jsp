@@ -7,6 +7,9 @@
 <head>
 <meta charset="utf-8">
 <title>The Quasino!</title>
+<script type="text/javascript"
+	src='/blackjack/script/locale/messages-${not empty sessionScope.curLocale ? sessionScope.curLocale.language : "en"}.js'
+	charset="utf-8"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="/blackjack/script/jquery.leanModal.min.js" charset="utf-8"></script>
@@ -23,7 +26,8 @@
 		<!-- IMPORT LEFT MENU -->
 		<jsp:include page="/WEB-INF/jsp/element/GuestSideMenu.jsp" />
 
-		<jsp:include page='${not empty mainform ? mainform : "/WEB-INF/jsp/main/Welcome.jsp"}' />
+		<jsp:include
+			page='${not empty mainform ? mainform : "/WEB-INF/jsp/main/Welcome.jsp"}' />
 
 
 		<!-- IMPORT ASIDE HERE -->
@@ -39,5 +43,12 @@
 	<jsp:include page="/WEB-INF/jsp/main/Login.jsp" />
 	<script type="text/javascript" src="/blackjack/script/page-style.js"
 		charset="utf-8"></script>
+	<script type="text/javascript">
+		let popupMessage = '${sessionScope.popupMessage}';
+		if (popupMessage.length > 0) {
+			alert(popupMessage);
+		}
+		<c:remove var="popupMessage" scope="session" />
+	</script>
 </body>
 </html>

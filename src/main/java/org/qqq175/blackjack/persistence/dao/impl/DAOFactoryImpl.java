@@ -10,7 +10,7 @@ import org.qqq175.blackjack.persistence.dao.UserstatDAO;
 
 public class DAOFactoryImpl implements DAOFactory {
 	enum DAOType {
-		USER(new UserDAOImpl()), USERSTAT(new UserstatDAOSQL()), GAME(new GameDAOImpl()), MESSAGE(
+		USER(new UserDAOImpl()), USERSTAT(new UserstatDAOImpl()), GAME(new GameDAOImpl()), MESSAGE(
 				new MessageDAOImpl()), ACCOUNT_OPERATION(new AccountOperationDAOImpl());
 
 		private EntityDAO<?, ?> dao;

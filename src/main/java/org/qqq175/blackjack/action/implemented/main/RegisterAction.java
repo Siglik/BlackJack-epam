@@ -41,6 +41,7 @@ public class RegisterAction implements Action {
 				// file is too big
 				request.setAttribute(StringConstant.ATTRIBUTE_ERROR_REGISTRATION, "message.error.bigfile");
 				request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.register"));
+
 				result = new ActionResult(FORWARD, JSPPathManager.getProperty("page.main"));
 			}
 
@@ -48,6 +49,7 @@ public class RegisterAction implements Action {
 			if (result == null) {
 				RegisterLogic.Result registerResult = rLogic.registerUser(params, part);
 				if (registerResult == RegisterLogic.Result.OK) {
+					request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Registration complete! Now you can log in.");
 					result = new ActionResult(REDIRECT, Settings.getInstance().getContextPath());
 				} else {
 					request.setAttribute(StringConstant.ATTRIBUTE_ERROR_REGISTRATION, registerResult.getMessage());

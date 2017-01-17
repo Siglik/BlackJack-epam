@@ -2,11 +2,11 @@ package org.qqq175.blackjack.persistence.entity;
 
 import org.qqq175.blackjack.persistence.entity.id.EntityId;
 
-public abstract class Entity<ID extends EntityId> {
+public abstract class Entity<K extends EntityId> {
 
-	private ID id;
+	private K id;
 
-	public ID getId() {
+	public K getId() {
 		System.out.println("Id getter^ " + id);
 		return this.id;
 	}
@@ -15,7 +15,7 @@ public abstract class Entity<ID extends EntityId> {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(ID id) {
+	public void setId(K id) {
 		this.id = id;
 		System.out.println("Id SETTER^ " + id);
 	}

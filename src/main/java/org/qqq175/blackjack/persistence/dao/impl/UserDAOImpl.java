@@ -31,7 +31,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 				return prepStatment.executeUpdate() == 1;
 			}
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			throw new DAOException("fdhshgdshghazdsfsgsdgggdas", e);
 		}
 	}
 
@@ -96,12 +96,12 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	public boolean update(User entity) throws UnsupportedOperationException {
+	public boolean update(User entity) {
 		throw new UnsupportedOperationException("For update userstat use increment methods of UserDAO");
 	}
 
 	@Override
-	protected void prepareWithEntity(PreparedStatement prepStatment, User entity) throws UnsupportedOperationException, DAOException {
+	protected void prepareWithEntity(PreparedStatement prepStatment, User entity) throws DAOException {
 		try {
 			prepStatment.setString(1, entity.getEmail().toLowerCase());
 			prepStatment.setString(2, entity.getPassword());
@@ -116,7 +116,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	protected User fillEntity(ResultSet resultSet) throws SQLException, DAOException {
+	protected User fillEntity(ResultSet resultSet) throws DAOException {
 		User user = new User();
 		try {
 			user.setId(new UserId(resultSet.getLong(1)));

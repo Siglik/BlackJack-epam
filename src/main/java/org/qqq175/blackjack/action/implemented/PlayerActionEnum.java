@@ -4,6 +4,7 @@ import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionEnum;
 import org.qqq175.blackjack.action.implemented.main.IndexAction;
 import org.qqq175.blackjack.action.implemented.player.BalanceAction;
+import org.qqq175.blackjack.action.implemented.player.ChangeAvatarAction;
 import org.qqq175.blackjack.action.implemented.player.ChangePasswordAction;
 import org.qqq175.blackjack.action.implemented.player.ChangePersonalAction;
 import org.qqq175.blackjack.action.implemented.player.PaymentAction;
@@ -19,6 +20,11 @@ public enum PlayerActionEnum implements ActionEnum {
 	BALANCE {
 		{
 			this.action = new BalanceAction();
+		}
+	},
+	CHANGEAVATAR {
+		{
+			this.action = new ChangeAvatarAction();
 		}
 	},
 	CHANGEPASSWORD {

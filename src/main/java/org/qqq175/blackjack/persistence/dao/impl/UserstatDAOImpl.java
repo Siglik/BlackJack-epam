@@ -10,19 +10,19 @@ import org.qqq175.blackjack.persistence.dao.UserstatDAO;
 import org.qqq175.blackjack.persistence.entity.Userstat;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
-public class UserstatDAOSQL extends EntityDAOImpl<Userstat, UserId> implements UserstatDAO {
+public class UserstatDAOImpl extends EntityDAOImpl<Userstat, UserId> implements UserstatDAO {
 	private static final String TABLE_NAME = "userstat";
 	private static final int COLUMN_COUNT = 5;
 
-	private static final String EXCEPTION_MESSAGE_PREPARE = "Exception in " + UserstatDAOSQL.class.getName() + " at preparing query.";
-	private static final String EXCEPTION_MESSAGE_FILL = "Exception in " + UserstatDAOSQL.class.getName() + " at reading query result.";
+	private static final String EXCEPTION_MESSAGE_PREPARE = "Exception in " + UserstatDAOImpl.class.getName() + " at preparing query.";
+	private static final String EXCEPTION_MESSAGE_FILL = "Exception in " + UserstatDAOImpl.class.getName() + " at reading query result.";
 
-	public UserstatDAOSQL() {
+	public UserstatDAOImpl() {
 		super(TABLE_NAME, COLUMN_COUNT);
 	}
 
 	@Override
-	public UserId create(Userstat entity) throws DAOException, UnsupportedOperationException {
+	public UserId create(Userstat entity) throws DAOException {
 		String query = sqlQuery.getQuery("sql.userstat.insert");
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
@@ -40,7 +40,7 @@ public class UserstatDAOSQL extends EntityDAOImpl<Userstat, UserId> implements U
 	}
 
 	@Override
-	protected void prepareWithEntity(PreparedStatement prepStatment, Userstat entity) throws UnsupportedOperationException, DAOException {
+	protected void prepareWithEntity(PreparedStatement prepStatment, Userstat entity) throws DAOException {
 		try {
 			prepStatment.setLong(1, entity.getId().getValue());
 		} catch (SQLException e) {
@@ -69,7 +69,7 @@ public class UserstatDAOSQL extends EntityDAOImpl<Userstat, UserId> implements U
 	}
 
 	@Override
-	public boolean update(Userstat entity) throws UnsupportedOperationException {
+	public boolean update(Userstat entity) {
 		throw new UnsupportedOperationException("For update userstat use increment methods of UserstatDAO");
 	}
 
@@ -85,7 +85,7 @@ public class UserstatDAOSQL extends EntityDAOImpl<Userstat, UserId> implements U
 	}
 
 	@Override
-	protected Userstat fillEntity(ResultSet resultSet) throws SQLException, DAOException {
+	protected Userstat fillEntity(ResultSet resultSet) throws DAOException {
 		Userstat userstat = new Userstat();
 		try {
 			userstat.setId(new UserId(resultSet.getLong(1)));

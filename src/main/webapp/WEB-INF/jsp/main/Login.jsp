@@ -20,8 +20,8 @@
 					</div>
 				</div>
 			</form>
-			<div class="error">
-				<p class="error">
+			<div class="error-message">
+				<p class="error-message">
 					<c:out value="${sessionScope.loginError}" />
 					<c:remove var="loginError" scope="session" />
 				</p>

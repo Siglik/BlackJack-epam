@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <nav class="left-menu column-left sidebar" id="left-menu">
 	<ul class="vertical-menu top">
+		<li><a href="/blackjack/$/" class="button menu-item">Homepage</a></li>
 		<li><a href="#modal" class="button menu-item modal_login">Login</a></li>
 		<li><a href="/blackjack/$/register" class="button menu-item">Register</a></li>
 	</ul>
