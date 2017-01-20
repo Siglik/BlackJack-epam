@@ -29,7 +29,7 @@
 		</p>
 	</fieldset>
 </form>
-<form action="/blackjack/$/player/chagnepassword" method="post"
+<form action="/blackjack/$/player/changepassword" method="post"
 	id="password" class="settings">
 	<fieldset>
 		<legend>Change password</legend>
@@ -50,9 +50,13 @@
 					title="Apply" class="submit" id="submit">Apply</button>
 			</li>
 		</ul>
+		<p class="val-error">
+			<c:out value="${sessionScope.passMessage}" />
+			<c:remove var="passMessage" scope="session" />
+		</p>
 	</fieldset>
 </form>
-<form action="/blackjack/$/player/chagnepersonal" method="post"
+<form action="/blackjack/$/player/changepersonal" method="post"
 	id="personal" class="settings">
 	<fieldset>
 		<legend>Change personal</legend>
@@ -75,6 +79,10 @@
 					title="Save" class="submit" id="submit">Save</button>
 			</li>
 		</ul>
+		<p class="val-error">
+			<c:out value="${sessionScope.personalError}" />
+			<c:remove var="personalError" scope="session" />
+		</p>
 	</fieldset>
 </form>
 </main>

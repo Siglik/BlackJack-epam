@@ -10,7 +10,7 @@ public class ActionResult {
 	}
 
 	public enum ActionType {
-		FORWARD, REDIRECT, SENDERROR;
+		FORWARD, REDIRECT, SENDERROR, JSON;
 	}
 
 	/**

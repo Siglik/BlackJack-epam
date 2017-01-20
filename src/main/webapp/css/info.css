@@ -1,0 +1,56 @@
+main *{
+	margin: 5px auto;
+	text-align: center;
+}
+h2.title{
+	font-weight: 400;
+	margin-left: 10%;
+}
+
+table.stats{
+	margin: 10px auto;
+}
+td.stat-name{
+	text-align: right;
+	padding-right: 60px;
+}
+td.stat-value{
+	padding-left: 0px;
+	text-align: left;
+	font-weight: bold;
+	font-size: 95%;
+}
+tr.important-row{
+    font-size: 120%;
+    color: gold;
+}
+figure.player-logo{
+
+}
+figure.player-logo img{
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+}
+span.data{
+    font-size: 105%;
+    font-style: normal;
+    color: #bf3b24;
+}
+
+a.rank-btn {
+    background-color: #88909B;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 6px 4px;
+    margin: 0px 12% 10px 40%;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 90%;
+}
+
+a.rank-btn:hover {
+    background-color: #bf3b24;
+    color: white;
+}2

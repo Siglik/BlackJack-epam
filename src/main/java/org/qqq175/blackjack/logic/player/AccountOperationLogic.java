@@ -17,11 +17,13 @@ import static org.qqq175.blackjack.StringConstant.PATTERN_YEAR_2;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.qqq175.blackjack.exception.DAOException;
+import org.qqq175.blackjack.exception.LogicException;
 import org.qqq175.blackjack.persistence.connection.ConnectionPool;
 import org.qqq175.blackjack.persistence.connection.ConnectionWrapper;
 import org.qqq175.blackjack.persistence.dao.AccountOperationDAO;
@@ -42,7 +44,7 @@ public class AccountOperationLogic {
 	private static final String NOT_DIGIT = "\\D";
 
 	public enum Result {
-		OK("Ok"), NOT_ENOUGH_MONEY("This email is already used!"), BALANCE_ERROR("Unkown account balance error."), WRONG_DATA("Invalid data.");
+		OK("Ok"), NOT_ENOUGH_MONEY("Not enough money!"), BALANCE_ERROR("Unkown account balance error."), WRONG_DATA("Invalid data.");
 		private String message;
 
 		private Result(String message) {
@@ -125,6 +127,48 @@ public class AccountOperationLogic {
 		}
 		return result;
 	};
+
+	public Map<String, BigDecimal> calcTotals(UserId id) throws LogicException {
+		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
+		Map<String, BigDecimal> result = new HashMap<>();
+
+		try {
+			for (AccountOperation.Type type : AccountOperation.Type.values()) {
+				BigDecimal total = aoDAO.calcTotal(type, id);
+				if (total != null) {
+					result.put(type.name().toLowerCase(), total);
+				} else {
+					result.put(type.name().toLowerCase(), new BigDecimal(0));
+				}
+			}
+		} catch (DAOException e) {
+			throw new LogicException("Unable to calc user's total operations", e);
+		}
+
+		return result;
+	}
+
+	public Map<String, BigDecimal> calcTotals() throws LogicException {
+		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
+		Map<String, BigDecimal> result = new HashMap<>();
+
+		try {
+			for (AccountOperation.Type type : AccountOperation.Type.values()) {
+				BigDecimal total = aoDAO.calcTotal(type);
+				if (total != null) {
+					result.put(type.name().toLowerCase(), total);
+				} else {
+					result.put(type.name().toLowerCase(), new BigDecimal(0));
+				}
+			}
+		} catch (DAOException e) {
+			throw new LogicException("Unable to calc user's total operations", e);
+		}
+
+		return result;
+	}
 
 	private String generatePaymentComment(String card, String cardHolder) {
 		StringBuilder sb = new StringBuilder();

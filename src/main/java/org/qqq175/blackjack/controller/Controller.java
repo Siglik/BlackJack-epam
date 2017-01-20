@@ -3,6 +3,7 @@ package org.qqq175.blackjack.controller;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -10,11 +11,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionFactory;
 import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.action.implemented.ActionFactoryImpl;
+import org.qqq175.blackjack.persistence.connection.ConnectionPool;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
+import org.qqq175.blackjack.pool.UserPool;
 
 /**
  * Servlet implementation class Controller
@@ -65,6 +70,7 @@ public class Controller extends HttpServlet {
 			Action concreteAction = actionFactory.defineAction(comandContext.getScope(), comandContext.getAction());
 
 			ActionResult result = concreteAction.execute(request, response);
+			System.out.println(comandContext.getScope() + "->" + comandContext.getAction());
 
 			switch (result.getType()) {
 			case FORWARD:
@@ -74,8 +80,13 @@ public class Controller extends HttpServlet {
 			case REDIRECT:
 				response.sendRedirect(result.getContent());
 				break;
+			case JSON:
+				JSONWriter jsonWriter = new JSONWriter();
+				JSONObject json = (JSONObject) request.getAttribute(StringConstant.ATTRIBUTE_JSON);
+				jsonWriter.writeJSON(response, json);
+				break;
 			case SENDERROR:
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, result.getContent());
+				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, result.getContent());
 				break;
 			}
 		} else {
@@ -93,6 +104,19 @@ public class Controller extends HttpServlet {
 		super.init();
 		Settings.getInstance().setRealPath(this.getServletContext().getRealPath("/"));
 		Settings.getInstance().setContextPath(this.getServletContext().getContextPath());
+		ServletContext service = this.getServletContext();
+		service.setAttribute(StringConstant.ATTRIBUTE_USER_POOL, UserPool.getInstance());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.GenericServlet#destroy()
+	 */
+	@Override
+	public void destroy() {
+		ConnectionPool.getInstance().close();
+		super.destroy();
 	}
 
 }

@@ -63,7 +63,6 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 
 	@Override
 	protected AccountOperation fillEntity(ResultSet resultSet) throws SQLException, DAOException {
-		// account_operation_id, user_id, ammount, type, time, comment
 		AccountOperation ao = new AccountOperation();
 		try {
 			ao.setId(new AccountOperationId(resultSet.getLong(1)));
@@ -84,15 +83,46 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 	}
 
 	@Override
-	public BigDecimal calcTotal(Type type) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal calcTotal(Type type) throws DAOException {
+		BigDecimal total = null;
+		String query = sqlQuery.getQuery("sql.account_operation.total");
+		query = prepareQueryString(query);
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
+				prepStatment.setString(1, type.name().toLowerCase());
+				try (ResultSet resultSet = prepStatment.executeQuery()) {
+					if (resultSet.next()) {
+						total = resultSet.getBigDecimal(1);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new DAOException("Unable to get operations sum", e);
+		}
+
+		return total;
 	}
 
 	@Override
-	public BigDecimal calcTotal(Type type, UserId userId) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal calcTotal(Type type, UserId userId) throws DAOException {
+		BigDecimal total = null;
+		String query = sqlQuery.getQuery("sql.account_operation.total.user");
+		query = prepareQueryString(query);
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
+				prepStatment.setString(1, type.name().toLowerCase());
+				prepStatment.setLong(2, userId.getValue());
+				try (ResultSet resultSet = prepStatment.executeQuery()) {
+					if (resultSet.next()) {
+						total = resultSet.getBigDecimal(1);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new DAOException("Unable to get operations sum", e);
+		}
+
+		return total;
 	}
 
 }

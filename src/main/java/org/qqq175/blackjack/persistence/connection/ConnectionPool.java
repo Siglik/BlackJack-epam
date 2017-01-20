@@ -5,23 +5,31 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 public class ConnectionPool {
-	private static ConnectionPool instance;
+	private static AtomicReference<ConnectionPool> instance = new AtomicReference<>();
+	private AtomicInteger connectionsCount;
 	private BlockingQueue<Connection> availableConnections;
+	private boolean isClosing;
+	private static Semaphore semaphore = new Semaphore(1);
+	private static boolean isEmpty = true;
 
 	private ConnectionPool() {
+		isClosing = false;
+		connectionsCount = new AtomicInteger();
 		Settings settings = Settings.getInstance();
 		availableConnections = new ArrayBlockingQueue<>(settings.getDatabase().getMaxPoolSize());
-		System.out.println();
 
 		try {
 			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO LOG fatal
+			throw new RuntimeException("Unable to load db driver.\n" + e.getMessage(), e);
 		}
 		for (int i = 0; i < settings.getDatabase().getMinPoolSize(); i++) {
 			availableConnections.add(createConnection());
@@ -34,17 +42,19 @@ public class ConnectionPool {
 	 * @return ConnectionPool instance
 	 */
 	public static ConnectionPool getInstance() {
-		ConnectionPool localInstance = instance;
-		if (localInstance == null) {
-			synchronized (Settings.class) {
-				localInstance = instance;
-				if (instance == null) {
-					instance = localInstance = new ConnectionPool();
-				}
+		if (isEmpty) {
+			try {
+				semaphore.acquire();
+			} catch (InterruptedException e) {
+				// TODO log
 			}
+			if (instance.get() == null) {
+				instance.set(new ConnectionPool());
+				isEmpty = false;
+			}
+			semaphore.release();
 		}
-
-		return localInstance;
+		return instance.get();
 	}
 
 	private Connection createConnection() {
@@ -52,16 +62,32 @@ public class ConnectionPool {
 		Settings.Database dbSettings = Settings.getInstance().getDatabase();
 		try {
 			conn = DriverManager.getConnection(dbSettings.getDBUrl(), dbSettings.getUser(), dbSettings.getPassword());
+			connectionsCount.incrementAndGet();
 		} catch (SQLException ex) {
-			// TODO: catch
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			throw new RuntimeException("Unable to espablish database connection.\n" + ex.getMessage(), ex);
+			// TODO log fatal
 		}
 		return conn;
 	}
 
+	public void close() {
+		while (connectionsCount.get() > 0) {
+			try {
+				availableConnections.take().close();
+				int left = connectionsCount.decrementAndGet();
+				System.out.println("Closing pool. Connection left: " + left);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public ConnectionWrapper retrieveConnection() {
+		assertNotClosing();
 		Connection conn = null;
 		try {
 			conn = availableConnections.take();
@@ -84,5 +110,11 @@ public class ConnectionPool {
 
 	public int getAvailableConnectionsCount() {
 		return availableConnections.size();
+	}
+
+	private void assertNotClosing() {
+		if (isClosing) {
+			throw new RuntimeException("Cannot perform operation: pool is closing.");
+		}
 	}
 }

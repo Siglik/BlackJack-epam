@@ -19,17 +19,17 @@
 	</p>
 	<p>Для доступа к пользовательскому функционалу зарегистрируйтесь,
 		указав любые валидные данные, либо используйте следующие учетные
-		данные:
+		данные или нажмите <a href="/blackjack/$/login?email=user@qqq175.org&password=foobarbaz">сюда</a>:
 	<ul>
 		<li>Email: <span class="data">user@qqq175.org</span></li>
 		<li>Password: <span class="data">foobarbaz</span></li>
 	</ul>
 	</p>
 	<p>Для доступа к функциям администратора используйте следующие
-		учетные данные:
+		учетные данные или нажмите <a href="/blackjack/$/login?email=admin@qqq175.org&password=qwerty123">сюда</a>:
 	<ul>
 		<li>Email: <span class="data">admin@qqq175.org</span></li>
 		<li>Password: <span class="data">qwerty123</span></li>
 	</ul>
-	</p>
+	<p class="attention">ВНИМАНИЕ: пожалуйста не меняйте пароль этих учетных записей.</p>
 </main>

@@ -7,20 +7,24 @@ import java.sql.SQLException;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.dao.UserDAO;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.pool.UserPool;
 
 /**
  * @author qqq175
  *
  */
 public class LoginLogic {
+	private static Logger log = LogManager.getLogger(LoginLogic.class);
 
 	public enum Result {
-		OK, NOTFOUND, UNACTIVE;
+		OK, NOTFOUND, UNACTIVE, INUSE;
 	}
 
 	/**
@@ -44,8 +48,15 @@ public class LoginLogic {
 		}
 		if (user != null) {
 			if (user.isActive()) {
-				session.setAttribute(StringConstant.ATTRIBUTE_USER, user);
-				return Result.OK;
+				log.debug(
+						UserPool.getInstance().containsKey(user.getId()) + " (" + UserPool.getInstance().size() + ") id: " + user.getId().getValue());
+				if (!UserPool.getInstance().containsKey(user.getId())) {
+					session.setAttribute(StringConstant.ATTRIBUTE_USER, user);
+					UserPool.getInstance().put(user);
+					return Result.OK;
+				} else {
+					return Result.INUSE;
+				}
 			} else {
 				return Result.UNACTIVE;
 			}

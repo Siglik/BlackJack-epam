@@ -33,6 +33,10 @@ public class LoginAction implements Action {
 			errorMessage = "This accout is deactivated.";
 			request.getSession().setAttribute(StringConstant.ATTRIBUTE_ERROR_LOGIN, errorMessage);
 			break;
+		case INUSE:
+			errorMessage = "This accout is already in use.";
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_ERROR_LOGIN, errorMessage);
+			break;
 		}
 
 		return new ActionResult(REDIRECT, Settings.getInstance().getContextPath());

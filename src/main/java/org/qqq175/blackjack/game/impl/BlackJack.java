@@ -381,10 +381,4 @@ public class BlackJack implements Game {
 		state.leave(player);
 		modify();
 	}
-
-	@Override
-	public void nextState() {
-		// TODO Auto-generated method stub
-
-	}
 }

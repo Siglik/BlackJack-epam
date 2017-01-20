@@ -21,14 +21,16 @@ public class ChangePasswordAction implements Action {
 		Map<String, String[]> params = request.getParameterMap();
 		ModifyUserLogic muLogic = new ModifyUserLogic();
 		User user = (User) request.getSession().getAttribute(StringConstant.ATTRIBUTE_USER);
-		
+
 		ModifyUserLogic.Result logicResult = muLogic.changePassowrd(params, user);
-		if (logicResult == ModifyUserLogic.Result.OK){
-			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PASSWORD_ERROR, "message.error.pass " + logicResult.getMessage());
+		if (logicResult == ModifyUserLogic.Result.OK) {
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PASSWORD_MESSAGE, "message.pass.success");
+		} else {
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PASSWORD_MESSAGE, "message.pass.error " + logicResult.getMessage());
 		}
-		
+
 		muLogic.updateSessionUser(request.getSession());
-		
+
 		String context = Settings.getInstance().getContextPath();
 		String path = context + JSPPathManager.getProperty("command.settings");
 		return new ActionResult(REDIRECT, path);

@@ -73,5 +73,8 @@ public class Score implements Comparable<Score> {
 	public int compareTo(Score o) {
 		if (this.isBlackJack)
 			return 0;
+		return 0;
+
+		// realize it
 	}
 }

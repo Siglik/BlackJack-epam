@@ -1,6 +1,7 @@
 package org.qqq175.blackjack.persistence.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.connection.ConnectionWrapper;
@@ -13,6 +14,10 @@ public interface UserDAO extends EntityDAO<User, UserId> {
 	User findUserWithHash(String login, String passwordHash) throws DAOException;
 
 	User findUser(String email) throws DAOException;
+
+	List<User> findAllLimit(long from, int count) throws DAOException;
+
+	long countUsers() throws DAOException;
 
 	boolean disableUser(UserId userId) throws DAOException;
 

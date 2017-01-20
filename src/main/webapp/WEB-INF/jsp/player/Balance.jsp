@@ -22,19 +22,19 @@
 	</tr>
 	<tr>
 		<td class="stat-name">Total put:</td>
-		<td class="stat-value">$<span class="data">221</span></td>
+		<td class="stat-value">$<span class="data">${total.payment}</span></td>
 	</tr>
 	<tr>
-		<td class="stat-name">Total widhrwal:</td>
-		<td class="stat-value">$<span class="data">115.13</span></td>
+		<td class="stat-name">Total withdrarwal:</td>
+		<td class="stat-value">$<span class="data">${total.withdrawal}</span></td>
 	</tr>
 	<tr>
 		<td class="stat-name">Total won:</td>
-		<td class="stat-value">$<span class="data">140</span></td>
+		<td class="stat-value">$<span class="data">${total.win}</span></td>
 	</tr>
 	<tr>
 		<td class="stat-name">Total lost:</td>
-		<td class="stat-value">$<span class="data">151</span></td>
+		<td class="stat-value">$<span class="data">${total.loss}</span></td>
 	</tr>
 </table>
 <a href="#" class="button payment" id="toogle-payment">payment/withdrawal</a>

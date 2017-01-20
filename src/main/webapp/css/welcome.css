@@ -8,7 +8,7 @@ span.tm{
 }
 .pad-left{
 	padding-left: 30px;
-	
+
 }
 span.info{
 	font-style: oblique;
@@ -24,4 +24,9 @@ span.data{
 main{
 	font-size: 95%;
 	padding: 10px 30px 10px;
+}
+
+p.attention{
+	font-style: oblique;
+	color: rgb(75, 173, 43);
 }

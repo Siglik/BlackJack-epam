@@ -3,9 +3,8 @@ package org.qqq175.blackjack.action.implemented;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionEnum;
 import org.qqq175.blackjack.action.implemented.admin.ChangePlayerTypeAction;
-import org.qqq175.blackjack.action.implemented.admin.PlayerBanAction;
+import org.qqq175.blackjack.action.implemented.admin.PlayerBanUnbanAction;
 import org.qqq175.blackjack.action.implemented.admin.PlayerInfoAction;
-import org.qqq175.blackjack.action.implemented.admin.PlayerUnbanAction;
 import org.qqq175.blackjack.action.implemented.admin.PlayersListAction;
 import org.qqq175.blackjack.action.implemented.main.IndexAction;
 
@@ -15,29 +14,29 @@ public enum AdminActionEnum implements ActionEnum {
 			this.action = new IndexAction();
 		}
 	},
-	CHANGEPLAYERTYPE{
+	CHANGEPLAYERTYPE {
 		{
 			this.action = new ChangePlayerTypeAction();
 		}
 	},
-	PLAYERBAN{
+	PLAYERBAN {
 		{
-			this.action = new PlayerBanAction();
+			this.action = new PlayerBanUnbanAction(PlayerBanUnbanAction.Mode.BAN);
 		}
 	},
-	PLAYERINFO{
+	PLAYERINFO {
 		{
 			this.action = new PlayerInfoAction();
 		}
 	},
-	PLAYERSLIST{
+	PLAYERSLIST {
 		{
 			this.action = new PlayersListAction();
 		}
 	},
-	PLAYERUNBAN{
+	PLAYERUNBAN {
 		{
-			this.action = new PlayerUnbanAction();
+			this.action = new PlayerBanUnbanAction(PlayerBanUnbanAction.Mode.UNBAN);
 		}
 	};
 	Action action;
@@ -46,5 +45,5 @@ public enum AdminActionEnum implements ActionEnum {
 	public Action getAction() {
 		return action;
 	}
-	
+
 }

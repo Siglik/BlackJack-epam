@@ -1,0 +1,150 @@
+h2.title {
+	color: red;
+	margin-left: 10%;
+}
+
+span.tm {
+	font-family: 'Planewalker';
+}
+
+.pad-left {
+	padding-left: 30px;
+}
+
+span.info {
+	font-style: oblique;
+	font-size: 90%;
+	text-align: justify;
+}
+
+span.data {
+	font-weight: 400;
+	font-size: 105%;
+	font-style: normal;
+	color: #bf3b24;
+}
+
+main {
+	font-size: 95%;
+	padding: 10px 30px 10px;
+}
+
+table.list {
+	text-align: center;
+	margin: auto;
+	width: 90%;
+	background-color: #282828;
+}
+
+table.list th {
+	color: #bf3b24;
+	padding: 3px 6px;
+	font-size: 105%;
+	font-weight: normal;
+}
+
+td, th {
+	word-wrap: break-word;
+}
+
+table.list tr {
+	margin: 0px;
+	padding: 0px;
+}
+
+table.list th {
+	margin: 0px;
+	border: 1px solid #333;
+	font-family: Geneva, Verdana;
+	padding: 7px 3px;
+}
+
+table.list td {
+	margin: 0px;
+	font-size: 95%;
+	font-family: Verdana, Geneva;
+	padding: 0px 6px 0px;
+	background: rgba(200, 240, 255, 0.1);
+}
+
+td.email {
+	word-wrap: normal;
+	width: 30%;
+}
+
+table.list tr.odd {
+	background: rgba(255, 200, 200, 0.1);
+}
+
+a.ban-btn {
+	background-color: #88909B;
+	display: block;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 2px 4px;
+	margin: 2px 4px;
+	text-decoration: none;
+	border-radius: 8px;
+	font-size: 90%;
+}
+
+a.ban-btn:hover {
+	background-color: #bf3b24;
+	color: white;
+}
+
+a.ban-btn.unban {
+	background-color: #bf3b24;
+	display: block;
+	color: #f2f2f2;
+}
+
+a.ban-btn.unban:hover {
+	background-color: #88909B;
+	color: white;
+}
+
+div.list-control {
+	text-align: center;
+}
+
+ul.pagination {
+	display: inline-block;
+	text-align: center;
+	list-style: none;
+	margin: 10px auto 5px;
+	color: orange;
+	font-style: oblique;
+	border-bottom: 1px solid gold;
+	padding: 3px 10px 9px 10px;
+	font-family: Georgia;
+	font-size: 105%;
+}
+
+ul.pagination li {
+	display: inline;
+}
+
+ul.pagination li a {
+	text-decoration: none;
+	font-style: oblique;
+	padding: 2px 4px 6px 4px;
+	color: white;
+	background: darkorange;
+	border-radius: 33%;
+}
+
+ul.pagination li.current a {
+	background-color: #bf3b24;
+	font-weight: bold;
+}
+
+ul.pagination li a:hover {
+	background-color: #bf3b24;
+}
+
+@media screen and (max-width: 800px) {
+	.big-screen {
+		display: none;
+	}
+}

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.connection.ConnectionWrapper;
@@ -31,7 +32,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 				return prepStatment.executeUpdate() == 1;
 			}
 		} catch (SQLException e) {
-			throw new DAOException("fdhshgdshghazdsfsgsdgggdas", e);
+			throw new DAOException("Unable perform operation: SQL exception", e);
 		}
 	}
 
@@ -164,7 +165,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	@Override
 	public boolean updatePassword(UserId userId, String oldPass, String newPass) throws DAOException {
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
-			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.password"))) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.password"))) {
 				prepStatment.setString(1, newPass);
 				prepStatment.setLong(2, userId.getValue());
 				prepStatment.setString(3, oldPass);
@@ -217,5 +218,35 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
+	}
+
+	@Override
+	public List<User> findAllLimit(long from, int count) throws DAOException {
+		String query = sqlQuery.getQuery("sql.user.findAll.limit");
+		query = prepareQueryString(query);
+		return this.findMany(query, (ps) -> {
+			ps.setLong(1, from);
+			ps.setInt(2, count);
+		});
+	}
+
+	@Override
+	public long countUsers() throws DAOException {
+		long count = -1;
+		String query = sqlQuery.getQuery("sql.user.count");
+		query = prepareQueryString(query);
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
+				try (ResultSet resultSet = prepStatment.executeQuery()) {
+					if (resultSet.next()) {
+						count = resultSet.getLong(1);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new DAOException("Unable to get user count", e);
+		}
+
+		return count;
 	}
 }

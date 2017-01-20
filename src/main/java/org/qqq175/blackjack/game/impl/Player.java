@@ -33,7 +33,8 @@ public class Player implements PlayerAction {
 	}
 
 	public enum States {
-		DEAL(new DealState()), PLAY(new PlayState()), DONE(new DoneState());
+		DEAL(/* new DealState() */null), PLAY(/* new PlayState() */null), DONE(
+				/* new DoneState() */null);
 
 		private States(State state) {
 			this.state = state;
@@ -93,11 +94,13 @@ public class Player implements PlayerAction {
 
 		@Override
 		public boolean canDeal(BigDecimal betSize) {
-			if (user.getBalance().compareTo(betSize) >= 0) {
+			if (user.getAccountBalance().compareTo(betSize) >= 0) {
 				Hand hand = new Hand();
 				hand.setBid(betSize);
 				addHand(hand);
 				nextState();
+				// TODO i dont remember what it is
+				return true;
 			} else {
 				return false;
 			}
@@ -143,36 +146,37 @@ public class Player implements PlayerAction {
 
 	@Override
 	public boolean canHit() {
-		state.canHit();
+		return state.canHit();
 	}
 
 	@Override
 	public boolean canDouble() {
-		state.canDouble();
+		return state.canDouble();
 	}
 
 	@Override
 	public boolean canSplit() {
 		if (getHands().size() <= 4) {
-			state.canSplit();
+			return state.canSplit();
 		} else {
+			return false;
 			// TODO exception
 		}
 	}
 
 	@Override
 	public boolean canSurrender() {
-		state.canSurrender();
+		return state.canSurrender();
 	}
 
 	@Override
 	public boolean canDeal(BigDecimal betSize) {
-		state.canDeal(betSize);
+		return state.canDeal(betSize);
 	}
 
 	@Override
 	public boolean canInsurance() {
-		state.canInsurance();
+		return state.canInsurance();
 	}
 
 	/**

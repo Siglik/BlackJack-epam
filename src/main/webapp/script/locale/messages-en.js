@@ -8,3 +8,8 @@ const validationMessages = {
 	"new-password" : "Password can contain numbers and latin letters. Minimum length is 6 characters",
 	"old-password" : "Password can contain numbers and latin letters. Minimum length is 6 characters"
 };
+
+const buttons = {
+	"ban" : "ban",
+	"unban" : "unban"
+};
