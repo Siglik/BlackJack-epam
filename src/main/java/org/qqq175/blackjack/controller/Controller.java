@@ -3,7 +3,6 @@ package org.qqq175.blackjack.controller;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +18,6 @@ import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.action.implemented.ActionFactoryImpl;
 import org.qqq175.blackjack.persistence.connection.ConnectionPool;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
-import org.qqq175.blackjack.pool.UserPool;
 
 /**
  * Servlet implementation class Controller
@@ -104,8 +102,6 @@ public class Controller extends HttpServlet {
 		super.init();
 		Settings.getInstance().setRealPath(this.getServletContext().getRealPath("/"));
 		Settings.getInstance().setContextPath(this.getServletContext().getContextPath());
-		ServletContext service = this.getServletContext();
-		service.setAttribute(StringConstant.ATTRIBUTE_USER_POOL, UserPool.getInstance());
 	}
 
 	/*

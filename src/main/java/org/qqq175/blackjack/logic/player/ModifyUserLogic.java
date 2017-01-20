@@ -79,7 +79,6 @@ public class ModifyUserLogic {
 			UserDAO userDAO = daoFactory.getUserDAO();
 			try {
 				User updatedUser = userDAO.findEntityById(user.getId());
-				UserPool.getInstance().replace(updatedUser);
 				session.setAttribute(StringConstant.ATTRIBUTE_USER, updatedUser);
 				result = true;
 			} catch (DAOException e) {

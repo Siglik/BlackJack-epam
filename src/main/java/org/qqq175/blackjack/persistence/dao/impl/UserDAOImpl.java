@@ -192,11 +192,6 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	protected UserId makeId(long id) {
-		return new UserId(id);
-	}
-
-	@Override
 	public boolean lockBalance(UserId userId, BigDecimal change, ConnectionWrapper connection) throws DAOException {
 		try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.lock"))) {
 			prepStatment.setBigDecimal(1, change);
@@ -248,5 +243,10 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 		}
 
 		return count;
+	}
+
+	@Override
+	protected UserId makeId(long id) {
+		return new UserId(id);
 	}
 }

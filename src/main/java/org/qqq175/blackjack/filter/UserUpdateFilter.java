@@ -40,10 +40,8 @@ public class UserUpdateFilter implements Filter {
 
 		if (user != null) {
 			User userFromPool = UserPool.getInstance().get(user.getId());
-			if (userFromPool != null) {
+			if (userFromPool != null && !userFromPool.equals(user)) {
 				session.setAttribute(StringConstant.ATTRIBUTE_USER, userFromPool);
-			} else {
-				UserPool.getInstance().put(user);
 			}
 		}
 

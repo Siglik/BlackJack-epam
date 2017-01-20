@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.connection.ConnectionWrapper;
@@ -123,6 +124,37 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 		}
 
 		return total;
+	}
+
+	@Override
+	public List<AccountOperation> findUserOperationsLimit(UserId userId, long from, int count) throws DAOException {
+		String query = sqlQuery.getQuery("sql.account_operation.findByUser.limit");
+		query = prepareQueryString(query);
+		return this.findMany(query, (ps) -> {
+			ps.setLong(1, userId.getValue());
+			ps.setLong(2, from);
+			ps.setInt(3, count);
+		});
+	}
+
+	@Override
+	public long countOperations(UserId userId) throws DAOException {
+		long count = -1;
+		String query = sqlQuery.getQuery("sql.account_operation.count.byUser");
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
+				prepStatment.setLong(1, userId.getValue());
+				try (ResultSet resultSet = prepStatment.executeQuery()) {
+					if (resultSet.next()) {
+						count = resultSet.getLong(1);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new DAOException("Unable to get user count", e);
+		}
+
+		return count;
 	}
 
 }

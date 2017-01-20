@@ -25,7 +25,7 @@ public class PlayersListLogic {
 		return result;
 	}
 
-	public long conntUsers() throws LogicException {
+	public long countUsers() throws LogicException {
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 		UserDAO userDAO = daoFactory.getUserDAO();
 

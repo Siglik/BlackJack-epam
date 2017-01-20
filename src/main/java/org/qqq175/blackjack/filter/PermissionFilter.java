@@ -13,8 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.controller.CommandParser;
+import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
@@ -25,6 +28,7 @@ import org.qqq175.blackjack.pool.UserPool;
  */
 @WebFilter("/$/*")
 public class PermissionFilter implements Filter {
+	private static Logger log = LogManager.getLogger(ModifyUserLogic.class);
 
 	/**
 	 * Default constructor.
@@ -52,21 +56,31 @@ public class PermissionFilter implements Filter {
 
 		CommandParser cp = new CommandParser();
 		CommandParser.CommandContext comandContext = cp.parse(query);
+		User userPool = user;
 
 		if (user != null) {
-			if (user.isActive()) {
-				if (user.getType() == User.Type.ADMIN) {
-					grantAccess = true;
-				} else if (user.getType() == User.Type.PLAYER) {
-					if (comandContext.getScope().equalsIgnoreCase("admin")) {
-						grantAccess = false;
-					} else {
+			userPool = UserPool.getInstance().get(user.getId());
+			if (userPool != null) {
+				if (userPool.isActive()) {
+					if (userPool.getType() == User.Type.ADMIN) {
 						grantAccess = true;
+					} else if (userPool.getType() == User.Type.PLAYER) {
+						if (comandContext.getScope().equalsIgnoreCase("admin")) {
+							grantAccess = false;
+						} else {
+							grantAccess = true;
+						}
 					}
+				} else {
+					grantAccess = false;
+					banned = true;
 				}
 			} else {
+				// this may be happen only on tomcat cotext reload
+				// session will be serialized? but user pool don't
 				grantAccess = false;
-				banned = true;
+				session.invalidate();
+				session = ((HttpServletRequest) request).getSession();
 			}
 		} else {
 			if (comandContext.getScope().equalsIgnoreCase("main")) {
@@ -80,12 +94,19 @@ public class PermissionFilter implements Filter {
 			chain.doFilter(request, response);
 		} else {
 			if (!banned) {
-				((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN,
-						"User type " + (user != null ? user.getType().name() : "GUEST") + " isn't allowed to perform action "
-								+ comandContext.getAction().toUpperCase() + " in scope " + comandContext.getScope().toUpperCase());
+				if (userPool == null) {
+					session.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE,
+							"You do not have permission to perform this action. Please log in and try again.");
+				} else {
+					session.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE,
+							"You do not have permission to perform this action. Please log in with administrator account and try again.");
+				}
+				((HttpServletResponse) response).sendRedirect(Settings.getInstance().getContextPath() + JSPPathManager.getProperty("command.index"));
+				log.warn(request.getRemoteAddr() + " | " + session.getId() + " - User type "
+						+ (userPool != null ? userPool.getType().name() : "GUEST") + " isn't allowed to perform action "
+						+ comandContext.getAction().toUpperCase() + " in scope " + comandContext.getScope().toUpperCase());
 			} else {
 				session.invalidate();
-				UserPool.getInstance().remove(user.getId());
 				HttpSession newSession = ((HttpServletRequest) request).getSession();
 				newSession.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "You account is banned.");
 				((HttpServletResponse) response).sendRedirect(Settings.getInstance().getContextPath() + JSPPathManager.getProperty("command.index"));

@@ -68,6 +68,7 @@
 		<td class="stat-value">$<span class="data">${total.loss}</span></td>
 	</tr>
 </table>
+<jsp:include page="/WEB-INF/jsp/player/AccountOperations.jsp" />
 </main>
 <script src="/blackjack/script/playerinfo.js" charset="utf-8"
     type="text/javascript"></script>

@@ -1,7 +1,6 @@
 package org.qqq175.blackjack.action.implemented.main;
 
 import static org.qqq175.blackjack.action.ActionResult.ActionType.FORWARD;
-import static org.qqq175.blackjack.action.ActionResult.ActionType.REDIRECT;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.logic.main.RegisterLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
-import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 public class RegisterAction implements Action {
 
@@ -49,8 +47,12 @@ public class RegisterAction implements Action {
 			if (result == null) {
 				RegisterLogic.Result registerResult = rLogic.registerUser(params, part);
 				if (registerResult == RegisterLogic.Result.OK) {
-					request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Registration complete! Now you can log in.");
-					result = new ActionResult(REDIRECT, Settings.getInstance().getContextPath());
+					// request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE,
+					// "Registration complete! Now you can log in.");
+					// result = new ActionResult(REDIRECT,
+					// Settings.getInstance().getContextPath());
+					result = new ActionResult(FORWARD, JSPPathManager.getProperty("command.login"));
+
 				} else {
 					request.setAttribute(StringConstant.ATTRIBUTE_ERROR_REGISTRATION, registerResult.getMessage());
 					request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.register"));

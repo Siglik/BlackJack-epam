@@ -16,7 +16,7 @@ public interface StringConstant {
 	public static final String ATTRIBUTE_PAGE_COUNT = "pageCount";
 	public static final String ATTRIBUTE_USERS = "users";
 	public static final String ATTRIBUTE_TOTAL = "total";
-	public static final String ATTRIBUTE_USER_POOL = "userpool";
+	public static final String ATTRIBUTE_OPERATIONS = "operations";
 
 	public static final String PARAMETER_EMAIL = "email";
 	public static final String PARAMETER_PASSWORD = "password";

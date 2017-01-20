@@ -48,11 +48,8 @@ public class LoginLogic {
 		}
 		if (user != null) {
 			if (user.isActive()) {
-				log.debug(
-						UserPool.getInstance().containsKey(user.getId()) + " (" + UserPool.getInstance().size() + ") id: " + user.getId().getValue());
 				if (!UserPool.getInstance().containsKey(user.getId())) {
 					session.setAttribute(StringConstant.ATTRIBUTE_USER, user);
-					UserPool.getInstance().put(user);
 					return Result.OK;
 				} else {
 					return Result.INUSE;

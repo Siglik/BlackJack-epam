@@ -38,7 +38,7 @@ public class PlayersListAction implements Action {
 		Long userCount = null;
 		try {
 			users = plLogic.findUsers(pageNumber, PAGINATION);
-			userCount = plLogic.conntUsers();
+			userCount = plLogic.countUsers();
 		} catch (LogicException e) {
 			result = new ActionResult(ActionResult.ActionType.SENDERROR, e.getMessage());
 			// LOG
@@ -47,7 +47,7 @@ public class PlayersListAction implements Action {
 
 		if (result == null) {
 			request.setAttribute(StringConstant.ATTRIBUTE_USERS, users);
-			Long pages = userCount / PAGINATION + 1;
+			Long pages = userCount / PAGINATION + (userCount % PAGINATION == 0 ? 0 : 1);
 			request.setAttribute(StringConstant.ATTRIBUTE_PAGE_COUNT, pages);
 			request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.playerslist"));
 			result = new ActionResult(ActionResult.ActionType.FORWARD, JSPPathManager.getProperty("page.admin"));

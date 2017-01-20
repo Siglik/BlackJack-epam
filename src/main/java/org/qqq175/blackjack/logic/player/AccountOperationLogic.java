@@ -18,6 +18,7 @@ import static org.qqq175.blackjack.StringConstant.PATTERN_YEAR_2;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -170,6 +171,20 @@ public class AccountOperationLogic {
 		return result;
 	}
 
+	public List<AccountOperation> findUserOperations(UserId userId, int page, int operationsPerPage) throws LogicException {
+		List<AccountOperation> result;
+		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
+		int from = (page - 1) * operationsPerPage;
+		try {
+			result = aoDAO.findUserOperationsLimit(userId, from, operationsPerPage);
+		} catch (DAOException e) {
+			throw new LogicException("Unable to get users list.", e);
+		}
+
+		return result;
+	}
+
 	private String generatePaymentComment(String card, String cardHolder) {
 		StringBuilder sb = new StringBuilder();
 		String localCard = card.replaceAll(NOT_DIGIT, "");
@@ -222,5 +237,16 @@ public class AccountOperationLogic {
 			System.out.print(parameter + " is not valid");
 		}
 		return isValid;
+	}
+
+	public Long conntOpers(UserId id) throws LogicException {
+		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
+
+		try {
+			return aoDAO.countOperations(id);
+		} catch (DAOException e) {
+			throw new LogicException("Unable to get operations count.", e);
+		}
 	}
 }
