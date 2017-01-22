@@ -1,6 +1,7 @@
 package org.qqq175.blackjack.game.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.qqq175.blackjack.game.GameUtil;
@@ -11,6 +12,7 @@ public class Hand {
 	private Score score;
 	private boolean isSurrendered;
 	private boolean isActive;
+	private boolean isFirstAction;
 
 	public Hand() {
 		this.score = new Score();
@@ -26,38 +28,28 @@ public class Hand {
 	}
 
 	public boolean canHit() {
-		// TODO Auto-generated method stub
-		return false;
+		if (!score.isBlackJack()) {
+			if (score.getValue() < 21) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+
 	}
 
 	public boolean canDouble() {
-		// TODO Auto-generated method stub
-		return false;
+		return (9 <= score.getValue() && score.getValue() <= 11);
 	}
 
 	public boolean canSplit() {
-		// TODO Auto-generated method stub
-		return false;
+		return cards.size() == 2 && cards.get(0).getRank().equals(cards.get(1).getRank());
 	}
 
 	public boolean canSurrender() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean canDeal(BigDecimal betSize) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean canInsurance() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean canStand() {
-		// TODO Auto-generated method stub
-		return false;
+		return isFirstAction;
 	}
 
 	/**
@@ -94,7 +86,11 @@ public class Hand {
 	 * @param card
 	 */
 	public boolean addCard(Card card) {
-		return cards.add(card);
+		boolean result = cards.add(card);
+		if (result) {
+			updateScore();
+		}
+		return result;
 	}
 
 	/**
@@ -103,7 +99,11 @@ public class Hand {
 	 * @return
 	 */
 	public boolean removeCard(Card card) {
-		return cards.remove(card);
+		boolean result = cards.remove(card);
+		if (result) {
+			updateScore();
+		}
+		return result;
 	}
 
 	/**
@@ -124,8 +124,9 @@ public class Hand {
 	/**
 	 * @return the cards
 	 */
-	public List<Card> getCards() {
-		return cards;
+	public List<Card> getCardsList() {
+		List<Card> cardsList = new ArrayList<>(cards);
+		return cardsList;
 	}
 
 	/**
@@ -133,5 +134,20 @@ public class Hand {
 	 */
 	public Score getScore() {
 		return score;
+	}
+
+	/**
+	 * @return the isFirstAction
+	 */
+	public boolean isFirstAction() {
+		return isFirstAction;
+	}
+
+	/**
+	 * @param isFirstAction
+	 *            the isFirstAction to set
+	 */
+	public void setFirstAction(boolean isFirstAction) {
+		this.isFirstAction = isFirstAction;
 	}
 }

@@ -20,7 +20,7 @@ public class GameUtil {
 		int aces = 0;
 		int total = 0;
 		Score score = new Score();
-		List<Card> cards = hand.getCards();
+		List<Card> cards = hand.getCardsList();
 		boolean isBlackJack = false;
 		for (Card card : cards) {
 			total += card.getValue();
@@ -44,8 +44,9 @@ public class GameUtil {
 
 	public boolean isInsuranceable(Dealer dealer) {
 		Hand hand = dealer.getHand();
-		if (hand != null && hand.getCards() != null && hand.getCards().size() == 2) {
-			Card firstCard = hand.getCards().get(0);
+		List<Card> cards = hand.getCardsList();
+		if (hand != null && cards != null && cards.size() == 2) {
+			Card firstCard = cards.get(0);
 
 			return firstCard.getRank() == Card.Rank.ACE;
 		} else {
@@ -170,7 +171,7 @@ public class GameUtil {
 	private static JSONObject toJSON(Hand hand, boolean isPlayer) {
 		JSONObject result = new JSONObject();
 		result.put("score", toJSON(hand.getScore(), true));
-		result.put("cards", toJSON(hand.getCards(), isPlayer));
+		result.put("cards", toJSON(hand.getCardsList(), isPlayer));
 		if (isPlayer) {
 			result.put("bet", hand.getBid());// ?toString
 			result.put("isActive", hand.isActive());

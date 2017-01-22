@@ -122,8 +122,13 @@ public class Player {
 	private class PlayState extends State {
 
 		public boolean tryDouble() {
-			if (activeHand.canDouble) {
+			if (activeHand.canDouble()) {
+				///
+				///
+				///
+				///
 
+				return true;
 			} else {
 				return false;
 			}
@@ -176,6 +181,7 @@ public class Player {
 	}
 
 	public boolean canHit() {
+		// Hit: Take another card from the dealer.
 		return state.canHit();
 	}
 
