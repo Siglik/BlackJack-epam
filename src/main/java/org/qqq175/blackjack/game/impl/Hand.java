@@ -4,88 +4,105 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.qqq175.blackjack.game.GameUtil;
-import org.qqq175.blackjack.game.PlayerAction;
 
 public class Hand {
 	private List<Card> cards;
 	private BigDecimal bid;
 	private Score score;
-	private State state;
+	private boolean isSurrendered;
+	private boolean isActive;
 
 	public Hand() {
-		this.state = new DealState();
 		this.score = new Score();
 		this.bid = new BigDecimal(0.0);
-	}
-
-	private abstract class State implements PlayerAction {
-
-		@Override
-		public boolean canHit() {
-			return false;
-
-		}
-
-		@Override
-		public boolean canDouble() {
-			return false;
-		}
-
-		@Override
-		public boolean canSplit() {
-			return false;
-		}
-
-		@Override
-		public boolean canSurrender() {
-			return false;
-		}
-
-		@Override
-		public boolean canDeal(BigDecimal betSize) {
-			return false;
-		}
-
-		@Override
-		public boolean canInsurance() {
-			return false;
-		}
-
-		@Override
-		public boolean canStand() {
-			return false;
-		}
-
-	};
-
-	private class DealState extends State {
-
-		@Override
-		public boolean canSurrender() {
-			return true;
-		}
-
-		@Override
-		public boolean canDeal(BigDecimal betSize) {
-			return true;
-		}
-	}
-
-	private class PlayState extends State {
-	}
-
-	private class DoneState extends State {
-	}
-
-	public void addCard(Card card) {
-		cards.add(card);
 	}
 
 	public Hand split() {
 		return null;
 	}
 
-	public boolean deleteCard(Card card) {
+	private void updateScore() {
+		score = GameUtil.calcScore(this);
+	}
+
+	public boolean canHit() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean canDouble() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean canSplit() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean canSurrender() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean canDeal(BigDecimal betSize) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean canInsurance() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean canStand() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * @return the isSurrendered
+	 */
+	public boolean isSurrendered() {
+		return isSurrendered;
+	}
+
+	/**
+	 * @param isSurrendered
+	 *            the isSurrendered to set
+	 */
+	public void setSurrendered(boolean isSurrendered) {
+		this.isSurrendered = isSurrendered;
+	}
+
+	/**
+	 * @return the isActive
+	 */
+	public boolean isActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive
+	 *            the isActive to set
+	 */
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	/**
+	 * @param card
+	 */
+	public boolean addCard(Card card) {
+		return cards.add(card);
+	}
+
+	/**
+	 * 
+	 * @param card
+	 * @return
+	 */
+	public boolean removeCard(Card card) {
 		return cards.remove(card);
 	}
 
@@ -112,28 +129,9 @@ public class Hand {
 	}
 
 	/**
-	 * @param cards
-	 *            the cards to set
-	 */
-	public void setCards(List<Card> cards) {
-		this.cards = cards;
-	}
-
-	/**
 	 * @return the score
 	 */
 	public Score getScore() {
 		return score;
-	}
-
-	/**
-	 * @return the isActive
-	 */
-	public boolean isActive() {
-		return !(state instanceof DoneState);
-	}
-
-	private void updateScore() {
-		GameUtil.changeScore(this);
 	}
 }

@@ -1,8 +1,8 @@
 package org.qqq175.blackjack.game.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.qqq175.blackjack.exception.GameActionDeniedException;
@@ -38,9 +38,10 @@ public class BlackJackGame implements BJGame {
 			dealer = new Dealer();
 		}
 
-		players = new ArrayList(maxPlayers);
+		players = new CopyOnWriteArrayList<>();
 		Player player = new Player(creator.getId(), true);
 		players.add(player);
+		player.setActive(true);
 		activePlayer = player;
 		playersCount = new AtomicInteger(1);
 
@@ -54,16 +55,18 @@ public class BlackJackGame implements BJGame {
 
 	private void modify() {
 		int modCount = modifyCount.incrementAndGet();
-		// TODO send changes to clients
+		// WebSocket.send(this, List<UserId>);
 	}
 
-	private void nextPlayer() {
+	private boolean nextPlayer() {
 		int userId = activePlayer != null ? players.indexOf(activePlayer) : 0;
 		boolean foundNext = false;
 
-		while (!foundNext || userId < players.size()) {
+		while (!foundNext && userId < players.size()) {
 			Player player = players.get(userId);
 			if (player != null && player.isDone()) {
+				activePlayer.setActive(false);
+				player.setActive(true);
 				activePlayer = player;
 				foundNext = true;
 			} else {
@@ -75,6 +78,7 @@ public class BlackJackGame implements BJGame {
 			activePlayer = null;
 			state.nextState();
 		}
+		return foundNext;
 	}
 
 	private abstract class State implements BJGame {
@@ -125,36 +129,6 @@ public class BlackJackGame implements BJGame {
 		}
 	};
 
-	private class StoppedState extends State {
-
-		@Override
-		public Player join(User user) {
-			int nextPlayersCount = playersCount.incrementAndGet();
-			if (nextPlayersCount <= MAX_PLAYERS) {
-				Player player = new Player(user.getId(), true);
-				players.add(player);
-				modify();
-				return player;
-			} else {
-				playersCount.decrementAndGet();
-				return null;
-			}
-		}
-
-		@Override
-		public void leave(Player player) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void nextState() {
-			activePlayer = null;
-			game.nextPlayer();
-			state = new InitState();
-		}
-	}
-
 	private class InitState extends State {
 
 		@Override
@@ -165,7 +139,12 @@ public class BlackJackGame implements BJGame {
 
 		@Override
 		public void deal(Player player, BigDecimal betSize) throws GameActionDeniedException {
-			player.canDeal(betSize);
+			if (player.tryDeal(betSize)) {
+
+			} else {
+
+			}
+
 			game.nextPlayer();
 		}
 
@@ -276,6 +255,7 @@ public class BlackJackGame implements BJGame {
 			// TODO Auto-generated method stub
 
 		}
+
 	}
 
 	/*

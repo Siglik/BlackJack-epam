@@ -192,24 +192,45 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	public boolean lockBalance(UserId userId, BigDecimal change, ConnectionWrapper connection) throws DAOException {
-		try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.lock"))) {
-			prepStatment.setBigDecimal(1, change);
-			prepStatment.setBigDecimal(2, change);
-			prepStatment.setLong(3, userId.getValue());
-			return prepStatment.executeUpdate() == 1;
+	public boolean lockBalance(UserId userId, BigDecimal change) throws DAOException {
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.lock"))) {
+				prepStatment.setBigDecimal(1, change);
+				prepStatment.setBigDecimal(2, change);
+				prepStatment.setLong(3, userId.getValue());
+				prepStatment.setBigDecimal(4, change);
+				return prepStatment.executeUpdate() == 1;
+			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
 	}
 
 	@Override
-	public boolean unlockBalance(UserId userId, BigDecimal change, ConnectionWrapper connection) throws DAOException {
-		try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.unlock"))) {
-			prepStatment.setBigDecimal(1, change);
-			prepStatment.setBigDecimal(2, change);
-			prepStatment.setLong(3, userId.getValue());
-			return prepStatment.executeUpdate() == 1;
+	public boolean unlockBalance(UserId userId, BigDecimal change) throws DAOException {
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.unlock"))) {
+				prepStatment.setBigDecimal(1, change);
+				prepStatment.setBigDecimal(2, change);
+				prepStatment.setLong(3, userId.getValue());
+				prepStatment.setBigDecimal(4, change);
+				return prepStatment.executeUpdate() == 1;
+			}
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+	}
+
+	@Override
+	public boolean decreaceLockedBalance(UserId userId, BigDecimal change) throws DAOException {
+		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.unlock"))) {
+				prepStatment.setBigDecimal(1, change);
+				prepStatment.setBigDecimal(2, change);
+				prepStatment.setLong(3, userId.getValue());
+				prepStatment.setBigDecimal(4, change);
+				return prepStatment.executeUpdate() == 1;
+			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}

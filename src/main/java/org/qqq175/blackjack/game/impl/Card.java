@@ -11,16 +11,18 @@ public class Card {
 	 * contain all card types image locations.
 	 */
 	private static Map<Suit, Map<Rank, String>> imgPaths;
+	public final static String CARD_BACK;
 	/* init card image paths */
 	static {
 		String imgLocation = Settings.getInstance().getCardFolder();
+		CARD_BACK = Settings.getInstance().getContextPath() + File.separator + imgLocation + File.separator + "back.gif";
 		imgPaths = new ConcurrentHashMap<>();
 		for (Suit s : Suit.values()) {
 			Map<Rank, String> innerMap = new ConcurrentHashMap<>();
 			imgPaths.put(s, innerMap);
 			for (Rank r : Rank.values()) {
-				String imgPath = Settings.getInstance().getContextPath() + File.separator + imgLocation + File.separator + s.name().toLowerCase()
-						+ "-" + r.name().toLowerCase() + ".jpg";
+				String imgPath = Settings.getInstance().getContextPath() + File.separator + imgLocation + File.separator + r.name().toLowerCase()
+						+ "_of_" + s.name().toLowerCase() + ".svg";
 				innerMap.put(r, imgPath);
 			}
 		}

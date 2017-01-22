@@ -3,15 +3,16 @@ package org.qqq175.blackjack.game.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.qqq175.blackjack.game.PlayerAction;
-import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.exception.DAOException;
+import org.qqq175.blackjack.persistence.dao.UserDAO;
+import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
-import org.qqq175.blackjack.pool.UserPool;
 
-public class Player implements PlayerAction {
+public class Player {
 	private UserId userId;
 	private State state;
 	private List<Hand> hands;
+	private boolean isActive;
 	private Hand activeHand = null;
 
 	private void nextHand() {
@@ -52,17 +53,80 @@ public class Player implements PlayerAction {
 		}
 	}
 
-	private abstract class State implements PlayerAction {
+	private abstract class State {
 		abstract void nextState();
 
-		@Override
 		public boolean canHit() {
 			return false;
 		}
 
-		@Override
 		public boolean canDouble() {
 			return false;
+		}
+
+		public boolean canSplit() {
+			return false;
+		}
+
+		public boolean canSurrender() {
+			return false;
+		}
+
+		public boolean tryDeal(BigDecimal betSize) {
+			return false;
+		}
+
+		public boolean tryInsurance() {
+			return false;
+		}
+
+		public boolean canStand() {
+			return false;
+		}
+	}
+
+	private class DealState extends State {
+
+		@Override
+		public boolean canSurrender() {
+			return true;
+		}
+
+		@Override
+		public boolean tryDeal(BigDecimal betSize) {
+			UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
+			try {
+				boolean lockResult = userDAO.lockBalance(userId, betSize);
+				if (lockResult) {
+					Hand hand = new Hand();
+					hand.setBid(betSize);
+					addHand(hand);
+					nextState();
+					return true;
+				} else {
+					return false;
+				}
+			} catch (DAOException e) {
+				// TODO log
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		@Override
+		void nextState() {
+			state = new PlayState();
+		}
+	}
+
+	private class PlayState extends State {
+
+		public boolean tryDouble() {
+			if (activeHand.canDouble) {
+
+			} else {
+				return false;
+			}
 		}
 
 		@Override
@@ -74,55 +138,6 @@ public class Player implements PlayerAction {
 		public boolean canSurrender() {
 			return false;
 		}
-
-		@Override
-		public boolean canDeal(BigDecimal betSize) {
-			return false;
-		}
-
-		@Override
-		public boolean canInsurance() {
-			return false;
-		}
-	}
-
-	private class DealState extends State {
-
-		@Override
-		public boolean canSurrender() {
-			state = new DoneState();
-			return true;
-		}
-
-		@Override
-		public boolean canDeal(BigDecimal betSize) {
-			UserPool uPool = UserPool.getInstance();
-			User user = uPool.get(userId);
-			if (user != null && user.getAccountBalance().compareTo(betSize) >= 0) {
-				Hand hand = new Hand();
-				hand.setBid(betSize);
-				addHand(hand);
-				nextState();
-				// TODO i dont remember what it is
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		@Override
-		void nextState() {
-			state = new PlayState();
-		}
-
-		@Override
-		public boolean canStand() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
-
-	private class PlayState extends State {
 
 		@Override
 		void nextState() {
@@ -140,14 +155,8 @@ public class Player implements PlayerAction {
 
 		@Override
 		void nextState() {
+			state = new DealState();
 		}
-
-		@Override
-		public boolean canStand() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
 	}
 
 	public Player(UserId userId, boolean isActive) {
@@ -166,37 +175,30 @@ public class Player implements PlayerAction {
 		return userId;
 	}
 
-	@Override
 	public boolean canHit() {
 		return state.canHit();
 	}
 
-	@Override
 	public boolean canDouble() {
 		return state.canDouble();
 	}
 
-	@Override
 	public boolean canSplit() {
 		if (getHands().size() <= 4) {
 			return state.canSplit();
 		} else {
 			return false;
-			// TODO exception
 		}
 	}
 
-	@Override
 	public boolean canSurrender() {
 		return state.canSurrender();
 	}
 
-	@Override
-	public boolean canDeal(BigDecimal betSize) {
-		return state.canDeal(betSize);
+	public boolean tryDeal(BigDecimal betSize) {
+		return state.tryDeal(betSize);
 	}
 
-	@Override
 	public boolean canInsurance() {
 		return state.canInsurance();
 	}
@@ -219,9 +221,23 @@ public class Player implements PlayerAction {
 		return hands;
 	}
 
-	@Override
 	public boolean canStand() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/**
+	 * @return the activeHand
+	 */
+	public Hand getActiveHand() {
+		return activeHand;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 }
