@@ -19,11 +19,12 @@ public class GameAction implements Action {
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
-		User user = (User) request.getAttribute(StringConstant.ATTRIBUTE_USER);
+		User user = (User) request.getSession().getAttribute(StringConstant.ATTRIBUTE_USER);
 		ActionResult result;
 
 		request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.blackjack"));
 		IndexLogic logic = new IndexLogic();
+		System.out.println(user + " " + logic.definePathByUser(user));
 		result = new ActionResult(FORWARD, logic.definePathByUser(user));
 
 		return result;

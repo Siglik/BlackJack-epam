@@ -17,6 +17,7 @@ public interface StringConstant {
 	public static final String ATTRIBUTE_USERS = "users";
 	public static final String ATTRIBUTE_TOTAL = "total";
 	public static final String ATTRIBUTE_OPERATIONS = "operations";
+	public static final String ATTRIBUTE_GAME = "game";
 
 	public static final String PARAMETER_EMAIL = "email";
 	public static final String PARAMETER_PASSWORD = "password";

@@ -16,14 +16,14 @@
 
 			<li class="layer" data-depth="0.13">
 				<div class="b-chips">
-					<img src=/blackjack/img/b-chips.png "/>
+					<img src="/blackjack/img/b-chips.png "/>
 				</div>
 			</li>
 		</ul>
 	</section>
-	<section class="bender-right" class="cont clearfix">
-		<ul id="bender" class="bender" data-scalar-y="0.01" data-origin-x="1">
-			<li class="layer" data-depth="1.0"><img
+	<section>
+		<ul id="bender" class="bender" data-scalar-y="0.01" data-origin-x="1" data-friction-x="0.07">
+			<li class="layer" data-depth="2"><img
 				src="/blackjack/img/bender-right.png" /></li>
 		</ul>
 	</section>

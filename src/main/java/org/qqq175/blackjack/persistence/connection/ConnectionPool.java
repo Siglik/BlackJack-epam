@@ -95,8 +95,8 @@ public class ConnectionPool {
 			conn = availableConnections.take();
 			try {
 				if (!conn.isValid(VALID_TIMEOUT)) {
-					System.out.println("\n---------------------------------------------- Conection is INVALID! ----------------------------------\n");
 					conn.close();
+					connectionsCount.decrementAndGet();
 					conn = this.createConnection();
 				}
 			} catch (SQLException e) {

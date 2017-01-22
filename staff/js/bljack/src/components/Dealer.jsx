@@ -12,7 +12,7 @@ export default class BlackJackApp extends React.Component {
           <div className="dealer container">
               <figure className="column-left player-info">
                   <img src={this.props.initValues.img} alt="dealer" className="dealer-logo" />
-                  <figcaption>Dealer</figcaption>
+                  <figcaption>{this.props.initValues.name}</figcaption>
               </figure>
               <Hand className="column-right" stateValues={this.props.stateValues.hand}/>
           </div>

@@ -1,0 +1,24 @@
+@import "../styles/palette.less";
+
+@rotation: -8deg;
+
+div.score {
+    clear: both;
+    display: block;
+    margin: 2px 7px 3px;
+    background-color: #ffdd1f;
+    color: @bg-color;
+    font-family: 'Courier New', 'Lucida Console' , monospace;
+    font-size: 125%;
+    font-style: italic;
+    border-radius: 100% 100%;
+    padding: 4px 7px 2px;
+    /* Safari */
+    -webkit-transform: rotate(@rotation);
+    /* Firefox */
+    -moz-transform: rotate(@rotation);
+    /* IE */
+    -ms-transform: rotate(@rotation);
+    /* Opera */
+    -o-transform: rotate(@rotation);
+}

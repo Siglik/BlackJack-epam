@@ -4,7 +4,7 @@
 	<ul class="vertical-menu top">
 		<li><a href="/blackjack/$/" class="button menu-item">Homepage</a></li>
 		<li><a href="/blackjack/$/game/newsolo" class="button menu-item">Play solo</a></li>
-		<li><a href="/blackjack/$/newmulti" class="button menu-item">Play multiplayer</a></li>
+		<li><a href="/blackjack/$/game/newmulti" class="button menu-item">Play multiplayer</a></li>
 		<li><a href="#" class="button menu-item">Game rules</a></li>
 	</ul>
 	<ul class="vertical-menu">
