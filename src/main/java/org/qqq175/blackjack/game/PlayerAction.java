@@ -14,4 +14,6 @@ public interface PlayerAction {
 	boolean canDeal(BigDecimal betSize);
 
 	boolean canInsurance();
+
+	boolean canStand();
 }

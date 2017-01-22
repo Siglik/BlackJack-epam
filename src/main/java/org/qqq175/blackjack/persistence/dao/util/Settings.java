@@ -26,8 +26,9 @@ public class Settings {
 	private final Database DATABASE;
 	private String realPath = null;
 	private String contextPath = null;
-	private final String SALT;
+	private final String SALT = "Unds&4s>dfuPMdqmx84Yfagt=274bfa#fdsa64q1";
 	private final String PHOTO_FOLDER;
+	private final String CARD_FOLDER;
 	private final String DEFAULT_PHOTO;
 	private final List<String> PHOTO_EXTENSIONS;
 
@@ -46,9 +47,9 @@ public class Settings {
 			// LOG fatal
 			throw new RuntimeException("Unable to read " + APP_PROPS_PATH);
 		}
-		SALT = "Unds&4s>dfuPMdqmx84Yfagt=274bfa#fdsa64q1";
-		PHOTO_FOLDER = props.getProperty("img.dir");
-		DEFAULT_PHOTO = props.getProperty("img.default");
+		PHOTO_FOLDER = props.getProperty("img.dir.avatar");
+		CARD_FOLDER = props.getProperty("img.dir.card");
+		DEFAULT_PHOTO = props.getProperty("img.default.avatar");
 
 		String[] extensions = props.getProperty("img.extensions").split(PROPS_DELIMETER);
 		PHOTO_EXTENSIONS = new ArrayList<>(Arrays.asList(extensions));
@@ -216,6 +217,13 @@ public class Settings {
 
 	public String getDefaultPhoto() {
 		return DEFAULT_PHOTO;
+	}
+
+	/**
+	 * @return the cARD_FOLDER
+	 */
+	public String getCardFolder() {
+		return CARD_FOLDER;
 	}
 
 }

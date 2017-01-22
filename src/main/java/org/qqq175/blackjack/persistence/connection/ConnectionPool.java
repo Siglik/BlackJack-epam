@@ -13,6 +13,8 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 public class ConnectionPool {
 	private static AtomicReference<ConnectionPool> instance = new AtomicReference<>();
+	private static int VALID_TIMEOUT = 2; // seconds
+	private static int RETRIEVE_TIMEOUT = 3000; // milliseconds
 	private AtomicInteger connectionsCount;
 	private BlockingQueue<Connection> availableConnections;
 	private boolean isClosing;
@@ -91,6 +93,16 @@ public class ConnectionPool {
 		Connection conn = null;
 		try {
 			conn = availableConnections.take();
+			try {
+				if (!conn.isValid(VALID_TIMEOUT)) {
+					System.out.println("\n---------------------------------------------- Conection is INVALID! ----------------------------------\n");
+					conn.close();
+					conn = this.createConnection();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

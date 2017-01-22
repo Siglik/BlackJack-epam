@@ -18,6 +18,11 @@ export default class Controls extends React.Component {
                 </div>
                 <ul className="gorizontal-menu column-center">
                     <li>
+                        <ActionButton stateValues={this.props.stateValues.actions.insurance}>
+                            {this.props.initValues.actions.insurance.text}
+                        </ActionButton>
+                    </li>
+                    <li>
                         <ActionButton stateValues={this.props.stateValues.actions.surrender}>
                             {this.props.initValues.actions.surrender.text}
                         </ActionButton>
@@ -40,6 +45,11 @@ export default class Controls extends React.Component {
                     <li>
                         <ActionButton stateValues={this.props.stateValues.actions.deal}>
                             {this.props.initValues.actions.deal.text}
+                        </ActionButton>
+                    </li>
+                    <li>
+                        <ActionButton stateValues={this.props.stateValues.actions.stay}>
+                            {this.props.initValues.actions.stay.text}
                         </ActionButton>
                     </li>
                 </ul>

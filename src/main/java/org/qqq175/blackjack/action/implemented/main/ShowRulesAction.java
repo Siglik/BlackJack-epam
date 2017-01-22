@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.action.implemented.game;
+package org.qqq175.blackjack.action.implemented.main;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 
-public class NewGameSoloAction implements Action {
+public class ShowRulesAction implements Action {
 
-	public NewGameSoloAction() {
+	public ShowRulesAction() {
 		// TODO Auto-generated constructor stub
 	}
 

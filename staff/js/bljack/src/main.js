@@ -16,7 +16,7 @@ let game = {
     "dealer": {
         "hand": {
             "score": 10,
-            "cards": ["img/card/ace.gif", "img/card/back.gif", "img/card/back.gif"]
+            "cards": ["/blackjack/img/card/ace.gif", "/blackjack/img/card/back.gif", "/blackjack/img/card/back.gif"]
         }
     },
     "timer": {
@@ -27,19 +27,19 @@ let game = {
         {
             "id": 0,
             "name": "qqq175",
-            "img": "img/p_one.jpg",
+            "img": "/blackjack/img//user/p_one.jpg",
             "hands": [
                 {
                     "score": 10,
                     "cards": [
-                        "img/card/ace.gif", "img/card/ace.gif"
+                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/ace.gif"
                     ],
                     "bet": 10,
                     "isActive": false
                 }, {
                     "score": 10,
                     "cards": [
-                        "img/card/ace.gif", "img/card/ace.gif", "img/card/ace.gif"
+                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/ace.gif", "/blackjack/img/card/ace.gif"
                     ],
                     "bet": 75,
                     "isActive": true
@@ -49,12 +49,12 @@ let game = {
         }, {
             "id": 0,
             "name": "Player Two",
-            "img": "img/pl_three.jpg",
+            "img": "/blackjack/img/user/pl_three.jpg",
             "hands": [
                 {
                     "score": 10,
                     "cards": [
-                        "img/card/ace.gif", "img/card/back.gif"
+                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/back.gif"
                     ],
                     "bet": 11,
                     "isActive": false
@@ -64,12 +64,12 @@ let game = {
         }, {
             "id": 0,
             "name": "Player Three",
-            "img": "img/pl_two.png",
+            "img": "/blackjack/img/user/pl_two.png",
             "hands": [
                 {
                     "score": 10,
                     "cards": [
-                        "img/card/ace.gif", "img/card/back.gif"
+                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/back.gif"
                     ],
                     "bet": 17,
                     "isActive": false
@@ -97,6 +97,12 @@ let game = {
             },
             "deal": {
                 "isActive": true
+            },
+            "stay": {
+                "isActive": true
+            },
+            "insurance": {
+                "isActive": true
             }
         },
         "bid": {
@@ -107,7 +113,7 @@ let game = {
 
 const gameinit = {
     "dealer": {
-        "img": "img/dealer.jpg",
+        "img": "/blackjack/img/dealer.jpg",
         "name": "Dealer"
     },
     "timer": {
@@ -133,6 +139,12 @@ const gameinit = {
             },
             "deal": {
                 "text": "Deal"
+            },
+            "stay": {
+                "text": "Stay"
+            },
+            "insurance": {
+                "text": "Insurance"
             }
         },
         "bid": {

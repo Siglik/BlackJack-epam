@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.qqq175.blackjack.game.PlayerAction;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.persistence.entity.id.UserId;
+import org.qqq175.blackjack.pool.UserPool;
 
 public class Player implements PlayerAction {
-	private User user;
+	private UserId userId;
 	private State state;
 	private List<Hand> hands;
 	private Hand activeHand = null;
@@ -94,7 +96,9 @@ public class Player implements PlayerAction {
 
 		@Override
 		public boolean canDeal(BigDecimal betSize) {
-			if (user.getAccountBalance().compareTo(betSize) >= 0) {
+			UserPool uPool = UserPool.getInstance();
+			User user = uPool.get(userId);
+			if (user != null && user.getAccountBalance().compareTo(betSize) >= 0) {
 				Hand hand = new Hand();
 				hand.setBid(betSize);
 				addHand(hand);
@@ -110,12 +114,24 @@ public class Player implements PlayerAction {
 		void nextState() {
 			state = new PlayState();
 		}
+
+		@Override
+		public boolean canStand() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	}
 
 	private class PlayState extends State {
 
 		@Override
 		void nextState() {
+		}
+
+		@Override
+		public boolean canStand() {
+			// TODO Auto-generated method stub
+			return false;
 		}
 
 	}
@@ -126,10 +142,16 @@ public class Player implements PlayerAction {
 		void nextState() {
 		}
 
+		@Override
+		public boolean canStand() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
 	}
 
-	public Player(User user, boolean isActive) {
-		this.user = user;
+	public Player(UserId userId, boolean isActive) {
+		this.userId = userId;
 		if (isActive) {
 			this.state = new DealState();
 		} else {
@@ -140,8 +162,8 @@ public class Player implements PlayerAction {
 	/**
 	 * @return the user
 	 */
-	public User getUser() {
-		return user;
+	public UserId getUserId() {
+		return userId;
 	}
 
 	@Override
@@ -195,5 +217,11 @@ public class Player implements PlayerAction {
 	 */
 	public List<Hand> getHands() {
 		return hands;
+	}
+
+	@Override
+	public boolean canStand() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

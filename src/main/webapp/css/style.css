@@ -185,7 +185,6 @@ main {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    min-height: 450px;
 }
 
 .column-left {

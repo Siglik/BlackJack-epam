@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.qqq175.blackjack.exception.GameActionDeniedException;
-import org.qqq175.blackjack.game.Game;
+import org.qqq175.blackjack.game.BJGame;
 import org.qqq175.blackjack.persistence.entity.User;
 
-public class BlackJack implements Game {
+public class BlackJackGame implements BJGame {
 	private static final int MAX_PLAYERS = 3;
 	private int id;
 	private AtomicInteger modifyCount;
@@ -18,14 +18,19 @@ public class BlackJack implements Game {
 	private AtomicInteger playersCount;
 	private Player activePlayer;
 	private Dealer dealer;
-	private State state;
-	private BlackJack game;
 
-	public BlackJack(User creator) {
+	private State state;
+	private BlackJackGame game;
+
+	public BlackJackGame(User creator) {
 		this(6, true, MAX_PLAYERS, creator);
 	}
 
-	private BlackJack(int decksCount, boolean isCasinoPlays, int maxPlayers, User creator) {
+	public BlackJackGame(User creator, int playerCount) {
+		this(6, true, playerCount <= MAX_PLAYERS ? playerCount : MAX_PLAYERS, creator);
+	}
+
+	private BlackJackGame(int decksCount, boolean isCasinoPlays, int maxPlayers, User creator) {
 		id = 1;
 		game = this;
 		deck = new Deck(decksCount);
@@ -34,7 +39,7 @@ public class BlackJack implements Game {
 		}
 
 		players = new ArrayList(maxPlayers);
-		Player player = new Player(creator, true);
+		Player player = new Player(creator.getId(), true);
 		players.add(player);
 		activePlayer = player;
 		playersCount = new AtomicInteger(1);
@@ -72,7 +77,7 @@ public class BlackJack implements Game {
 		}
 	}
 
-	private abstract class State implements Game {
+	private abstract class State implements BJGame {
 		public abstract void nextState();
 
 		@Override
@@ -106,13 +111,13 @@ public class BlackJack implements Game {
 		}
 
 		@Override
-		public Game join(User user) {
+		public Player join(User user) {
 			int nextPlayersCount = playersCount.incrementAndGet();
 			if (nextPlayersCount <= MAX_PLAYERS) {
-				Player player = new Player(user, false);
+				Player player = new Player(user.getId(), false);
 				players.add(player);
 				modify();
-				return this;
+				return player;
 			} else {
 				playersCount.decrementAndGet();
 				return null;
@@ -123,13 +128,13 @@ public class BlackJack implements Game {
 	private class StoppedState extends State {
 
 		@Override
-		public Game join(User user) {
+		public Player join(User user) {
 			int nextPlayersCount = playersCount.incrementAndGet();
 			if (nextPlayersCount <= MAX_PLAYERS) {
-				Player player = new Player(user, true);
+				Player player = new Player(user.getId(), true);
 				players.add(player);
 				modify();
-				return this;
+				return player;
 			} else {
 				playersCount.decrementAndGet();
 				return null;
@@ -372,7 +377,7 @@ public class BlackJack implements Game {
 	}
 
 	@Override
-	public Game join(User user) {
+	public Player join(User user) {
 		return state.join(user);
 	}
 
@@ -380,5 +385,41 @@ public class BlackJack implements Game {
 	public void leave(Player player) {
 		state.leave(player);
 		modify();
+	}
+
+	public static int getMaxPlayers() {
+		return MAX_PLAYERS;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public AtomicInteger getModifyCount() {
+		return modifyCount;
+	}
+
+	public Deck getDeck() {
+		return deck;
+	}
+
+	public List<Player> getPlayers() {
+		return players;
+	}
+
+	public AtomicInteger getPlayersCount() {
+		return playersCount;
+	}
+
+	public Player getActivePlayer() {
+		return activePlayer;
+	}
+
+	public Dealer getDealer() {
+		return dealer;
+	}
+
+	public BlackJackGame getGame() {
+		return game;
 	}
 }

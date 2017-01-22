@@ -3,6 +3,7 @@ package org.qqq175.blackjack.game.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.qqq175.blackjack.game.GameUtil;
 import org.qqq175.blackjack.game.PlayerAction;
 
 public class Hand {
@@ -47,6 +48,11 @@ public class Hand {
 
 		@Override
 		public boolean canInsurance() {
+			return false;
+		}
+
+		@Override
+		public boolean canStand() {
 			return false;
 		}
 
@@ -128,24 +134,6 @@ public class Hand {
 	}
 
 	private void updateScore() {
-		int aces = 0;
-		int total = 0;
-		boolean isBlackJack = false;
-		for (Card card : cards) {
-			total += card.getValue();
-			if (card.getRank() == Card.Rank.ACE) {
-				aces++;
-			}
-		}
-		if (cards.size() == 2 && aces == 1 && total == 21) {
-			isBlackJack = true;
-		} else {
-			while (total > 21 && aces > 0) {
-				total -= 10;
-				aces--;
-			}
-		}
-		score.setBlackJack(isBlackJack);
-		score.setValue(total);
+		GameUtil.changeScore(this);
 	}
 }

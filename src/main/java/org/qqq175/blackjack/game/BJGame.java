@@ -6,7 +6,7 @@ import org.qqq175.blackjack.exception.GameActionDeniedException;
 import org.qqq175.blackjack.game.impl.Player;
 import org.qqq175.blackjack.persistence.entity.User;
 
-public interface Game {
+public interface BJGame {
 	void hit(Player player) throws GameActionDeniedException;
 
 	void doubleBet(Player player) throws GameActionDeniedException;
@@ -19,7 +19,7 @@ public interface Game {
 
 	void insurance(Player player) throws GameActionDeniedException;
 
-	Game join(User user);
+	Player join(User user);
 
 	void leave(Player player);
 }
