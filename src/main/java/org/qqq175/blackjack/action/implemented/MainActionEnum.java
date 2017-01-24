@@ -9,6 +9,7 @@ import org.qqq175.blackjack.action.implemented.main.IndexAction;
 import org.qqq175.blackjack.action.implemented.main.LoginAction;
 import org.qqq175.blackjack.action.implemented.main.LogoutAction;
 import org.qqq175.blackjack.action.implemented.main.RegisterAction;
+import org.qqq175.blackjack.action.implemented.main.LogVisitorInfoAction;
 import org.qqq175.blackjack.action.implemented.main.SetLocaleAction;
 
 /**
@@ -44,6 +45,11 @@ public enum MainActionEnum implements ActionEnum {
 	SETLOCALE {
 		{
 			this.action = new SetLocaleAction();
+		}
+	},
+	SAVEVISITORINFO {
+		{
+			this.action = new LogVisitorInfoAction();
 		}
 	};
 

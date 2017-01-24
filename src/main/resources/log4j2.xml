@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
+	<CustomLevels>
+		<CustomLevel name="VISITINFO" intLevel="450" />
+	</CustomLevels>
 	<Properties>
-		<Property name="log-path">logs/</Property>
+		<Property name="log-path">/logs/</Property>
 	</Properties>
 	<Appenders>
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %n%m%n" />
 		</Console>
-		<RollingFile name="logFile" fileName="${log-path}/bjapp.log"
-			filePattern="${log-path}/parcer%d{yyyy-MM-dd}-%i.log" append="true">
+		<RollingFile name="logFile" fileName="${sys:catalina.base}/logs/bjapp/bjapp.log"
+			filePattern="${sys:catalina.base}/logs/bjapp%d{yyyy-MM-dd}-%i.log" append="true">
 			<PatternLayout
 				pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %C{2} (%F:%L) - %n%m%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="1024 KB" />
 			</Policies>
-			<DefaultRolloverStrategy max="1000" />
+			<DefaultRolloverStrategy max="512" />
 		</RollingFile>
 		<Async name="ASYNC">
 			<AppenderRef ref="console" />

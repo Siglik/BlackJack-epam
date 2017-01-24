@@ -44,11 +44,15 @@
 	<script type="text/javascript" src="/blackjack/script/page-style.js"
 		charset="utf-8"></script>
 	<script type="text/javascript">
-		let popupMessage = '${sessionScope.popupMessage}';
+		let
+		popupMessage = '${sessionScope.popupMessage}';
 		if (popupMessage.length > 0) {
 			alert(popupMessage);
 		}
 		<c:remove var="popupMessage" scope="session" />
 	</script>
+	<script src="http://vk.com/js/api/openapi.js"></script>
+ 	<script type="text/javascript" src="/blackjack/script/visitorinfo.js"
+		charset="utf-8"></script>
 </body>
 </html>

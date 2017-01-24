@@ -4,11 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.exception.DAOException;
-import org.qqq175.blackjack.game.GameState;
 import org.qqq175.blackjack.game.GameLogic;
-import org.qqq175.blackjack.persistence.dao.UserDAO;
-import org.qqq175.blackjack.persistence.dao.util.Settings;
+import org.qqq175.blackjack.game.GameState;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 public class Player {
@@ -17,7 +14,7 @@ public class Player {
 	private List<Hand> hands;
 	private boolean isActive;
 	private Hand activeHand = null;
-	
+
 	public Player(UserId userId, boolean isActive) {
 		this.userId = userId;
 		hands = new ArrayList();
@@ -66,17 +63,15 @@ public class Player {
 		}
 
 		void setStateDone() {
-			state = new DoneState();
+			// state = new DoneState();
 		}
 	}
 
 	private class DealState extends State {
 
-		
-
 		@Override
 		void nextState() {
-			state = new PlayState();
+			// state = new PlayState();
 		}
 
 		@Override
@@ -116,7 +111,7 @@ public class Player {
 
 		@Override
 		void nextState() {
-			state = new DealState();
+			// state = new DealState();
 		}
 
 		@Override
@@ -133,9 +128,9 @@ public class Player {
 		return userId;
 	}
 
-	public boolean tryDeal(BigDecimal betSize) {
-		return state.tryDeal(betSize);
-	}
+	// public boolean tryDeal(BigDecimal betSize) {
+	// return state.tryDeal(betSize);
+	// }
 
 	public boolean addHand(Hand hand) {
 		return hands.add(hand);
@@ -148,11 +143,11 @@ public class Player {
 		List<Hand> copyOfHands = new ArrayList<>(hands);
 		return copyOfHands;
 	}
-	
-	/** 
+
+	/**
 	 * @return number of player's hands.
 	 */
-	public int handsCount(){
+	public int handsCount() {
 		return hands.size();
 	}
 
@@ -177,6 +172,6 @@ public class Player {
 
 	public void nextState() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

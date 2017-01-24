@@ -139,11 +139,11 @@ public class GameLogic {
 		boolean result = false;
 		User user = UserPool.getInstance().get(activePlayer.getUserId());
 		Hand hand = activePlayer.getActiveHand();
-		if (user != null && hand != null){
-			if(user.getAccountBalance().compareTo(hand.getBid()) >= 0){
+		if (user != null && hand != null) {
+			if (user.getAccountBalance().compareTo(hand.getBid()) >= 0) {
 				if (activePlayer.handsCount() < 4) {
 					result = canSplit(activePlayer.getActiveHand());
-				} 
+				}
 			}
 		}
 		return result;
@@ -202,8 +202,7 @@ public class GameLogic {
 	 * @return boolean is able to surrender
 	 */
 	public static boolean canSurrender(Hand activeHand) {
-		return activeHand.getState().compareTo(GameState.DONE) < 0 && activeHand.isFirstAction()
-				&& !activeHand.getScore().isBlackJack();
+		return activeHand.getState().compareTo(GameState.DONE) < 0 && activeHand.isFirstAction() && !activeHand.getScore().isBlackJack();
 	}
 
 	/**

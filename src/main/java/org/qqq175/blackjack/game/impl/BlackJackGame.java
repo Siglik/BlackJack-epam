@@ -19,7 +19,7 @@ public class BlackJackGame implements BJGame {
 	private AtomicInteger playersCount;
 	private Player activePlayer;
 	private Dealer dealer;
-	
+
 	private GameState gameState;
 	private State state;
 	private BlackJackGame game;
@@ -66,7 +66,7 @@ public class BlackJackGame implements BJGame {
 
 		while (!foundNext && userId < players.size()) {
 			Player player = players.get(userId);
-			if (player != null && player.isDone()) {
+			if (player != null/* && player.isDone() */) {
 				activePlayer.setActive(false);
 				player.setActive(true);
 				activePlayer = player;
@@ -135,17 +135,17 @@ public class BlackJackGame implements BJGame {
 
 		@Override
 		public void surrender(Player player) throws GameActionDeniedException {
-			player.canSurrender();
+			// player.canSurrender();
 			game.nextPlayer();
 		}
 
 		@Override
 		public void deal(Player player, BigDecimal betSize) throws GameActionDeniedException {
-			if (player.tryDeal(betSize)) {
-
-			} else {
-
-			}
+			// if (player.tryDeal(betSize)) {
+			//
+			// } else {
+			//
+			// }
 
 			game.nextPlayer();
 		}
@@ -159,16 +159,16 @@ public class BlackJackGame implements BJGame {
 
 		private void giveCards() {
 			for (Player p : players) {
-				if (p != null && p.isDone()) {
-					List<Hand> hs = p.getHands();
-					if (!hs.isEmpty()) {
-						Hand h = hs.get(0);
-						if (h != null) {
-							h.addCard(deck.pullCard());
-							h.addCard(deck.pullCard());
-						}
-					}
-				}
+				// if (p != null && p.isDone()) {
+				// List<Hand> hs = p.getHands();
+				// if (!hs.isEmpty()) {
+				// Hand h = hs.get(0);
+				// if (h != null) {
+				// h.addCard(deck.pullCard());
+				// h.addCard(deck.pullCard());
+				// }
+				// }
+				// }
 			}
 		}
 
@@ -209,22 +209,22 @@ public class BlackJackGame implements BJGame {
 
 		@Override
 		public void hit(Player player) throws GameActionDeniedException {
-			player.canHit();
+			// player.canHit();
 		}
 
 		@Override
 		public void doubleBet(Player player) throws GameActionDeniedException {
-			player.canDouble();
+			// player.canDouble();
 		}
 
 		@Override
 		public void split(Player player) throws GameActionDeniedException {
-			player.canSplit();
+			// player.canSplit();
 		}
 
 		@Override
 		public void surrender(Player player) throws GameActionDeniedException {
-			player.canSurrender();
+			// player.canSurrender();
 		}
 
 		@Override
@@ -240,7 +240,7 @@ public class BlackJackGame implements BJGame {
 
 		@Override
 		public void insurance(Player player) throws GameActionDeniedException {
-			player.canInsurance();
+			// player.canInsurance();
 		}
 	}
 

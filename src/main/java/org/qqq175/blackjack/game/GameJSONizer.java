@@ -15,7 +15,7 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;
 
 @SuppressWarnings("unchecked")
-public class GameToJSONLogic {
+public class GameJSONizer {
 
 	public static JSONObject toJSON(BlackJackGame game, User user) {
 		JSONObject result = new JSONObject();
