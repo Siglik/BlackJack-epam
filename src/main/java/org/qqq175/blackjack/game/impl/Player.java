@@ -1,9 +1,11 @@
 package org.qqq175.blackjack.game.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.qqq175.blackjack.exception.DAOException;
+import org.qqq175.blackjack.game.GameUtil;
 import org.qqq175.blackjack.persistence.dao.UserDAO;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
@@ -15,7 +17,7 @@ public class Player {
 	private boolean isActive;
 	private Hand activeHand = null;
 
-	private void nextHand() {
+	private boolean nextHand() {
 		int handId = activeHand != null ? hands.indexOf(activeHand) : 0;
 		boolean foundNext = false;
 
@@ -31,69 +33,37 @@ public class Player {
 
 		if (!foundNext) {
 			activeHand = null;
-			state.nextState();
 		}
+
+		return foundNext;
 	}
 
-	public enum States {
-		DEAL(/* new DealState() */null), PLAY(/* new PlayState() */null), DONE(
-				/* new DoneState() */null);
-
-		private States(State state) {
-			this.state = state;
-		}
-
-		private final State state;
-
-		/**
-		 * @return the state
-		 */
-		public State getState() {
-			return state;
-		}
+	public enum StateEnum {
+		DEAL, PLAY, DONE;
 	}
 
 	private abstract class State {
 		abstract void nextState();
 
-		public boolean canHit() {
+		abstract StateEnum getState();
+
+		boolean tryDeal(BigDecimal betSize) {
 			return false;
 		}
 
-		public boolean canDouble() {
+		boolean tryInsurance() {
 			return false;
 		}
 
-		public boolean canSplit() {
-			return false;
-		}
-
-		public boolean canSurrender() {
-			return false;
-		}
-
-		public boolean tryDeal(BigDecimal betSize) {
-			return false;
-		}
-
-		public boolean tryInsurance() {
-			return false;
-		}
-
-		public boolean canStand() {
-			return false;
+		void setStateDone() {
+			state = new DoneState();
 		}
 	}
 
 	private class DealState extends State {
 
 		@Override
-		public boolean canSurrender() {
-			return true;
-		}
-
-		@Override
-		public boolean tryDeal(BigDecimal betSize) {
+		boolean tryDeal(BigDecimal betSize) {
 			UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
 			try {
 				boolean lockResult = userDAO.lockBalance(userId, betSize);
@@ -117,12 +87,18 @@ public class Player {
 		void nextState() {
 			state = new PlayState();
 		}
+
+		@Override
+		StateEnum getState() {
+			// TODO Auto-generated method stub
+			return StateEnum.DEAL;
+		}
 	}
 
 	private class PlayState extends State {
 
 		public boolean tryDouble() {
-			if (activeHand.canDouble()) {
+			if (GameUtil.canDouble(activeHand)) {
 				///
 				///
 				///
@@ -135,23 +111,12 @@ public class Player {
 		}
 
 		@Override
-		public boolean canSplit() {
-			return false;
-		}
-
-		@Override
-		public boolean canSurrender() {
-			return false;
-		}
-
-		@Override
 		void nextState() {
 		}
 
 		@Override
-		public boolean canStand() {
-			// TODO Auto-generated method stub
-			return false;
+		StateEnum getState() {
+			return StateEnum.PLAY;
 		}
 
 	}
@@ -162,6 +127,12 @@ public class Player {
 		void nextState() {
 			state = new DealState();
 		}
+
+		@Override
+		StateEnum getState() {
+			return StateEnum.DONE;
+		}
+
 	}
 
 	public Player(UserId userId, boolean isActive) {
@@ -180,56 +151,20 @@ public class Player {
 		return userId;
 	}
 
-	public boolean canHit() {
-		// Hit: Take another card from the dealer.
-		return state.canHit();
-	}
-
-	public boolean canDouble() {
-		return state.canDouble();
-	}
-
-	public boolean canSplit() {
-		if (getHands().size() <= 4) {
-			return state.canSplit();
-		} else {
-			return false;
-		}
-	}
-
-	public boolean canSurrender() {
-		return state.canSurrender();
-	}
-
 	public boolean tryDeal(BigDecimal betSize) {
 		return state.tryDeal(betSize);
 	}
 
-	public boolean canInsurance() {
-		return state.canInsurance();
-	}
-
-	/**
-	 * @return the isActive
-	 */
-	public boolean isDone() {
-		return !(state instanceof DoneState);
-	}
-
-	private void addHand(Hand hand) {
-		hands.add(hand);
+	private boolean addHand(Hand hand) {
+		return hands.add(hand);
 	}
 
 	/**
 	 * @return the hands
 	 */
 	public List<Hand> getHands() {
-		return hands;
-	}
-
-	public boolean canStand() {
-		// TODO Auto-generated method stub
-		return false;
+		List<Hand> copyOfHands = new ArrayList<>(hands);
+		return copyOfHands;
 	}
 
 	/**

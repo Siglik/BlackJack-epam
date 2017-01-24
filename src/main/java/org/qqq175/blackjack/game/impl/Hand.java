@@ -11,6 +11,9 @@ public class Hand {
 	private BigDecimal bid;
 	private Score score;
 	private boolean isSurrendered;
+	/**
+	 * 
+	 */
 	private boolean isActive;
 	private boolean isFirstAction;
 
@@ -25,31 +28,6 @@ public class Hand {
 
 	private void updateScore() {
 		score = GameUtil.calcScore(this);
-	}
-
-	public boolean canHit() {
-		if (!score.isBlackJack()) {
-			if (score.getValue() < 21) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-
-	}
-
-	public boolean canDouble() {
-		return (9 <= score.getValue() && score.getValue() <= 11);
-	}
-
-	public boolean canSplit() {
-		return cards.size() == 2 && cards.get(0).getRank().equals(cards.get(1).getRank());
-	}
-
-	public boolean canSurrender() {
-		return isFirstAction;
 	}
 
 	/**
