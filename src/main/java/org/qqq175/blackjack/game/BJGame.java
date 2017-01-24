@@ -7,19 +7,19 @@ import org.qqq175.blackjack.game.impl.Player;
 import org.qqq175.blackjack.persistence.entity.User;
 
 public interface BJGame {
-	void hit(Player player) throws GameActionDeniedException;
+	void hit(User user) throws GameActionDeniedException;
 
-	void doubleBet(Player player) throws GameActionDeniedException;
+	void doubleBet(User user) throws GameActionDeniedException;
 
-	void split(Player player) throws GameActionDeniedException;
+	void split(User user) throws GameActionDeniedException;
 
-	void surrender(Player player) throws GameActionDeniedException;
+	void surrender(User user) throws GameActionDeniedException;
 
-	void deal(Player player, BigDecimal betSize) throws GameActionDeniedException;
+	void deal(User user, BigDecimal betSize) throws GameActionDeniedException;
 
-	void insurance(Player player) throws GameActionDeniedException;
+	void insurance(User user) throws GameActionDeniedException;
 
 	Player join(User user);
 
-	void leave(Player player);
+	void leave(User user);
 }

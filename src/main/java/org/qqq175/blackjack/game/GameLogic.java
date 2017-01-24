@@ -28,7 +28,7 @@ public class GameLogic {
 	 * @param deck
 	 * @return
 	 */
-	boolean tryDeal(Player player, BigDecimal betSize, Deck deck) {
+	public boolean tryDeal(Player player, BigDecimal betSize, Deck deck) {
 		boolean result = false;
 		if (player.getState() == GameState.DEAL) {
 			Hand hand = player.getActiveHand();
@@ -54,6 +54,27 @@ public class GameLogic {
 		return result;
 	}
 
+	public boolean trySplit(Player player, Deck deck) {
+		return false;
+
+	}
+
+	public boolean tryInsurance(Player player) {
+		return false;
+	}
+
+	public boolean trySurrender(Player player) {
+		return false;
+	}
+
+	public boolean tryHit(Player player, Deck deck) {
+		return false;
+	}
+
+	public boolean tryStand(Player player) {
+		return false;
+	}
+
 	/*
 	 * ****** can ******
 	 */
@@ -68,6 +89,21 @@ public class GameLogic {
 		if (activePlayer.getState() == GameState.DEAL) {
 			Hand activeHand = activePlayer.getActiveHand();
 			result = activeHand != null && activeHand.size() == 0;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param activePlayer
+	 * @return
+	 */
+	public static boolean canStand(Player activePlayer) {
+		boolean result = false;
+		if (activePlayer.getState() == GameState.PLAY) {
+			Hand activeHand = activePlayer.getActiveHand();
+			result = canStand(activeHand);
 		}
 
 		return result;
@@ -179,6 +215,17 @@ public class GameLogic {
 	public static boolean canDouble(Hand activeHand) {
 		Score score = activeHand.getScore();
 		return (9 <= score.getValue() && score.getValue() <= 11);
+	}
+
+	/**
+	 * player can Stand hand if hand score is lesser than or equal to 21 and
+	 * isnt Blackjack;
+	 * 
+	 * @param activeHand
+	 * @return
+	 */
+	private static boolean canStand(Hand activeHand) {
+		return !activeHand.getScore().isBlackJack() && activeHand.getScore().getValue() <= 21;
 	}
 
 	/**

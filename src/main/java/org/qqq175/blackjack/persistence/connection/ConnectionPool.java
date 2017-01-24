@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -14,18 +16,20 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 public class ConnectionPool {
 	private static AtomicReference<ConnectionPool> instance = new AtomicReference<>();
 	private static int VALID_TIMEOUT = 2; // seconds
-	private static int RETRIEVE_TIMEOUT = 3000; // milliseconds
+	private static int RETRIEVE_TIMEOUT = 300; // milliseconds
+	private static int MAX_POOL_SIZE = Settings.getInstance().getDatabase().getMaxPoolSize();
+	private static int MIN_POOL_SIZE = Settings.getInstance().getDatabase().getMinPoolSize();
 	private AtomicInteger connectionsCount;
 	private BlockingQueue<Connection> availableConnections;
-	private boolean isClosing;
+	private AtomicBoolean isClosing;
 	private static Semaphore semaphore = new Semaphore(1);
-	private static boolean isEmpty = true;
+	private static AtomicBoolean isEmpty = new AtomicBoolean(true);
 
 	private ConnectionPool() {
-		isClosing = false;
+		isClosing = new AtomicBoolean(false);
 		connectionsCount = new AtomicInteger();
 		Settings settings = Settings.getInstance();
-		availableConnections = new ArrayBlockingQueue<>(settings.getDatabase().getMaxPoolSize());
+		availableConnections = new ArrayBlockingQueue<>(MAX_POOL_SIZE);
 
 		try {
 			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
@@ -33,28 +37,27 @@ public class ConnectionPool {
 			// TODO LOG fatal
 			throw new RuntimeException("Unable to load db driver.\n" + e.getMessage(), e);
 		}
-		for (int i = 0; i < settings.getDatabase().getMinPoolSize(); i++) {
+		for (int i = 0; i < MIN_POOL_SIZE; i++) {
 			availableConnections.add(createConnection());
 		}
 	}
 
 	/**
-	 * Double Checked Locking & volatile singleton get instance method
-	 * 
 	 * @return ConnectionPool instance
 	 */
 	public static ConnectionPool getInstance() {
-		if (isEmpty) {
+		if (isEmpty.get()) {
 			try {
 				semaphore.acquire();
+				if (instance.get() == null) {
+					instance.set(new ConnectionPool());
+					isEmpty.set(false);
+				}
 			} catch (InterruptedException e) {
 				// TODO log
+			} finally {
+				semaphore.release();
 			}
-			if (instance.get() == null) {
-				instance.set(new ConnectionPool());
-				isEmpty = false;
-			}
-			semaphore.release();
 		}
 		return instance.get();
 	}
@@ -92,7 +95,15 @@ public class ConnectionPool {
 		assertNotClosing();
 		Connection conn = null;
 		try {
-			conn = availableConnections.take();
+			conn = availableConnections.poll(RETRIEVE_TIMEOUT, TimeUnit.MILLISECONDS);
+			if (conn == null) {
+				if (connectionsCount.get() < MAX_POOL_SIZE) {
+					conn = this.createConnection();
+					System.out.println("size " + availableConnections.size());
+				} else {
+					conn = availableConnections.take();
+				}
+			}
 			try {
 				if (!conn.isValid(VALID_TIMEOUT)) {
 					conn.close();
@@ -111,12 +122,24 @@ public class ConnectionPool {
 		return new ConnectionWrapper(conn);
 	}
 
-	void putbackConnection(Connection cw) {
-		try {
-			availableConnections.put(cw);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	void putbackConnection(Connection conn) {
+		if (availableConnections.size() < MIN_POOL_SIZE) {
+			try {
+				System.out.println("size " + availableConnections.size());
+				availableConnections.put(conn);
+				System.out.println("size " + availableConnections.size());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				conn.close();
+				connectionsCount.decrementAndGet();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -125,7 +148,7 @@ public class ConnectionPool {
 	}
 
 	private void assertNotClosing() {
-		if (isClosing) {
+		if (isClosing.get()) {
 			throw new RuntimeException("Cannot perform operation: pool is closing.");
 		}
 	}

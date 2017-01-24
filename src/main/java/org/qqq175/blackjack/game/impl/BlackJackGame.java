@@ -4,15 +4,17 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.qqq175.blackjack.exception.GameActionDeniedException;
 import org.qqq175.blackjack.game.BJGame;
 import org.qqq175.blackjack.game.GameState;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.persistence.entity.id.GameId;
 
 public class BlackJackGame implements BJGame {
 	private static final int MAX_PLAYERS = 3;
-	private int id;
+	private GameId id;
 	private AtomicInteger modifyCount;
 	private Deck deck;
 	private List<Player> players;
@@ -23,17 +25,18 @@ public class BlackJackGame implements BJGame {
 	private GameState gameState;
 	private State state;
 	private BlackJackGame game;
+	private ReentrantLock lock;
 
-	public BlackJackGame(User creator) {
-		this(6, true, MAX_PLAYERS, creator);
+	public BlackJackGame(GameId gameId, User creator) {
+		this(gameId, 6, true, MAX_PLAYERS, creator);
 	}
 
-	public BlackJackGame(User creator, int playerCount) {
-		this(6, true, playerCount <= MAX_PLAYERS ? playerCount : MAX_PLAYERS, creator);
+	public BlackJackGame(GameId gameId, User creator, int playerCount) {
+		this(gameId, 6, true, playerCount <= MAX_PLAYERS ? playerCount : MAX_PLAYERS, creator);
 	}
 
-	private BlackJackGame(int decksCount, boolean isCasinoPlays, int maxPlayers, User creator) {
-		id = 1;
+	private BlackJackGame(GameId gameId, int decksCount, boolean isCasinoPlays, int maxPlayers, User creator) {
+		id = gameId;
 		game = this;
 		deck = new Deck(decksCount);
 		if (isCasinoPlays) {
@@ -53,6 +56,7 @@ public class BlackJackGame implements BJGame {
 
 		state = new InitState();
 		modifyCount = new AtomicInteger(1);
+		lock = new ReentrantLock();
 	}
 
 	private void modify() {
@@ -61,18 +65,18 @@ public class BlackJackGame implements BJGame {
 	}
 
 	private boolean nextPlayer() {
-		int userId = activePlayer != null ? players.indexOf(activePlayer) : 0;
+		int index = activePlayer != null ? players.indexOf(activePlayer) : 0;
 		boolean foundNext = false;
 
-		while (!foundNext && userId < players.size()) {
-			Player player = players.get(userId);
-			if (player != null/* && player.isDone() */) {
+		while (!foundNext && index < players.size()) {
+			Player player = players.get(index);
+			if (player != null && player.getState() != GameState.UNACTIVE) {
 				activePlayer.setActive(false);
 				player.setActive(true);
 				activePlayer = player;
 				foundNext = true;
 			} else {
-				userId++;
+				index++;
 			}
 		}
 
@@ -83,40 +87,15 @@ public class BlackJackGame implements BJGame {
 		return foundNext;
 	}
 
-	private abstract class State implements BJGame {
+	private abstract class State {
 		public abstract void nextState();
 
-		@Override
-		public void insurance(Player player) throws GameActionDeniedException {
-			throw new GameActionDeniedException("error.game.actiondenied");
-		}
+		/*
+		 * @Override public void insurance(User user) throws
+		 * GameActionDeniedException { throw new
+		 * GameActionDeniedException("error.game.actiondenied"); }
+		 */
 
-		@Override
-		public void hit(Player player) throws GameActionDeniedException {
-			throw new GameActionDeniedException("error.game.actiondenied");
-		}
-
-		@Override
-		public void doubleBet(Player player) throws GameActionDeniedException {
-			throw new GameActionDeniedException("error.game.actiondenied");
-		}
-
-		@Override
-		public void split(Player player) throws GameActionDeniedException {
-			throw new GameActionDeniedException("error.game.actiondenied");
-		}
-
-		@Override
-		public void surrender(Player player) throws GameActionDeniedException {
-			throw new GameActionDeniedException("error.game.actiondenied");
-		}
-
-		@Override
-		public void deal(Player player, BigDecimal betSize) throws GameActionDeniedException {
-			throw new GameActionDeniedException("error.game.actiondenied");
-		}
-
-		@Override
 		public Player join(User user) {
 			int nextPlayersCount = playersCount.incrementAndGet();
 			if (nextPlayersCount <= MAX_PLAYERS) {
@@ -133,20 +112,8 @@ public class BlackJackGame implements BJGame {
 
 	private class InitState extends State {
 
-		@Override
-		public void surrender(Player player) throws GameActionDeniedException {
+		public void surrender(User user) throws GameActionDeniedException {
 			// player.canSurrender();
-			game.nextPlayer();
-		}
-
-		@Override
-		public void deal(Player player, BigDecimal betSize) throws GameActionDeniedException {
-			// if (player.tryDeal(betSize)) {
-			//
-			// } else {
-			//
-			// }
-
 			game.nextPlayer();
 		}
 
@@ -171,93 +138,6 @@ public class BlackJackGame implements BJGame {
 				// }
 			}
 		}
-
-		@Override
-		public void leave(Player player) {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
-
-	private class InsuranceState extends State {
-
-		@Override
-		public void insurance(Player player) throws GameActionDeniedException {
-
-		}
-
-		@Override
-		public void surrender(Player player) throws GameActionDeniedException {
-
-		}
-
-		@Override
-		public void leave(Player player) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void nextState() {
-			// TODO Auto-generated method stub
-
-		}
-	}
-
-	private class PlayState extends State {
-
-		@Override
-		public void hit(Player player) throws GameActionDeniedException {
-			// player.canHit();
-		}
-
-		@Override
-		public void doubleBet(Player player) throws GameActionDeniedException {
-			// player.canDouble();
-		}
-
-		@Override
-		public void split(Player player) throws GameActionDeniedException {
-			// player.canSplit();
-		}
-
-		@Override
-		public void surrender(Player player) throws GameActionDeniedException {
-			// player.canSurrender();
-		}
-
-		@Override
-		public void nextState() {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void leave(Player player) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void insurance(Player player) throws GameActionDeniedException {
-			// player.canInsurance();
-		}
-	}
-
-	private class FinishedState extends State {
-
-		@Override
-		public void nextState() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void leave(Player player) {
-			// TODO Auto-generated method stub
-
-		}
-
 	}
 
 	/*
@@ -268,7 +148,7 @@ public class BlackJackGame implements BJGame {
 	 * org.qqq175.blackjack.game.impl.Player)
 	 */
 	@Override
-	public void hit(Player player) throws GameActionDeniedException {
+	public void hit(User user) throws GameActionDeniedException {
 		if (player == activePlayer) {
 			state.hit(player);
 			modify();
@@ -285,7 +165,7 @@ public class BlackJackGame implements BJGame {
 	 * Hand, org.qqq175.blackjack.game.impl.Player)
 	 */
 	@Override
-	public void doubleBet(Player player) throws GameActionDeniedException {
+	public void doubleBet(User user) throws GameActionDeniedException {
 		if (player == activePlayer) {
 			state.doubleBet(player);
 			modify();
@@ -302,7 +182,7 @@ public class BlackJackGame implements BJGame {
 	 * org.qqq175.blackjack.game.impl.Player)
 	 */
 	@Override
-	public void split(Player player) throws GameActionDeniedException {
+	public void split(User user) throws GameActionDeniedException {
 		if (player == activePlayer) {
 			state.split(player);
 			modify();
@@ -320,7 +200,7 @@ public class BlackJackGame implements BJGame {
 	 * Hand, org.qqq175.blackjack.game.impl.Player)
 	 */
 	@Override
-	public void surrender(Player player) throws GameActionDeniedException {
+	public void surrender(User user) throws GameActionDeniedException {
 		if (player == activePlayer) {
 			state.surrender(player);
 			modify();
@@ -349,7 +229,7 @@ public class BlackJackGame implements BJGame {
 	}
 
 	@Override
-	public void insurance(Player player) throws GameActionDeniedException {
+	public void insurance(User user) throws GameActionDeniedException {
 		if (player == activePlayer) {
 			state.insurance(player);
 			modify();
@@ -364,7 +244,7 @@ public class BlackJackGame implements BJGame {
 	}
 
 	@Override
-	public void leave(Player player) {
+	public void leave(User user) {
 		state.leave(player);
 		modify();
 	}
@@ -373,7 +253,7 @@ public class BlackJackGame implements BJGame {
 		return MAX_PLAYERS;
 	}
 
-	public int getId() {
+	public GameId getId() {
 		return id;
 	}
 
