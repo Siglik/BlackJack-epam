@@ -5,17 +5,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.qqq175.blackjack.exception.DAOException;
-import org.qqq175.blackjack.game.GameUtil;
+import org.qqq175.blackjack.game.GameState;
+import org.qqq175.blackjack.game.GameLogic;
 import org.qqq175.blackjack.persistence.dao.UserDAO;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 public class Player {
 	private UserId userId;
-	private State state;
+	private GameState state;
 	private List<Hand> hands;
 	private boolean isActive;
 	private Hand activeHand = null;
+	
+	public Player(UserId userId, boolean isActive) {
+		this.userId = userId;
+		hands = new ArrayList();
+		Hand hand = new Hand();
+		this.addHand(hand);
+		this.activeHand = hand;
+		if (isActive) {
+			this.state = GameState.DEAL;
+		} else {
+			this.state = GameState.DONE;
+		}
+	}
 
 	private boolean nextHand() {
 		int handId = activeHand != null ? hands.indexOf(activeHand) : 0;
@@ -38,14 +52,10 @@ public class Player {
 		return foundNext;
 	}
 
-	public enum StateEnum {
-		DEAL, PLAY, DONE;
-	}
-
 	private abstract class State {
 		abstract void nextState();
 
-		abstract StateEnum getState();
+		abstract GameState getState();
 
 		boolean tryDeal(BigDecimal betSize) {
 			return false;
@@ -62,26 +72,7 @@ public class Player {
 
 	private class DealState extends State {
 
-		@Override
-		boolean tryDeal(BigDecimal betSize) {
-			UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
-			try {
-				boolean lockResult = userDAO.lockBalance(userId, betSize);
-				if (lockResult) {
-					Hand hand = new Hand();
-					hand.setBid(betSize);
-					addHand(hand);
-					nextState();
-					return true;
-				} else {
-					return false;
-				}
-			} catch (DAOException e) {
-				// TODO log
-				e.printStackTrace();
-				return false;
-			}
-		}
+		
 
 		@Override
 		void nextState() {
@@ -89,16 +80,16 @@ public class Player {
 		}
 
 		@Override
-		StateEnum getState() {
+		GameState getState() {
 			// TODO Auto-generated method stub
-			return StateEnum.DEAL;
+			return GameState.DEAL;
 		}
 	}
 
 	private class PlayState extends State {
 
 		public boolean tryDouble() {
-			if (GameUtil.canDouble(activeHand)) {
+			if (GameLogic.canDouble(activeHand)) {
 				///
 				///
 				///
@@ -115,8 +106,8 @@ public class Player {
 		}
 
 		@Override
-		StateEnum getState() {
-			return StateEnum.PLAY;
+		GameState getState() {
+			return GameState.PLAY;
 		}
 
 	}
@@ -129,19 +120,10 @@ public class Player {
 		}
 
 		@Override
-		StateEnum getState() {
-			return StateEnum.DONE;
+		GameState getState() {
+			return GameState.DONE;
 		}
 
-	}
-
-	public Player(UserId userId, boolean isActive) {
-		this.userId = userId;
-		if (isActive) {
-			this.state = new DealState();
-		} else {
-			this.state = new DoneState();
-		}
 	}
 
 	/**
@@ -155,16 +137,23 @@ public class Player {
 		return state.tryDeal(betSize);
 	}
 
-	private boolean addHand(Hand hand) {
+	public boolean addHand(Hand hand) {
 		return hands.add(hand);
 	}
 
 	/**
-	 * @return the hands
+	 * @return the copy of hands list
 	 */
 	public List<Hand> getHands() {
 		List<Hand> copyOfHands = new ArrayList<>(hands);
 		return copyOfHands;
+	}
+	
+	/** 
+	 * @return number of player's hands.
+	 */
+	public int handsCount(){
+		return hands.size();
 	}
 
 	/**
@@ -180,5 +169,14 @@ public class Player {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public GameState getState() {
+		return state;
+	}
+
+	public void nextState() {
+		// TODO Auto-generated method stub
+		
 	}
 }

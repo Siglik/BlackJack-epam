@@ -4,22 +4,30 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.game.GameUtil;
+import org.qqq175.blackjack.game.GameState;
+import org.qqq175.blackjack.game.GameLogic;
 
 public class Hand {
+	
+
 	private List<Card> cards;
 	private BigDecimal bid;
 	private Score score;
 	private boolean isSurrendered;
+	private GameState state;
 	/**
 	 * 
 	 */
 	private boolean isActive;
 	private boolean isFirstAction;
+	private boolean isFinished;
 
 	public Hand() {
+		this.cards = new ArrayList<>();
 		this.score = new Score();
 		this.bid = new BigDecimal(0.0);
+		this.isFirstAction = true;
+		setState(GameState.DEAL);
 	}
 
 	public Hand split() {
@@ -27,7 +35,7 @@ public class Hand {
 	}
 
 	private void updateScore() {
-		score = GameUtil.calcScore(this);
+		score = GameLogic.calcScore(this);
 	}
 
 	/**
@@ -127,5 +135,37 @@ public class Hand {
 	 */
 	public void setFirstAction(boolean isFirstAction) {
 		this.isFirstAction = isFirstAction;
+	}
+
+	/**
+	 * @return the isFinished
+	 */
+	public boolean isFinished() {
+		return isFinished;
+	}
+
+	/**
+	 * @param isFinished the isFinished to set
+	 */
+	public void setFinished(boolean isFinished) {
+		this.isFinished = isFinished;
+	}
+	
+	public int size() {
+		return cards.size();
+	}
+
+	/**
+	 * @return the state
+	 */
+	public GameState getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(GameState state) {
+		this.state = state;
 	}
 }

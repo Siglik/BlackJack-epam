@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.qqq175.blackjack.exception.GameActionDeniedException;
 import org.qqq175.blackjack.game.BJGame;
+import org.qqq175.blackjack.game.GameState;
 import org.qqq175.blackjack.persistence.entity.User;
 
 public class BlackJackGame implements BJGame {
@@ -18,7 +19,8 @@ public class BlackJackGame implements BJGame {
 	private AtomicInteger playersCount;
 	private Player activePlayer;
 	private Dealer dealer;
-
+	
+	private GameState gameState;
 	private State state;
 	private BlackJackGame game;
 
