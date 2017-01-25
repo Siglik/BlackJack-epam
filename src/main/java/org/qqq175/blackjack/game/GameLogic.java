@@ -28,9 +28,9 @@ public class GameLogic {
 	 * @param deck
 	 * @return
 	 */
-	public boolean tryDeal(Player player, BigDecimal betSize, Deck deck) {
+	public static boolean tryDeal(Player player, BigDecimal betSize, Deck deck) {
 		boolean result = false;
-		if (player.getState() == GameState.DEAL) {
+		if (player.getStage() == GameStage.DEAL) {
 			Hand hand = player.getActiveHand();
 			if (hand != null && hand.size() == 0) {
 				UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
@@ -40,13 +40,11 @@ public class GameLogic {
 						hand.setBid(betSize);
 						hand.addCard(deck.pullCard());
 						hand.addCard(deck.pullCard());
-						player.nextState(); // ??
 						result = true;
 					}
 				} catch (DAOException e) {
 					// TODO log
 					e.printStackTrace();
-
 				}
 			}
 		}
@@ -54,24 +52,85 @@ public class GameLogic {
 		return result;
 	}
 
-	public boolean trySplit(Player player, Deck deck) {
-		return false;
+	/**
+	 * 
+	 * @param player
+	 * @param deck
+	 * @return
+	 */
+	public static boolean trySplit(Player player, Deck deck) {
+		boolean result = false;
+		Hand activeHand = player.getActiveHand();
+		if (activeHand != null && activeHand.size() == 2) {
+			BigDecimal betSize = activeHand.getBid();
+			Hand newHand = new Hand();
+			UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
+			try {
+				boolean lockResult = userDAO.lockBalance(player.getUserId(), betSize);
+				if (lockResult) {
+					Card oldCard = activeHand.takeLastCard();
+					activeHand.addCard(deck.pullCard());
+					
+					newHand.addCard(oldCard);
+					newHand.addCard(deck.pullCard());
+					
+					newHand.setBid(betSize);
+					result = true;
+				}
+			} catch (DAOException e) {
+				// TODO log
+				e.printStackTrace();
 
+			}
+		}
+		return result;
 	}
 
-	public boolean tryInsurance(Player player) {
+	/**
+	 * 
+	 * @param player
+	 * @param deck
+	 * @return
+	 */
+	public static boolean tryDouble(Player player, Deck deck) {
+
 		return false;
 	}
 
-	public boolean trySurrender(Player player) {
+	/**
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public static boolean tryInsurance(Player player) {
 		return false;
 	}
 
-	public boolean tryHit(Player player, Deck deck) {
+	/**
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public static boolean trySurrender(Player player) {
 		return false;
 	}
 
-	public boolean tryStand(Player player) {
+	/**
+	 * 
+	 * @param player
+	 * @param deck
+	 * @return
+	 */
+	public static boolean tryHit(Player player, Deck deck) {
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public static boolean tryStand(Player player) {
 		return false;
 	}
 
@@ -86,7 +145,7 @@ public class GameLogic {
 	 */
 	public static boolean canDeal(Player activePlayer) {
 		boolean result = false;
-		if (activePlayer.getState() == GameState.DEAL) {
+		if (activePlayer.getStage() == GameStage.DEAL) {
 			Hand activeHand = activePlayer.getActiveHand();
 			result = activeHand != null && activeHand.size() == 0;
 		}
@@ -101,7 +160,7 @@ public class GameLogic {
 	 */
 	public static boolean canStand(Player activePlayer) {
 		boolean result = false;
-		if (activePlayer.getState() == GameState.PLAY) {
+		if (activePlayer.getStage() == GameStage.PLAY) {
 			Hand activeHand = activePlayer.getActiveHand();
 			result = canStand(activeHand);
 		}
@@ -121,7 +180,7 @@ public class GameLogic {
 	public boolean canInsurance(Dealer dealer, Player activePlayer, Hand activeHand) {
 		boolean result = false;
 		Hand hand = dealer.getHand();
-		List<Card> cards = hand.getCardsList();
+		List<Card> cards = hand.getCardsListCopy();
 		if (hand != null && cards != null && cards.size() == 2) {
 			Card firstCard = cards.get(0);
 			if (firstCard.getRank() == Card.Rank.ACE) {
@@ -236,7 +295,7 @@ public class GameLogic {
 	 * @return
 	 */
 	public static boolean canSplit(Hand activeHand) {
-		List<Card> cards = activeHand.getCardsList();
+		List<Card> cards = activeHand.getCardsListCopy();
 		return cards.size() == 2 && cards.get(0).getRank().equals(cards.get(1).getRank());
 	}
 
@@ -249,7 +308,8 @@ public class GameLogic {
 	 * @return boolean is able to surrender
 	 */
 	public static boolean canSurrender(Hand activeHand) {
-		return activeHand.getState().compareTo(GameState.DONE) < 0 && activeHand.isFirstAction() && !activeHand.getScore().isBlackJack();
+		return activeHand.getStage().compareTo(GameStage.RESULT) < 0 && activeHand.isFirstAction()
+				&& !activeHand.getScore().isBlackJack();
 	}
 
 	/**
@@ -264,7 +324,7 @@ public class GameLogic {
 		int aces = 0;
 		int total = 0;
 		Score score = new Score();
-		List<Card> cards = hand.getCardsList();
+		List<Card> cards = hand.getCardsListCopy();
 		boolean isBlackJack = false;
 		for (Card card : cards) {
 			total += card.getValue();
@@ -284,5 +344,17 @@ public class GameLogic {
 		score.setValue(total);
 
 		return score;
+	}
+
+	/**
+	 * 
+	 * @param activeHand
+	 */
+	public static boolean payOut(Hand activeHand) {
+		if (activeHand.getStage() == GameStage.RESULT) {
+			activeHand.setStage(GameStage.DONE);
+		}
+
+		return false;
 	}
 }

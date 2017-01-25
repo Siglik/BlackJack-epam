@@ -6,11 +6,15 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Deck {
 	// deck is 52 cards, most popular is six-deck game (312 card)
+	private final static int ONE_DECK = 52;
 	private Deque<Card> cards;
-	private int redeckIndex;
+	private int redeckOnLeft;
+	private int decksCount;
+	private ReentrantLock lock;
 
 	/**
 	 * creates standard six decks game
@@ -20,7 +24,21 @@ public class Deck {
 	}
 
 	public Deck(int decksCount) {
-		int cardCount = decksCount * 52;
+		this.decksCount = decksCount;
+
+		this.cards = new ArrayDeque<>(Deck.initDeck(decksCount));
+
+		Random rand = new Random();
+		int cardCount = decksCount * ONE_DECK;
+		rand.setSeed(System.currentTimeMillis());
+		//redeck random on 20-50% cards left
+		this.redeckOnLeft = (int) (cardCount * 0.5) - rand.nextInt((int) (cardCount * 0.3));
+	}
+
+	private static List<Card> initDeck(int decksCount) {
+		int cardCount = decksCount * ONE_DECK;
+		Random rand = new Random();
+		rand.setSeed(System.currentTimeMillis());
 		List<Card> cards = new ArrayList<>(cardCount);
 		for (Card.Suit s : Card.Suit.values()) {
 			for (Card.Rank r : Card.Rank.values()) {
@@ -29,15 +47,31 @@ public class Deck {
 				}
 			}
 		}
-		Random rand = new Random();
-		rand.setSeed(System.currentTimeMillis());
 		Collections.shuffle(cards, rand);
-		this.cards = new ArrayDeque<>(cards);
-		// update this index according to bl rules (min - max values)
-		this.redeckIndex = rand.nextInt(cardCount);
+
+		return cards;
 	}
 
 	public Card pullCard() {
-		return cards.getFirst();
+			if (cards.size() < 1){
+				this.redeck();
+			}
+		    lock.lock();
+			Card card = cards.getFirst();
+			lock.unlock();
+			return card;	
+	}
+
+	public void newRound(){
+		int cardsLeft = cards.size();
+		if (cardsLeft < ONE_DECK || cardsLeft < this.redeckOnLeft){
+			this.redeck();
+		}
+	}
+	
+	private void redeck(){
+		lock.lock();
+		this.cards = new ArrayDeque<>(Deck.initDeck(decksCount));
+		lock.unlock();
 	}
 }

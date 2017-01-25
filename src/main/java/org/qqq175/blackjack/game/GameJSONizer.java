@@ -21,7 +21,7 @@ public class GameJSONizer {
 		JSONObject result = new JSONObject();
 		JSONArray players = new JSONArray();
 		boolean isUserActive = user.getId().equals(game.getActivePlayer().getUserId());
-		for (Player player : game.getPlayers()) {
+		for (Player player : game.getPlayersList()) {
 			boolean isCurrentUser = player.getUserId().equals(user.getId());
 			players.add(toJSON(player, isCurrentUser));
 		}
@@ -100,7 +100,7 @@ public class GameJSONizer {
 		if (user != null) {
 			result.put("id", user.getDisplayName());
 			result.put("img", photoManager.findPhotoRelativePath(player.getUserId()));
-			result.put("hands", toJSON(player.getHands()));
+			result.put("hands", toJSON(player.getHandsListCopy()));
 			result.put("isActive", player.isActive());
 		} else {
 			result.put("id", "");
@@ -122,7 +122,7 @@ public class GameJSONizer {
 	private static JSONObject toJSON(Hand hand, boolean isPlayer) {
 		JSONObject result = new JSONObject();
 		result.put("score", toJSON(hand.getScore(), true));
-		result.put("cards", toJSON(hand.getCardsList(), isPlayer));
+		result.put("cards", toJSON(hand.getCardsListCopy(), isPlayer));
 		if (isPlayer) {
 			result.put("bet", hand.getBid());// ?toString
 			result.put("isActive", hand.isActive());

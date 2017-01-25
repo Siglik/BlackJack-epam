@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.game.GameState;
+import org.qqq175.blackjack.game.GameStage;
 import org.qqq175.blackjack.game.GameLogic;
+import org.qqq175.blackjack.game.GameResult;
 
 public class Hand {
 	
@@ -13,44 +14,33 @@ public class Hand {
 	private List<Card> cards;
 	private BigDecimal bid;
 	private Score score;
-	private boolean isSurrendered;
-	private GameState state;
+	private GameStage stage;
+	private GameResult result;
+	public GameResult getResult() {
+		return result;
+	}
+
+	public void setResult(GameResult result) {
+		this.result = result;
+	}
+
 	/**
 	 * 
 	 */
 	private boolean isActive;
 	private boolean isFirstAction;
-	private boolean isFinished;
 
 	public Hand() {
 		this.cards = new ArrayList<>();
 		this.score = new Score();
 		this.bid = new BigDecimal(0.0);
 		this.isFirstAction = true;
-		setState(GameState.DEAL);
-	}
-
-	public Hand split() {
-		return null;
+		this.stage = GameStage.DEAL;
+		this.result = GameResult.NONE;
 	}
 
 	private void updateScore() {
 		score = GameLogic.calcScore(this);
-	}
-
-	/**
-	 * @return the isSurrendered
-	 */
-	public boolean isSurrendered() {
-		return isSurrendered;
-	}
-
-	/**
-	 * @param isSurrendered
-	 *            the isSurrendered to set
-	 */
-	public void setSurrendered(boolean isSurrendered) {
-		this.isSurrendered = isSurrendered;
 	}
 
 	/**
@@ -91,6 +81,21 @@ public class Hand {
 		}
 		return result;
 	}
+	
+	/**
+	 * 
+	 * @param card
+	 * @return
+	 */
+	public Card takeLastCard() {
+		Card card = null;
+		if (cards.size() > 0){
+			card = cards.get(cards.size()-1);
+			cards.remove(cards.size()-1);
+			updateScore();
+		}
+		return card;
+	}
 
 	/**
 	 * @return the bid
@@ -110,7 +115,7 @@ public class Hand {
 	/**
 	 * @return the cards
 	 */
-	public List<Card> getCardsList() {
+	public List<Card> getCardsListCopy() {
 		List<Card> cardsList = new ArrayList<>(cards);
 		return cardsList;
 	}
@@ -136,36 +141,26 @@ public class Hand {
 	public void setFirstAction(boolean isFirstAction) {
 		this.isFirstAction = isFirstAction;
 	}
-
-	/**
-	 * @return the isFinished
-	 */
-	public boolean isFinished() {
-		return isFinished;
-	}
-
-	/**
-	 * @param isFinished the isFinished to set
-	 */
-	public void setFinished(boolean isFinished) {
-		this.isFinished = isFinished;
-	}
 	
 	public int size() {
 		return cards.size();
 	}
 
 	/**
-	 * @return the state
+	 * @return the stage
 	 */
-	public GameState getState() {
-		return state;
+	public GameStage getStage() {
+		return stage;
 	}
 
 	/**
-	 * @param state the state to set
+	 * @param stage the state to set
 	 */
-	public void setState(GameState state) {
-		this.state = state;
+	public void setStage(GameStage stage) {
+		this.stage = stage;
+	}
+	
+	public void nextStage(){
+		stage = stage.nextState();
 	}
 }

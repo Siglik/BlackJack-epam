@@ -1,10 +1,10 @@
 package org.qqq175.blackjack.game;
 
-public enum GameState {
-	UNACTIVE, DEAL, PLAY, DONE, RESULT;
+public enum GameStage {
+	UNACTIVE, DEAL, PLAY, RESULT, DONE;
 
-	public GameState nextState() {
-		GameState values[] = GameState.values();
+	public GameStage nextState() {
+		GameStage values[] = GameStage.values();
 		int nextIndex = this.ordinal() + 1;
 		if (nextIndex < values.length) {
 			return values[nextIndex];

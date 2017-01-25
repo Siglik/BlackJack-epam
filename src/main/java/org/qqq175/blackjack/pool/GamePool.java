@@ -6,17 +6,18 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.qqq175.blackjack.game.BJGame;
+import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 public class GamePool implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static AtomicReference<GamePool> instance = new AtomicReference<>();
-	private ConcurrentHashMap<UserId, BJGame> games;
+	private ConcurrentHashMap<UserId, BlackJackGame> games;
 	private static Semaphore lock = new Semaphore(1);
 	private static boolean isEmpty = true;
 
 	private GamePool() {
-		games = new ConcurrentHashMap<UserId, BJGame>();
+		games = new ConcurrentHashMap<UserId, BlackJackGame>();
 	}
 
 	public static GamePool getInstance() {
@@ -56,7 +57,7 @@ public class GamePool implements Serializable {
 	 * @return
 	 * @see java.util.concurrent.ConcurrentHashMap#get(java.lang.Object)
 	 */
-	public BJGame get(UserId key) {
+	public BlackJackGame get(UserId key) {
 		return games.get(key);
 	}
 
@@ -74,7 +75,7 @@ public class GamePool implements Serializable {
 	 * @return
 	 * @see java.util.concurrent.ConcurrentHashMap#containsValue(java.lang.Object)
 	 */
-	public boolean containsValue(BJGame value) {
+	public boolean containsValue(BlackJackGame value) {
 		return games.containsValue(value);
 	}
 
@@ -83,7 +84,7 @@ public class GamePool implements Serializable {
 	 * @return
 	 * @see java.util.concurrent.ConcurrentHashMap#remove(java.lang.Object)
 	 */
-	public BJGame remove(UserId key) {
+	public BlackJackGame remove(UserId key) {
 		return games.remove(key);
 	}
 
@@ -94,7 +95,7 @@ public class GamePool implements Serializable {
 	 * @see java.util.concurrent.ConcurrentHashMap#replace(java.lang.Object,
 	 *      java.lang.Object)
 	 */
-	public BJGame replace(UserId key, BJGame value) {
+	public BlackJackGame replace(UserId key, BlackJackGame value) {
 		return games.replace(key, value);
 	}
 
@@ -105,7 +106,7 @@ public class GamePool implements Serializable {
 	 * @see java.util.concurrent.ConcurrentHashMap#put(java.lang.Object,
 	 *      java.lang.Object)
 	 */
-	public BJGame put(UserId key, BJGame value) {
+	public BlackJackGame put(UserId key, BlackJackGame value) {
 		return games.put(key, value);
 	}
 
@@ -116,7 +117,7 @@ public class GamePool implements Serializable {
 	 * @see java.util.concurrent.ConcurrentHashMap#putIfAbsent(java.lang.Object,
 	 *      java.lang.Object)
 	 */
-	public BJGame putIfAbsent(UserId key, BJGame value) {
+	public BlackJackGame putIfAbsent(UserId key, BlackJackGame value) {
 		return games.putIfAbsent(key, value);
 	}
 }
