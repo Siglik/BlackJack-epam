@@ -6,11 +6,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
-import org.qqq175.blackjack.game.BJGame;
+import org.qqq175.blackjack.exception.LogicException;
 import org.qqq175.blackjack.game.impl.BlackJackGame;
+import org.qqq175.blackjack.logic.game.GameUtilLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.pool.GamePool;
 
 public class NewGameAction implements Action {
@@ -43,18 +45,30 @@ public class NewGameAction implements Action {
 		User user = (User) request.getSession().getAttribute(StringConstant.ATTRIBUTE_USER);
 		GamePool gamePool = GamePool.getInstance();
 		ActionResult result;
-		BJGame game;
+		BlackJackGame game = null;
 
 		if (gamePool.containsKey(user.getId())) {
 			game = gamePool.get(user.getId());
 		} else {
-			game = new BlackJackGame(user, mode.getMaxPlayers());
-			gamePool.put(user.getId(), game);
+			GameId gameId;
+			try {
+				GameUtilLogic guLogic = new GameUtilLogic();
+				gameId = guLogic.newGameEntity(user);
+				game = BlackJackGame.createGame(gameId, user, mode.getMaxPlayers());
+				gamePool.put(user.getId(), game);
+			} catch (LogicException e) {
+				request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Sorry, some error occurred! " + e.getMessage());
+			}
 		}
 
-		request.getSession().setAttribute(StringConstant.ATTRIBUTE_GAME, game);
-		result = new ActionResult(ActionResult.ActionType.REDIRECT,
-				Settings.getInstance().getContextPath() + JSPPathManager.getProperty("command.game"));
+		if (game != null) {
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_GAME, game);
+			result = new ActionResult(ActionResult.ActionType.REDIRECT,
+					Settings.getInstance().getContextPath() + JSPPathManager.getProperty("command.game"));
+		} else {
+			result = new ActionResult(ActionResult.ActionType.REDIRECT,
+					Settings.getInstance().getContextPath() + JSPPathManager.getProperty("command.index"));
+		}
 
 		return result;
 	}

@@ -1,10 +1,8 @@
 package org.qqq175.blackjack.game.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.game.GameLogic;
 import org.qqq175.blackjack.game.GameStage;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
@@ -20,7 +18,7 @@ public class Player {
 		hands = new ArrayList();
 		Hand hand = new Hand();
 		this.addHand(hand);
-		this.activeHand = hand;
+		this.activeHand = null;
 		if (isActive) {
 			this.stage = GameStage.DEAL;
 		} else {
@@ -35,11 +33,15 @@ public class Player {
 		while (!foundNext || handId < hands.size()) {
 			Hand hand = hands.get(handId);
 			if (hand != null && hand.getStage() == stage) {
-				if(activeHand!=null && activeHand.getStage() == stage){
-					activeHand.nextStage();
+				if (stage == GameStage.PLAY && hand.getScore().isBlackJack()) {
+					hand.setStage(GameStage.RESULT);
+				} else {
+					if (activeHand != null && activeHand.getStage() == stage) {
+						activeHand.nextStage();
+					}
+					activeHand = hand;
+					foundNext = true;
 				}
-				activeHand = hand;
-				foundNext = true;
 			} else {
 				handId++;
 			}
@@ -99,10 +101,25 @@ public class Player {
 
 	public void nextStage() {
 		stage = stage.nextState();
+		for (Hand hand : hands) {
+			GameStage plStage = hand.getStage();
+			if (plStage != GameStage.UNACTIVE && plStage.compareTo(stage) < 0) {
+				hand.nextStage();
+			}
+		}
+		if (stage == GameStage.DEAL) {
+			hands.clear();
+			Hand hand = new Hand();
+			this.addHand(hand);
+			this.activeHand = null;
+		}
 	}
-	
-	public void resetActiveHand(){
-		activeHand = null;
-		
+
+	public void resetActiveHand() {
+		if (activeHand != null) {
+			activeHand.setActive(false);
+			activeHand = null;
+		}
+
 	}
 }

@@ -4,18 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.game.GameStage;
 import org.qqq175.blackjack.game.GameLogic;
 import org.qqq175.blackjack.game.GameResult;
+import org.qqq175.blackjack.game.GameStage;
 
 public class Hand {
-	
 
 	private List<Card> cards;
 	private BigDecimal bid;
+	private BigDecimal insurance;
 	private Score score;
 	private GameStage stage;
 	private GameResult result;
+
 	public GameResult getResult() {
 		return result;
 	}
@@ -34,6 +35,7 @@ public class Hand {
 		this.cards = new ArrayList<>();
 		this.score = new Score();
 		this.bid = new BigDecimal(0.0);
+		this.insurance = new BigDecimal(0.0);
 		this.isFirstAction = true;
 		this.stage = GameStage.DEAL;
 		this.result = GameResult.NONE;
@@ -81,7 +83,7 @@ public class Hand {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 
 	 * @param card
@@ -89,9 +91,9 @@ public class Hand {
 	 */
 	public Card takeLastCard() {
 		Card card = null;
-		if (cards.size() > 0){
-			card = cards.get(cards.size()-1);
-			cards.remove(cards.size()-1);
+		if (cards.size() > 0) {
+			card = cards.get(cards.size() - 1);
+			cards.remove(cards.size() - 1);
 			updateScore();
 		}
 		return card;
@@ -141,7 +143,7 @@ public class Hand {
 	public void setFirstAction(boolean isFirstAction) {
 		this.isFirstAction = isFirstAction;
 	}
-	
+
 	public int size() {
 		return cards.size();
 	}
@@ -154,13 +156,29 @@ public class Hand {
 	}
 
 	/**
-	 * @param stage the state to set
+	 * @param stage
+	 *            the state to set
 	 */
 	public void setStage(GameStage stage) {
 		this.stage = stage;
 	}
-	
-	public void nextStage(){
+
+	public void nextStage() {
 		stage = stage.nextState();
+	}
+
+	/**
+	 * @return the insurance
+	 */
+	public BigDecimal getInsurance() {
+		return insurance;
+	}
+
+	/**
+	 * @param insurance
+	 *            the insurance to set
+	 */
+	public void setInsurance(BigDecimal insurance) {
+		this.insurance = insurance;
 	}
 }
