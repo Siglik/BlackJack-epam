@@ -26,7 +26,7 @@ import org.qqq175.blackjack.pool.UserPool;
 /**
  * Servlet Filter implementation class PermissionChecker
  */
-@WebFilter("/$/*")
+@WebFilter({ "/$/*", "/game/*" })
 public class PermissionFilter implements Filter {
 	private static Logger log = LogManager.getLogger(ModifyUserLogic.class);
 
@@ -53,6 +53,11 @@ public class PermissionFilter implements Filter {
 		HttpSession session = ((HttpServletRequest) request).getSession();
 		User user = (User) session.getAttribute(StringConstant.ATTRIBUTE_USER);
 		String query = ((HttpServletRequest) request).getPathInfo();
+		if (query == null) {
+			query = ((HttpServletRequest) request).getServletPath();
+		}
+
+		System.out.println("Query: '" + query + "'");
 
 		CommandParser cp = new CommandParser();
 		CommandParser.CommandContext comandContext = cp.parse(query);

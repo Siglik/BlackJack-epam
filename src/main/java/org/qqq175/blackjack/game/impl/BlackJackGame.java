@@ -7,19 +7,25 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.exception.GameActionDeniedException;
 import org.qqq175.blackjack.game.GameLogic;
 import org.qqq175.blackjack.game.GameStage;
+import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
+import org.qqq175.blackjack.pool.GamePool;
 
 public class BlackJackGame {
+	private static Logger log = LogManager.getLogger(BlackJackGame.class);
 	private static final int MAX_PLAYERS = 3;
 	private GameId id;
 	private AtomicInteger modifyCount;
 	private Deck deck;
 	private List<Player> players;
+	private List<Player> leavingPlayers;
 	private AtomicInteger playersCount;
 	private Player activePlayer;
 	private Dealer dealer;
@@ -40,10 +46,10 @@ public class BlackJackGame {
 		deck = new Deck(decksCount);
 
 		players = new CopyOnWriteArrayList<>();
+		leavingPlayers = new CopyOnWriteArrayList<>();
 		Player player = new Player(creator.getId(), true);
 		players.add(player);
-		player.setActive(true);
-		activePlayer = player;
+		activePlayer = null;
 		playersCount = new AtomicInteger(1);
 
 		for (int i = 1; i < maxPlayers; i++) {
@@ -80,16 +86,19 @@ public class BlackJackGame {
 	private boolean nextHand(GameStage stage) {
 		boolean result = false;
 		if (activePlayer != null && activePlayer.nextHand(stage)) {
+			log.debug("Next hand: same player");
 			result = true;
 		} else {
 			boolean hasNext;
 			do {
+
 				hasNext = nextPlayer(stage);
 				if (activePlayer != null) {
 					result = activePlayer.nextHand(stage);
 				}
 			} while (result != true && hasNext == true);
 		}
+		log.debug("Next hand found: " + result);
 		return result;
 	}
 
@@ -99,30 +108,33 @@ public class BlackJackGame {
 	 * @return
 	 */
 	private boolean nextPlayer(GameStage stage) {
-		int index = activePlayer != null ? players.indexOf(activePlayer) : 0;
+		int nextPlayerIndex = activePlayer != null ? players.indexOf(activePlayer) + 1 : 0;
 		boolean foundNext = false;
 
-		while (!foundNext && index < players.size()) {
-			Player player = players.get(index);
+		while (!foundNext && nextPlayerIndex < players.size()) {
+			Player player = players.get(nextPlayerIndex);
 			if (player != null && player.getStage() == stage) {
 				if (activePlayer != null) {
 					activePlayer.setActive(false);
 					if (activePlayer.getStage() == stage) {
-						activePlayer.nextStage();
+						activePlayer.setStage(stage.nextState());
 					}
 				}
 				player.setActive(true);
 				activePlayer = player;
 				foundNext = true;
 			} else {
-				index++;
+				nextPlayerIndex++;
 			}
 		}
 
 		if (!foundNext) {
-			activePlayer = null;
+			if (activePlayer != null) {
+				activePlayer.setActive(false);
+				activePlayer = null;
+			}
 		}
-
+		log.debug("Next player found: " + foundNext);
 		return foundNext;
 	}
 
@@ -136,7 +148,7 @@ public class BlackJackGame {
 		 * Hit one hand while possible, then then go to next, if its no next
 		 * hand of any player - go to the next game stage
 		 */
-		if (user.getId().equals(activePlayer.getUserId())) {
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.PLAY) {
 				if (GameLogic.tryHit(activePlayer, deck)) {
 					if (!GameLogic.canHit(activePlayer)) {
@@ -163,7 +175,7 @@ public class BlackJackGame {
 	 * @throws GameActionDeniedException
 	 */
 	public void doubleBet(User user) throws GameActionDeniedException {
-		if (user.getId().equals(activePlayer.getUserId())) {
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.PLAY) {
 				if (GameLogic.tryDouble(activePlayer, deck)) {
 					if (!nextHand(gameStage)) {
@@ -187,7 +199,7 @@ public class BlackJackGame {
 	 * @throws GameActionDeniedException
 	 */
 	public void split(User user) throws GameActionDeniedException {
-		if (user.getId().equals(activePlayer.getUserId())) {
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.PLAY) {
 				if (GameLogic.trySplit(activePlayer, deck)) {
 					activePlayer.resetActiveHand();
@@ -213,7 +225,7 @@ public class BlackJackGame {
 	 * @throws GameActionDeniedException
 	 */
 	public void surrender(User user) throws GameActionDeniedException {
-		if (user.getId().equals(activePlayer.getUserId())) {
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.PLAY || gameStage == GameStage.DEAL) {
 				if (GameLogic.trySurrender(activePlayer)) {
 					if (!nextHand(gameStage)) {
@@ -239,14 +251,22 @@ public class BlackJackGame {
 	 * @throws GameActionDeniedException
 	 */
 	public void deal(User user, BigDecimal bid) throws GameActionDeniedException {
-		if (user.getId().equals(activePlayer.getUserId())) {
-			if (GameLogic.tryDeal(activePlayer, bid, deck)) {
-				if (!nextHand(gameStage)) {
-					nextStage();
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
+			if (gameStage == GameStage.DEAL) {
+				if (GameLogic.tryDeal(activePlayer, bid, deck)) {
+					log.debug("deal. Next hand is: " + activePlayer != null
+							? activePlayer.getUserId().getValue() + " size " + activePlayer.getActiveHand().getCardsListCopy().size() : "null");
+					if (!nextHand(gameStage)) {
+						nextStage();
+					}
+					log.debug("deal. Next hand is: " + activePlayer != null
+							? activePlayer.getUserId().getValue() + " size " + activePlayer.getActiveHand().getCardsListCopy().size() : "null");
+					modify();
+				} else {
+					throw new GameActionDeniedException("error.game.error");
 				}
-				modify();
 			} else {
-				throw new GameActionDeniedException("error.game.error");
+				throw new GameActionDeniedException("error.game.wrongstage");
 			}
 		} else {
 			throw new GameActionDeniedException("error.game.wrongplayer");
@@ -260,15 +280,39 @@ public class BlackJackGame {
 	 * @throws GameActionDeniedException
 	 */
 	public void insurance(User user) throws GameActionDeniedException {
-		if (user.getId().equals(activePlayer.getUserId())) {
-			if (GameLogic.tryDouble(activePlayer, deck)) {
-				modify();
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
+			if (gameStage == GameStage.PLAY) {
+				if (GameLogic.tryDouble(activePlayer, deck)) {
+					modify();
+				} else {
+					throw new GameActionDeniedException("error.game.error");
+				}
 			} else {
-				throw new GameActionDeniedException("error.game.error");
+				throw new GameActionDeniedException("error.game.wrongstage");
 			}
 		} else {
 			throw new GameActionDeniedException("error.game.wrongplayer");
 		}
+	}
+
+	public void stay(User user) throws GameActionDeniedException {
+		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
+			if (gameStage == GameStage.PLAY) {
+				if (GameLogic.tryStay(activePlayer)) {
+					if (!nextHand(gameStage)) {
+						nextStage();
+					}
+					modify();
+				} else {
+					throw new GameActionDeniedException("error.game.error");
+				}
+			} else {
+				throw new GameActionDeniedException("error.game.wrongstage");
+			}
+		} else {
+			throw new GameActionDeniedException("error.game.wrongplayer");
+		}
+
 	}
 
 	/**
@@ -277,39 +321,68 @@ public class BlackJackGame {
 	 * @return
 	 */
 	public Player join(User user) {
-		int nextPlayersCount = playersCount.incrementAndGet();
-		if (nextPlayersCount <= MAX_PLAYERS) {
-			Player player = new Player(user.getId(), false);
-			players.add(player);
-			modify();
-			return player;
+		if (gameStage != GameStage.UNACTIVE) {
+			int nextPlayersCount = playersCount.incrementAndGet();
+			if (nextPlayersCount <= MAX_PLAYERS) {
+				Player player = new Player(user.getId(), false);
+				players.add(player);
+				modify();
+				return player;
+			} else {
+				playersCount.decrementAndGet();
+				return null;
+			}
 		} else {
-			playersCount.decrementAndGet();
 			return null;
 		}
 	}
 
 	public void leave(User user) {
+		Player player = players.get(indexOfPlayer(user.getId()));
+		leavingPlayers.add(player);
 		modify();
 	}
 
 	private void nextStage() {
+		StringBuilder debugStr;
+		if (Settings.IS_DEBUG) {
+			debugStr = new StringBuilder();
+		}
+
 		if (activePlayer != null) {
+			if (Settings.IS_DEBUG) {
+				debugStr.append("acPlayer ").append(activePlayer.getUserId());
+				debugStr.append(" ").append(activePlayer.getStage()).append(activePlayer.isActive());
+				debugStr.append(" hands ").append(activePlayer.handsCount()).append("\n");
+			}
 			activePlayer.resetActiveHand();
 			activePlayer.setActive(false);
 			activePlayer = null;
 		}
+
+		if (Settings.IS_DEBUG) {
+			debugStr.append("State ").append(gameStage);
+			debugStr.append("->").append(gameStage.nextState()).append("\n");
+		}
+
 		GameStage newStage = gameStage = gameStage.nextState();
 		for (Player player : players) {
 			GameStage plStage = player.getStage();
+			log.debug("=======" + player.getUserId() + " --- " + plStage + " ? " + gameStage + " = " + plStage.compareTo(gameStage));
 			if (plStage != GameStage.UNACTIVE && plStage.compareTo(gameStage) < 0) {
-				player.nextStage();
+				if (Settings.IS_DEBUG) {
+					debugStr.append("Set next state for player ").append(player.getUserId());
+					debugStr.append(": ").append(player.getStage()).append("->").append(gameStage).append("/n");
+				}
+				player.setStage(gameStage);
 			}
 		}
 
 		switch (newStage) {
 		case DEAL:
+			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
+				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
 				dealer = new Dealer();
@@ -317,27 +390,52 @@ public class BlackJackGame {
 			}
 			break;
 		case PLAY:
+			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
+				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
-				GameLogic.dealDealer(dealer, deck);
+				GameLogic.dealerHit(dealer, deck);
+				if (Settings.IS_DEBUG) {
+					debugStr.append("Dealer Hit. Score is ").append(dealer.getHand().getScore().getValue());
+					debugStr.append(" blackjack: ").append(dealer.getHand().getScore().isBlackJack()).append("/n");
+				}
 				// just lets play
 			}
 			break;
 		case RESULT:
+			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
+				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
+				// dealer plays and calcResults
 				GameLogic.playDealer(dealer, deck);
+				if (Settings.IS_DEBUG) {
+					debugStr.append("Dealer played. Score is ").append(dealer.getHand().getScore().getValue());
+					debugStr.append(" blackjack: ").append(dealer.getHand().getScore().isBlackJack()).append("/n");
+				}
 				calcResults();
+				if (Settings.IS_DEBUG) {
+					for (Player player : players) {
+						for (Hand hand : player.getHandsListCopy()) {
+							debugStr.append("Set next state Result for player ").append(player.getUserId());
+							debugStr.append(", hand ").append(player.getHandsListCopy().indexOf(hand)).append(" sc: ");
+							debugStr.append(hand.getScore().getValue()).append(" ").append(hand.getScore().isBlackJack());
+						}
+					}
+				}
 				nextStage();
 			}
 			break;
 		case DONE:
+			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
 				if (players.size() > 0) {
+					log.debug(newStage + " empty -> nextStage()");
 					nextStage();
 				} else {
+					log.debug(newStage + " empty -> finish");
 					this.finishEmptyGame();
 				}
 			} else {
@@ -345,11 +443,16 @@ public class BlackJackGame {
 				modify();
 				try {
 					// sleep for user to look results
-					Thread.currentThread().sleep(5000l);
+					Thread.currentThread().sleep(3000L);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				for (Player player : leavingPlayers) {
+					players.remove(player);
+					GamePool.getInstance().remove(player.getUserId());
+				}
+				leavingPlayers.clear();
 				nextStage();
 			}
 			break;
@@ -357,10 +460,13 @@ public class BlackJackGame {
 
 			break;
 		}
-
+		if (Settings.IS_DEBUG) {
+			// log.debug(debugStr.toString());
+		}
 	}
 
 	private void finishEmptyGame() {
+		gameStage = GameStage.UNACTIVE;
 		// TODO Auto-generated method stub
 
 	}
@@ -379,7 +485,7 @@ public class BlackJackGame {
 		if (gameStage.equals(GameStage.DONE)) {
 			do {
 				Hand playerHand = activePlayer.getActiveHand();
-				GameLogic.payOut(activePlayer, playerHand);
+				GameLogic.payOut(id, activePlayer, playerHand);
 			} while (nextHand(GameStage.RESULT));
 		}
 
@@ -432,4 +538,12 @@ public class BlackJackGame {
 
 		return -1;
 	}
+
+	/**
+	 * @return the gameStage
+	 */
+	public GameStage getGameStage() {
+		return gameStage;
+	}
+
 }

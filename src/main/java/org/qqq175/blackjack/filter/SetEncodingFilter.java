@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebFilter;
 /**
  * Servlet Filter implementation class CheckAutorized
  */
-@WebFilter("/$/*")
+@WebFilter({ "/$/*", "/api/*" })
 public class SetEncodingFilter implements Filter {
 	/**
 	 * Default constructor.

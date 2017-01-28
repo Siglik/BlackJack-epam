@@ -15,7 +15,7 @@ public class Player {
 
 	public Player(UserId userId, boolean isActive) {
 		this.userId = userId;
-		hands = new ArrayList();
+		hands = new ArrayList<>();
 		Hand hand = new Hand();
 		this.addHand(hand);
 		this.activeHand = null;
@@ -27,28 +27,25 @@ public class Player {
 	}
 
 	public boolean nextHand(GameStage stage) {
-		int handId = activeHand != null ? hands.indexOf(activeHand) : 0;
+		int nextHandId = activeHand != null ? hands.indexOf(activeHand) + 1 : 0;
 		boolean foundNext = false;
 
-		while (!foundNext || handId < hands.size()) {
-			Hand hand = hands.get(handId);
+		while (!foundNext && nextHandId < hands.size()) {
+			Hand hand = hands.get(nextHandId);
 			if (hand != null && hand.getStage() == stage) {
-				if (stage == GameStage.PLAY && hand.getScore().isBlackJack()) {
-					hand.setStage(GameStage.RESULT);
-				} else {
-					if (activeHand != null && activeHand.getStage() == stage) {
-						activeHand.nextStage();
-					}
-					activeHand = hand;
-					foundNext = true;
+				hand.setActive(true);
+				if (activeHand != null && activeHand.getStage() == stage) {
+					activeHand.setActive(false);
 				}
+				activeHand = hand;
+				foundNext = true;
 			} else {
-				handId++;
+				nextHandId++;
 			}
 		}
 
 		if (!foundNext) {
-			activeHand = null;
+			this.resetActiveHand();
 		}
 
 		return foundNext;
@@ -99,12 +96,11 @@ public class Player {
 		return stage;
 	}
 
-	public void nextStage() {
-		stage = stage.nextState();
+	public void setStage(GameStage stage) {
 		for (Hand hand : hands) {
-			GameStage plStage = hand.getStage();
-			if (plStage != GameStage.UNACTIVE && plStage.compareTo(stage) < 0) {
-				hand.nextStage();
+			GameStage handStage = hand.getStage();
+			if (handStage != GameStage.UNACTIVE && handStage.compareTo(stage) < 0) {
+				hand.setStage(stage);
 			}
 		}
 		if (stage == GameStage.DEAL) {
@@ -113,6 +109,7 @@ public class Player {
 			this.addHand(hand);
 			this.activeHand = null;
 		}
+		this.stage = stage;
 	}
 
 	public void resetActiveHand() {

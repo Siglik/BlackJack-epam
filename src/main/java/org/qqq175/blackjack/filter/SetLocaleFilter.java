@@ -20,7 +20,7 @@ import org.qqq175.blackjack.logic.main.LocaleLogic;
 /**
  * Servlet Filter implementation class SetLocaleFilter
  */
-@WebFilter("/$/*")
+@WebFilter({ "/$/*", "/api/*" })
 public class SetLocaleFilter implements Filter {
 
 	@Override

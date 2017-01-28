@@ -26,7 +26,7 @@ public class GameDAOImpl extends EntityDAOImpl<Game, GameId> implements GameDAO 
 	protected void prepareWithEntity(PreparedStatement prepStatment, Game entity) throws DAOException {
 		// INSERT INTO game (user_id) VALUES (?)
 		try {
-			prepStatment.setLong(1, entity.getId().getValue());
+			prepStatment.setLong(1, entity.getUserId().getValue());
 		} catch (SQLException e) {
 			throw new DAOException(EXCEPTION_MESSAGE_PREPARE, e);
 		}

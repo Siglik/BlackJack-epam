@@ -34,8 +34,8 @@ public class Hand {
 	public Hand() {
 		this.cards = new ArrayList<>();
 		this.score = new Score();
-		this.bid = new BigDecimal(0.0);
-		this.insurance = new BigDecimal(0.0);
+		this.bid = BigDecimal.ZERO;
+		this.insurance = BigDecimal.ZERO;
 		this.isFirstAction = true;
 		this.stage = GameStage.DEAL;
 		this.result = GameResult.NONE;

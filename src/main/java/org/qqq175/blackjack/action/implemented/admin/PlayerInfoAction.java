@@ -72,7 +72,7 @@ public class PlayerInfoAction implements Action {
 				Map<String, BigDecimal> totals = aoLogic.calcTotals(userId);
 
 				List<AccountOperation> users = aoLogic.findUserOperations(userId, pageNumber, PAGINATION);
-				Long operCount = aoLogic.conntOpers(userId);
+				Long operCount = aoLogic.countOpers(userId);
 
 				Long pages = operCount / PAGINATION + (operCount % PAGINATION == 0 ? 0 : 1);
 

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
@@ -30,6 +32,7 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 )
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static Logger log = LogManager.getLogger(Controller.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -81,7 +84,11 @@ public class Controller extends HttpServlet {
 			case JSON:
 				JSONWriter jsonWriter = new JSONWriter();
 				JSONObject json = (JSONObject) request.getAttribute(StringConstant.ATTRIBUTE_JSON);
-				jsonWriter.writeJSON(response, json);
+				if (json != null) {
+					jsonWriter.writeJSON(response, json);
+				} else {
+					log.debug("json is null");
+				}
 				break;
 			case SENDERROR:
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, result.getContent());

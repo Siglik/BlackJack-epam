@@ -28,9 +28,12 @@ public interface UserDAO extends EntityDAO<User, UserId> {
 	boolean lockBalance(UserId userId, BigDecimal change) throws DAOException;
 
 	boolean unlockBalance(UserId userId, BigDecimal change) throws DAOException;
+	boolean unlockBalance(UserId userId, BigDecimal change, ConnectionWrapper connection ) throws DAOException;
 
 	boolean decreaceLockedBalance(UserId userId, BigDecimal change) throws DAOException;
+	boolean decreaceLockedBalance(UserId userId, BigDecimal change, ConnectionWrapper connection) throws DAOException;
 
+	
 	boolean updateType(UserId userId, User.Type type) throws DAOException;
 
 	boolean updatePassword(UserId userId, String oldPass, String newPass) throws DAOException;

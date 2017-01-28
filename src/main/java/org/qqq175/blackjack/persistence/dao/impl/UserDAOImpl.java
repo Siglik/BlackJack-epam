@@ -220,13 +220,18 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 			throw new DAOException(e);
 		}
 	}
+	
+	@Override
+	public boolean unlockBalance(UserId userId, BigDecimal change, ConnectionWrapper connection) throws DAOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	@Override
 	public boolean decreaceLockedBalance(UserId userId, BigDecimal change) throws DAOException {
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
-			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.unlock"))) {
+			try (PreparedStatement prepStatment = connection.prepareStatement(getSqlQuery().getQuery("sql.user.update.balance.decreaselocked"))) {
 				prepStatment.setBigDecimal(1, change);
-				prepStatment.setBigDecimal(2, change);
 				prepStatment.setLong(3, userId.getValue());
 				prepStatment.setBigDecimal(4, change);
 				return prepStatment.executeUpdate() == 1;
@@ -234,6 +239,13 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
+	}
+	
+	@Override
+	public boolean decreaceLockedBalance(UserId userId, BigDecimal change, ConnectionWrapper connection)
+			throws DAOException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override

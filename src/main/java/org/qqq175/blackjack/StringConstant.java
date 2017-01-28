@@ -39,6 +39,7 @@ public interface StringConstant {
 	public static final String PARAMETER_PAYMENT_CARDHOLDER = "cardholder";
 	public static final String PARAMETER_PAYMENT_TYPE = "operation";
 	public static final String PARAMETER_PAGE = "page";
+	public static final String PARAMETER_BID = "bid";
 
 	public static final String COOKIE_LOCALE = "locale";
 

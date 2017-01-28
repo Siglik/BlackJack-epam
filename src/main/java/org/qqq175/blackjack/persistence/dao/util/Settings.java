@@ -20,6 +20,8 @@ import org.qqq175.blackjack.persistence.dao.impl.DAOFactoryImpl;
  *
  */
 public class Settings {
+	public static final boolean IS_DEBUG = true;
+
 	private static final String PROPS_DELIMETER = ";";
 	private static final String APP_PROPS_PATH = "conf/app.properties";
 	private final DAOFactory DAO_FACTORY;

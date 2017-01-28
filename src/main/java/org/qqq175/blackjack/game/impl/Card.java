@@ -22,7 +22,7 @@ public class Card {
 			imgPaths.put(s, innerMap);
 			for (Rank r : Rank.values()) {
 				String imgPath = Settings.getInstance().getContextPath() + File.separator + imgLocation + File.separator + r.name().toLowerCase()
-						+ "_of_" + s.name().toLowerCase() + ".svg";
+						+ "_of_" + s.name().toLowerCase() + ".gif";
 				innerMap.put(r, imgPath);
 			}
 		}

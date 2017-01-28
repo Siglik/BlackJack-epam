@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;
@@ -19,8 +21,9 @@ import org.qqq175.blackjack.pool.UserPool;
 /**
  * Servlet Filter implementation class UserUpdateFilter
  */
-@WebFilter("/$/*")
+@WebFilter({ "/$/*", "/game/*" })
 public class UserUpdateFilter implements Filter {
+	private static Logger log = LogManager.getLogger(UserUpdateFilter.class);
 
 	/**
 	 * @see Filter#destroy()
@@ -41,6 +44,7 @@ public class UserUpdateFilter implements Filter {
 		if (user != null) {
 			User userFromPool = UserPool.getInstance().get(user.getId());
 			if (userFromPool != null && !userFromPool.equals(user)) {
+				log.debug(user.getAccountBalance() + "->" + userFromPool.getAccountBalance());
 				session.setAttribute(StringConstant.ATTRIBUTE_USER, userFromPool);
 			}
 		}

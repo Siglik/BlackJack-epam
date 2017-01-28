@@ -24,6 +24,7 @@ public class Deck {
 	}
 
 	public Deck(int decksCount) {
+		this.lock = new ReentrantLock();
 		this.decksCount = decksCount;
 
 		this.cards = new ArrayDeque<>(Deck.initDeck(decksCount));
@@ -31,7 +32,7 @@ public class Deck {
 		Random rand = new Random();
 		int cardCount = decksCount * ONE_DECK;
 		rand.setSeed(System.currentTimeMillis());
-		//redeck random on 20-50% cards left
+		// redeck random on 20-50% cards left
 		this.redeckOnLeft = (int) (cardCount * 0.5) - rand.nextInt((int) (cardCount * 0.3));
 	}
 
@@ -53,23 +54,23 @@ public class Deck {
 	}
 
 	public Card pullCard() {
-			if (cards.size() < 1){
-				this.redeck();
-			}
-		    lock.lock();
-			Card card = cards.getFirst();
-			lock.unlock();
-			return card;	
+		if (cards.size() < 1) {
+			this.redeck();
+		}
+		lock.lock();
+		Card card = cards.poll();
+		lock.unlock();
+		return card;
 	}
 
-	public void newRound(){
+	public void newRound() {
 		int cardsLeft = cards.size();
-		if (cardsLeft < ONE_DECK || cardsLeft < this.redeckOnLeft){
+		if (cardsLeft < ONE_DECK || cardsLeft < this.redeckOnLeft) {
 			this.redeck();
 		}
 	}
-	
-	private void redeck(){
+
+	private void redeck() {
 		lock.lock();
 		this.cards = new ArrayDeque<>(Deck.initDeck(decksCount));
 		lock.unlock();

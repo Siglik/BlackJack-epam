@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.exception.LogicException;
 import org.qqq175.blackjack.persistence.connection.ConnectionPool;
@@ -34,9 +36,12 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.AccountOperation;
 import org.qqq175.blackjack.persistence.entity.AccountOperation.Type;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.persistence.entity.id.AccountOperationId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 public class AccountOperationLogic {
+	private static Logger log = LogManager.getLogger(AccountOperationLogic.class);
+
 	private static final String CARD_NUM = "card number: ";
 	private static final String ASTERISK = "*";
 	private static final String CARDHOLDER = "cardholder: ";
@@ -91,11 +96,19 @@ public class AccountOperationLogic {
 					} else {
 						change = oper.getAmmount();
 					}
-					userDAO.updateBalance(userId, change, conn);
+					boolean balUpdated = userDAO.updateBalance(userId, change, conn);
+
 					AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
-					aoDAO.create(oper, conn);
+					AccountOperationId aoId = aoDAO.create(oper, conn);
 					conn.commit();
-					result = Result.OK;
+					if (aoId != null && balUpdated) {
+						conn.commit();
+						result = Result.OK;
+					} else {
+						conn.rollback();
+						result = Result.BALANCE_ERROR;
+						log.error("Unable to make game payment. " + oper.getComment() + " " + oper.getType() + " " + oper.getAmmount());
+					}
 				} catch (SQLException | DAOException e) {
 					if (conn != null) {
 						try {
@@ -121,6 +134,98 @@ public class AccountOperationLogic {
 			}
 		} else {
 			result = Result.WRONG_DATA;
+		}
+
+		if (result == null) {
+			result = Result.BALANCE_ERROR;
+		}
+		return result;
+	};
+
+	public Result doGamePayment(BigDecimal win, BigDecimal back, BigDecimal loss, UserId userId, AccountOperation.Type type, String comment) {
+
+		Result result = null;
+		BigDecimal change = win.subtract(loss).abs();
+		AccountOperation oper = null;
+		if (type != null) {
+			oper = new AccountOperation();
+			oper.setType(type);
+			oper.setAmmount(win.subtract(loss).abs());
+			oper.setUserId(userId);
+			oper.setComment(comment);
+		}
+
+		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+		if (!back.equals(BigDecimal.ZERO) || !loss.equals(BigDecimal.ZERO)) {
+			try {
+				User user = daoFactory.getUserDAO().findEntityById(userId);
+				if (user.getLockedBalance().compareTo(oper.getAmmount()) < 0) {
+					result = Result.NOT_ENOUGH_MONEY;
+				}
+			} catch (DAOException e2) {
+				result = Result.BALANCE_ERROR;
+				e2.printStackTrace();
+			}
+		}
+		if (result == null) {
+			ConnectionWrapper conn = ConnectionPool.getInstance().retrieveConnection();
+			try {
+				conn.setAutoCommit(false);
+				boolean balUpdated, balUnlocked, balDecreased, operOk;
+				UserDAO userDAO = daoFactory.getUserDAO();
+				if (!win.equals(BigDecimal.ZERO)) {
+					balUpdated = userDAO.updateBalance(userId, win, conn);
+				} else {
+					balUpdated = true;
+				}
+				AccountOperationId aoId = null;
+				if (oper != null) {
+					AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
+					operOk = aoDAO.create(oper, conn) != null;
+				} else {
+					operOk = true;
+				}
+				if (!back.equals(BigDecimal.ZERO)) {
+					balUnlocked = userDAO.unlockBalance(userId, back, conn);
+				} else {
+					balUnlocked = true;
+				}
+				if (!loss.equals(BigDecimal.ZERO)) {
+					balDecreased = userDAO.decreaceLockedBalance(userId, loss, conn);
+				} else {
+					balDecreased = true;
+				}
+				if (operOk && balUpdated && balUnlocked & balDecreased) {
+					conn.commit();
+					result = Result.OK;
+				} else {
+					conn.rollback();
+					result = Result.BALANCE_ERROR;
+					log.error("Unable to make game payment: " + comment);
+				}
+
+			} catch (SQLException | DAOException e) {
+				if (conn != null) {
+					try {
+						result = Result.BALANCE_ERROR;
+						conn.rollback();
+					} catch (SQLException e1) {
+						// TODO LOG
+						e1.printStackTrace();
+					}
+				}
+				e.printStackTrace();
+			} finally {
+				if (conn != null) {
+					try {
+						conn.setAutoCommit(true);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					conn.close();
+				}
+			}
 		}
 
 		if (result == null) {
@@ -215,7 +320,7 @@ public class AccountOperationLogic {
 	}
 
 	private boolean validateParameter(Map<String, String[]> params, String parameter, String pattern, boolean isRequired) {
-		boolean isValid = false;
+		boolean isValid = !isRequired;
 		if (params.containsKey(parameter)) {
 			String[] values = params.get(parameter);
 			if (values.length == 1) {
@@ -223,14 +328,8 @@ public class AccountOperationLogic {
 					Pattern ptn = Pattern.compile(pattern);
 					Matcher matcher = ptn.matcher(values[0].toLowerCase());
 					isValid = matcher.matches();
-				} else {
-					isValid = !isRequired;
 				}
-			} else {
-				isValid = !isRequired;
 			}
-		} else {
-			isValid = !isRequired;
 		}
 
 		if (!isValid) {
@@ -239,7 +338,7 @@ public class AccountOperationLogic {
 		return isValid;
 	}
 
-	public Long conntOpers(UserId id) throws LogicException {
+	public Long countOpers(UserId id) throws LogicException {
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
 

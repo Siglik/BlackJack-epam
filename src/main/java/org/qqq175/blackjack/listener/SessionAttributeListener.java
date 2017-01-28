@@ -4,6 +4,8 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;
@@ -14,6 +16,7 @@ import org.qqq175.blackjack.pool.UserPool;
  */
 @WebListener
 public class SessionAttributeListener implements HttpSessionAttributeListener {
+	private static Logger log = LogManager.getLogger(SessionAttributeListener.class);
 
 	/**
 	 * Default constructor.
@@ -27,10 +30,11 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	 */
 	@Override
 	public void attributeAdded(HttpSessionBindingEvent event) {
-		System.out.println(event.getName() + " added");
+		log.debug(event.getName() + " added");
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			User value = (User) event.getValue();
+			log.debug(value.getAccountBalance() + "->" + UserPool.getInstance().get(value.getId()));
 			UserPool.getInstance().put(value);
 		}
 	}
@@ -40,7 +44,7 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	 */
 	@Override
 	public void attributeRemoved(HttpSessionBindingEvent event) {
-		System.out.println(event.getName() + " removed");
+		log.debug(event.getName() + " removed");
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			User value = (User) event.getValue();
@@ -55,10 +59,12 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	 */
 	@Override
 	public void attributeReplaced(HttpSessionBindingEvent event) {
-		System.out.println(event.getName() + " replaced");
+		log.debug(event.getName() + " replaced");
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
-			User value = (User) event.getValue();
+			/* getting new user value */
+			User value = (User) event.getSession().getAttribute(StringConstant.ATTRIBUTE_USER);
+
 			UserPool.getInstance().replace(value);
 		}
 	}

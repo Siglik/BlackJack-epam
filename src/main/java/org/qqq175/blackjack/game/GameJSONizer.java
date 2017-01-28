@@ -20,7 +20,11 @@ public class GameJSONizer {
 	public static JSONObject toJSON(BlackJackGame game, User user) {
 		JSONObject result = new JSONObject();
 		JSONArray players = new JSONArray();
-		boolean isUserActive = user.getId().equals(game.getActivePlayer().getUserId());
+		Player activePlayer = game.getActivePlayer();
+		boolean isUserActive = false;
+		if (activePlayer != null) {
+			isUserActive = user.getId().equals(activePlayer.getUserId());
+		}
 		for (Player player : game.getPlayersList()) {
 			boolean isCurrentUser = player.getUserId().equals(user.getId());
 			players.add(toJSON(player, isCurrentUser));
@@ -40,43 +44,53 @@ public class GameJSONizer {
 				JSONObject actions = new JSONObject();
 				{
 					JSONObject surrender = new JSONObject();
-					surrender.put("isActive", isUserActive);
+					boolean isActive = isUserActive && game.getGameStage().compareTo(GameStage.PLAY) <= 0 && GameLogic.canSurrender(activePlayer);
+					surrender.put("isActive", isActive);
 					actions.put("surrender", surrender);
 				}
 				{
 					JSONObject split = new JSONObject();
-					split.put("isActive", isUserActive);
+					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canSplit(activePlayer);
+					split.put("isActive", isActive);
 					actions.put("split", split);
 				}
 				{
-					JSONObject doubleAct = new JSONObject();
-					doubleAct.put("isActive", isUserActive);
-					actions.put("double", doubleAct);
+					JSONObject doubleBet = new JSONObject();
+					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canDouble(activePlayer);
+					doubleBet.put("isActive", isActive);
+					actions.put("double", doubleBet);
 				}
 				{
 					JSONObject hit = new JSONObject();
-					hit.put("isActive", isUserActive);
+					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canHit(activePlayer);
+					hit.put("isActive", isActive);
 					actions.put("hit", hit);
 				}
 				{
 					JSONObject deal = new JSONObject();
-					deal.put("isActive", isUserActive);
-					actions.put("bid", deal);
+					boolean isActive = isUserActive && game.getGameStage() == GameStage.DEAL && GameLogic.canDeal(activePlayer);
+					deal.put("isActive", isActive);
+					actions.put("deal", deal);
 				}
 				{
 					JSONObject stay = new JSONObject();
-					stay.put("isActive", isUserActive);
+					boolean isActive = isUserActive && game.getGameStage().compareTo(GameStage.PLAY) <= 0 && GameLogic.canStay(activePlayer);
+					stay.put("isActive", isActive);
 					actions.put("stay", stay);
 				}
 				{
 					JSONObject insurance = new JSONObject();
-					insurance.put("isActive", isUserActive);
+					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY
+							&& GameLogic.canInsurance(game.getDealer(), activePlayer);
+					insurance.put("isActive", isActive);
 					actions.put("insurance", insurance);
 				}
+				controls.put("actions", actions);
 			}
 			{
 				JSONObject bid = new JSONObject();
-				bid.put("isActive", isUserActive);
+				boolean isActive = isUserActive && game.getGameStage() == GameStage.DEAL && GameLogic.canDeal(activePlayer);
+				bid.put("isActive", isActive);
 				controls.put("bid", bid);
 			}
 			result.put("controls", controls);
@@ -85,13 +99,13 @@ public class GameJSONizer {
 		return result;
 	}
 
-	public static JSONObject toJSON(Dealer dealer) {
+	private static JSONObject toJSON(Dealer dealer) {
 		JSONObject result = new JSONObject();
-		result.put("hand", dealer.getHand());
+		result.put("hand", toJSON(dealer.getHand(), dealer.isShowAllCards()));
 		return result;
 	}
 
-	public static JSONObject toJSON(Player player, boolean isCurrentUser) {
+	private static JSONObject toJSON(Player player, boolean isCurrentUser) {
 		JSONObject result = new JSONObject();
 		UserPool userPool = UserPool.getInstance();
 		PhotoManager photoManager = new PhotoManager();
@@ -119,11 +133,11 @@ public class GameJSONizer {
 		return result;
 	}
 
-	private static JSONObject toJSON(Hand hand, boolean isPlayer) {
+	private static JSONObject toJSON(Hand hand, boolean showAll) {
 		JSONObject result = new JSONObject();
 		result.put("score", toJSON(hand.getScore(), true));
-		result.put("cards", toJSON(hand.getCardsListCopy(), isPlayer));
-		if (isPlayer) {
+		result.put("cards", toJSON(hand.getCardsListCopy(), showAll));
+		if (showAll) {
 			result.put("bet", hand.getBid());// ?toString
 			result.put("isActive", hand.isActive());
 		}
@@ -151,7 +165,7 @@ public class GameJSONizer {
 			}
 		} else {
 			if (!cards.isEmpty()) {
-				result.add(cards.get(0));
+				result.add(cards.get(0).getImgPath());
 				for (int i = 1; i < cards.size(); i++) {
 					result.add(Card.CARD_BACK);
 				}
