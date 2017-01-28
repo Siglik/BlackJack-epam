@@ -34,7 +34,7 @@ public class Player {
 			Hand hand = hands.get(nextHandId);
 			if (hand != null && hand.getStage() == stage) {
 				hand.setActive(true);
-				if (activeHand != null && activeHand.getStage() == stage) {
+				if (activeHand != null) {
 					activeHand.setActive(false);
 				}
 				activeHand = hand;
@@ -97,17 +97,17 @@ public class Player {
 	}
 
 	public void setStage(GameStage stage) {
-		for (Hand hand : hands) {
-			GameStage handStage = hand.getStage();
-			if (handStage != GameStage.UNACTIVE && handStage.compareTo(stage) < 0) {
-				hand.setStage(stage);
-			}
-		}
 		if (stage == GameStage.DEAL) {
 			hands.clear();
 			Hand hand = new Hand();
 			this.addHand(hand);
 			this.activeHand = null;
+		}
+		for (Hand hand : hands) {
+			GameStage handStage = hand.getStage();
+			if (handStage != GameStage.UNACTIVE && handStage.compareTo(stage) < 0) {
+				hand.setStage(stage);
+			}
 		}
 		this.stage = stage;
 	}

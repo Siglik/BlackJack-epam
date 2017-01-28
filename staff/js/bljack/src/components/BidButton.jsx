@@ -11,8 +11,12 @@ export default class BidButton extends React.Component {
       if (!this.props.isActive){
         className += " not-active";
       }
+      let handler = (e)=>{
+         e.preventDefault();
+         this.props.doOnBid(this.props.value);
+       };
       return (
-        <a href="#" className={className}>+{this.props.value}$</a>
+        <a href="#" className={className} onClick={handler}>+{this.props.value}$</a>
       );
     }
 }

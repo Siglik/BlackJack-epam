@@ -150,7 +150,7 @@ public class AccountOperationLogic {
 		if (type != null) {
 			oper = new AccountOperation();
 			oper.setType(type);
-			oper.setAmmount(win.subtract(loss).abs());
+			oper.setAmmount(change);
 			oper.setUserId(userId);
 			oper.setComment(comment);
 		}
@@ -159,7 +159,7 @@ public class AccountOperationLogic {
 		if (!back.equals(BigDecimal.ZERO) || !loss.equals(BigDecimal.ZERO)) {
 			try {
 				User user = daoFactory.getUserDAO().findEntityById(userId);
-				if (user.getLockedBalance().compareTo(oper.getAmmount()) < 0) {
+				if (user.getLockedBalance().compareTo(back.add(loss)) < 0) {
 					result = Result.NOT_ENOUGH_MONEY;
 				}
 			} catch (DAOException e2) {

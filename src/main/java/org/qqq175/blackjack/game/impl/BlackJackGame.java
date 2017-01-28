@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.exception.GameActionDeniedException;
 import org.qqq175.blackjack.game.GameLogic;
 import org.qqq175.blackjack.game.GameStage;
-import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
@@ -282,7 +281,7 @@ public class BlackJackGame {
 	public void insurance(User user) throws GameActionDeniedException {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.PLAY) {
-				if (GameLogic.tryDouble(activePlayer, deck)) {
+				if (GameLogic.tryInsurance(dealer, activePlayer)) {
 					modify();
 				} else {
 					throw new GameActionDeniedException("error.game.error");
@@ -345,42 +344,24 @@ public class BlackJackGame {
 
 	private void nextStage() {
 		StringBuilder debugStr;
-		if (Settings.IS_DEBUG) {
-			debugStr = new StringBuilder();
-		}
 
 		if (activePlayer != null) {
-			if (Settings.IS_DEBUG) {
-				debugStr.append("acPlayer ").append(activePlayer.getUserId());
-				debugStr.append(" ").append(activePlayer.getStage()).append(activePlayer.isActive());
-				debugStr.append(" hands ").append(activePlayer.handsCount()).append("\n");
-			}
 			activePlayer.resetActiveHand();
 			activePlayer.setActive(false);
 			activePlayer = null;
-		}
-
-		if (Settings.IS_DEBUG) {
-			debugStr.append("State ").append(gameStage);
-			debugStr.append("->").append(gameStage.nextState()).append("\n");
 		}
 
 		GameStage newStage = gameStage = gameStage.nextState();
 		for (Player player : players) {
 			GameStage plStage = player.getStage();
 			log.debug("=======" + player.getUserId() + " --- " + plStage + " ? " + gameStage + " = " + plStage.compareTo(gameStage));
-			if (plStage != GameStage.UNACTIVE && plStage.compareTo(gameStage) < 0) {
-				if (Settings.IS_DEBUG) {
-					debugStr.append("Set next state for player ").append(player.getUserId());
-					debugStr.append(": ").append(player.getStage()).append("->").append(gameStage).append("/n");
-				}
+			if ((plStage != GameStage.UNACTIVE && plStage.compareTo(gameStage) < 0) || gameStage == GameStage.DEAL) {
 				player.setStage(gameStage);
 			}
 		}
 
 		switch (newStage) {
 		case DEAL:
-			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
 				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
@@ -390,46 +371,26 @@ public class BlackJackGame {
 			}
 			break;
 		case PLAY:
-			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
 				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
 				GameLogic.dealerHit(dealer, deck);
-				if (Settings.IS_DEBUG) {
-					debugStr.append("Dealer Hit. Score is ").append(dealer.getHand().getScore().getValue());
-					debugStr.append(" blackjack: ").append(dealer.getHand().getScore().isBlackJack()).append("/n");
-				}
 				// just lets play
 			}
 			break;
 		case RESULT:
-			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
 				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
 				// dealer plays and calcResults
-				GameLogic.playDealer(dealer, deck);
-				if (Settings.IS_DEBUG) {
-					debugStr.append("Dealer played. Score is ").append(dealer.getHand().getScore().getValue());
-					debugStr.append(" blackjack: ").append(dealer.getHand().getScore().isBlackJack()).append("/n");
-				}
+				GameLogic.dealerPlay(dealer, deck);
 				calcResults();
-				if (Settings.IS_DEBUG) {
-					for (Player player : players) {
-						for (Hand hand : player.getHandsListCopy()) {
-							debugStr.append("Set next state Result for player ").append(player.getUserId());
-							debugStr.append(", hand ").append(player.getHandsListCopy().indexOf(hand)).append(" sc: ");
-							debugStr.append(hand.getScore().getValue()).append(" ").append(hand.getScore().isBlackJack());
-						}
-					}
-				}
 				nextStage();
 			}
 			break;
 		case DONE:
-			log.debug("----------------- ACTIVE:" + activePlayer);
 			if (!nextHand(gameStage)) {
 				if (players.size() > 0) {
 					log.debug(newStage + " empty -> nextStage()");
@@ -457,11 +418,7 @@ public class BlackJackGame {
 			}
 			break;
 		case UNACTIVE:
-
-			break;
-		}
-		if (Settings.IS_DEBUG) {
-			// log.debug(debugStr.toString());
+			log.warn("wrong game state after nextStage()");
 		}
 	}
 
@@ -486,7 +443,7 @@ public class BlackJackGame {
 			do {
 				Hand playerHand = activePlayer.getActiveHand();
 				GameLogic.payOut(id, activePlayer, playerHand);
-			} while (nextHand(GameStage.RESULT));
+			} while (nextHand(GameStage.DONE));
 		}
 
 	}

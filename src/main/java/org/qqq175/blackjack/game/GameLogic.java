@@ -26,10 +26,12 @@ import org.qqq175.blackjack.pool.UserPool;
 public class GameLogic {
 	private static Logger log = LogManager.getLogger(GameLogic.class);
 
-	private final static BigDecimal INSURANCE_MULTIPLER = BigDecimal.valueOf(2.00);
+	private final static BigDecimal INSURANCE_MULTIPLER_PAY = BigDecimal.valueOf(2.00);
+	private final static BigDecimal INSURANCE_MULTIPLER_BID = BigDecimal.valueOf(0.50);
 	private final static BigDecimal BLACK_JACK_MULTIPLER = BigDecimal.valueOf(1.50);
 	private final static BigDecimal WIN_MULTIPLER = BigDecimal.ONE;
 	private final static BigDecimal SURRENDER_MULTIPLER = BigDecimal.valueOf(0.50);
+	private final static BigDecimal MINIMAL_BID = BigDecimal.valueOf(0.1);
 
 	/* DEALER OPERATIONS */
 
@@ -50,11 +52,6 @@ public class GameLogic {
 		}
 	}
 
-	public static void playDealer(Dealer dealer, Deck deck) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/* PLAYER OPERATIONS */
 	/*
 	 * ****** try ******
@@ -68,7 +65,7 @@ public class GameLogic {
 	 */
 	public static boolean tryDeal(Player player, BigDecimal betSize, Deck deck) {
 		boolean result = false;
-		if (player.getStage() == GameStage.DEAL) {
+		if (player.getStage() == GameStage.DEAL && betSize.compareTo(MINIMAL_BID) >= 0) {
 			Hand hand = player.getActiveHand();
 			if (hand != null && hand.size() == 0) {
 				UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
@@ -112,8 +109,10 @@ public class GameLogic {
 
 					newHand.addCard(oldCard);
 					newHand.addCard(deck.pullCard());
+					newHand.setStage(GameStage.PLAY);
 
 					newHand.setBid(betSize);
+					activeHand.setActive(false);
 					activeHand.setFirstAction(true);
 					newHand.setFirstAction(true);
 					result = true;
@@ -170,7 +169,7 @@ public class GameLogic {
 		boolean result = false;
 		Hand activeHand = player.getActiveHand();
 		if (activeHand != null && canInsurance(dealer, player)) {
-			BigDecimal betSize = activeHand.getBid();
+			BigDecimal betSize = activeHand.getBid().multiply(INSURANCE_MULTIPLER_BID);
 			UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
 			boolean lockResult;
 			try {
@@ -204,10 +203,10 @@ public class GameLogic {
 		Hand activeHand = player.getActiveHand();
 		if (activeHand != null && canSurrender(activeHand)) {
 			if (activeHand.getStage() == GameStage.PLAY) {
-				activeHand.setStage(GameStage.RESULT);
+				activeHand.setStage(GameStage.DONE);
 				activeHand.setResult(GameResult.SURRENDER);
 			} else if (activeHand.getStage() == GameStage.DEAL) {
-				activeHand.setStage(GameStage.DONE);
+				activeHand.setStage(GameStage.UNACTIVE);
 				activeHand.setResult(GameResult.NONE);
 			}
 			if (activeHand.isFirstAction()) {
@@ -334,7 +333,7 @@ public class GameLogic {
 				Card firstCard = dealerCards.get(0);
 				if (firstCard.getRank() == Card.Rank.ACE) {
 					User user = UserPool.getInstance().get(activePlayer.getUserId());
-					BigDecimal bid = activeHand.getBid();
+					BigDecimal bid = activeHand.getBid().multiply(INSURANCE_MULTIPLER_BID);
 					BigDecimal balance = user.getAccountBalance();
 					if (bid.compareTo(balance) <= 0) {
 						result = true;
@@ -412,12 +411,8 @@ public class GameLogic {
 	 */
 	public static boolean canHit(Hand activeHand) {
 		Score score = activeHand.getScore();
-		if (activeHand.getStage() == GameStage.PLAY && !score.isBlackJack()) {
-			if (score.getValue() < 21) {
-				return true;
-			} else {
-				return false;
-			}
+		if (activeHand.getStage() == GameStage.PLAY && !score.isBlackJack() && score.getValue() < 21) {
+			return true;
 		} else {
 			return false;
 		}
@@ -515,7 +510,7 @@ public class GameLogic {
 	 */
 	public static boolean payOut(GameId gameId, Player activePlayer, Hand activeHand) {
 		boolean result = false;
-		if (activeHand.getStage() == GameStage.RESULT) {
+		if (activeHand.getStage() == GameStage.DONE) {
 			DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 			AccountOperationLogic aoLogic = new AccountOperationLogic();
 			UserstatDAO ustatDAO = daoFactory.getUserstatDAO();
@@ -549,7 +544,7 @@ public class GameLogic {
 					}
 					break;
 				case BLACKJACK_INSURANCE:
-					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER), betSize.add(insurance), BigDecimal.ZERO, userId,
+					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER_PAY), betSize.add(insurance), BigDecimal.ZERO, userId,
 							AccountOperation.Type.WIN, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementBlackjack(userId);
@@ -558,8 +553,8 @@ public class GameLogic {
 					}
 					break;
 				case LOSS_WIN_INSURANCE:
-					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER), insurance, betSize, userId, AccountOperation.Type.WIN,
-							comment);
+					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER_PAY), insurance, betSize, userId,
+							AccountOperation.Type.WIN, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementLoss(userId);
 						result = true;
@@ -601,7 +596,7 @@ public class GameLogic {
 				default:
 					break;
 				}
-				activeHand.setStage(GameStage.DONE);
+				activeHand.setStage(GameStage.UNACTIVE);
 			} catch (DAOException e) {
 				log.error("Unable to update user's stats.", e);
 			} finally {
@@ -637,16 +632,22 @@ public class GameLogic {
 				playerHand.setResult(GameResult.LOSS_WIN_INSURANCE);
 			}
 		} else {
-			if (playerScore.getValue() > dealerScore.getValue()) {
-				playerHand.setResult(GameResult.WIN);
-			} else if (playerScore.getValue() < dealerScore.getValue()) {
-				playerHand.setResult(GameResult.LOSS);
-			} else {
-				if (playerHand.getInsurance().equals(BigDecimal.ZERO)) {
-					playerHand.setResult(GameResult.TIE);
+			if (playerScore.getValue() <= 21 && dealerScore.getValue() <= 21) {
+				if (playerScore.getValue() > dealerScore.getValue()) {
+					playerHand.setResult(GameResult.WIN);
+				} else if (playerScore.getValue() < dealerScore.getValue()) {
+					playerHand.setResult(GameResult.LOSS);
 				} else {
-					playerHand.setResult(GameResult.LOSS_INSURANCE);
+					if (playerHand.getInsurance().equals(BigDecimal.ZERO)) {
+						playerHand.setResult(GameResult.TIE);
+					} else {
+						playerHand.setResult(GameResult.LOSS_INSURANCE);
+					}
 				}
+			} else if (playerScore.getValue() > 21) {
+				playerHand.setResult(GameResult.LOSS);
+			} else if (dealerScore.getValue() > 21) {
+				playerHand.setResult(GameResult.WIN);
 			}
 		}
 	}

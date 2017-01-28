@@ -25,7 +25,7 @@ import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 public class PlayerInfoAction implements Action {
 	private final static String ERROR = "Unable to get required data at PlayerInfoAction::execute.";
-	private static final int PAGINATION = 3;
+	private static final int PAGINATION = 15;
 
 	public PlayerInfoAction() {
 		// TODO Auto-generated constructor stub

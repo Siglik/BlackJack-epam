@@ -20,80 +20,89 @@ public class GameJSONizer {
 	public static JSONObject toJSON(BlackJackGame game, User user) {
 		JSONObject result = new JSONObject();
 		JSONArray players = new JSONArray();
-		Player activePlayer = game.getActivePlayer();
-		boolean isUserActive = false;
-		if (activePlayer != null) {
-			isUserActive = user.getId().equals(activePlayer.getUserId());
-		}
-		for (Player player : game.getPlayersList()) {
-			boolean isCurrentUser = player.getUserId().equals(user.getId());
-			players.add(toJSON(player, isCurrentUser));
-		}
-		result.put("dealer", toJSON(game.getDealer()));
-		result.put("result", null);
-		result.put("players", players);
-		result.put("controls", null);
-		{
-			JSONObject controls = new JSONObject();
-			{
-				JSONObject balance = new JSONObject();
-				balance.put("value", user.getAccountBalance());
-				controls.put("balance", balance);
+		if (game != null) {
+			Player activePlayer = game.getActivePlayer();
+			boolean isUserActive = false;
+			if (activePlayer != null) {
+				isUserActive = user.getId().equals(activePlayer.getUserId());
 			}
+			for (Player player : game.getPlayersList()) {
+				boolean isCurrentUser = player.getUserId().equals(user.getId());
+				players.add(toJSON(player, isCurrentUser));
+			}
+			result.put("dealer", toJSON(game.getDealer()));
 			{
-				JSONObject actions = new JSONObject();
+				JSONObject timer = new JSONObject();
+				timer.put("timeLimit", 120);
+				result.put("timer", timer);
+			}
+			result.put("result", null);
+			result.put("players", players);
+			result.put("controls", null);
+			{
+				JSONObject controls = new JSONObject();
 				{
-					JSONObject surrender = new JSONObject();
-					boolean isActive = isUserActive && game.getGameStage().compareTo(GameStage.PLAY) <= 0 && GameLogic.canSurrender(activePlayer);
-					surrender.put("isActive", isActive);
-					actions.put("surrender", surrender);
+					JSONObject balance = new JSONObject();
+					balance.put("value", user.getAccountBalance());
+					controls.put("balance", balance);
 				}
 				{
-					JSONObject split = new JSONObject();
-					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canSplit(activePlayer);
-					split.put("isActive", isActive);
-					actions.put("split", split);
+					JSONObject actions = new JSONObject();
+					{
+						JSONObject surrender = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage().compareTo(GameStage.PLAY) <= 0 && GameLogic.canSurrender(activePlayer);
+						surrender.put("isActive", isActive);
+						actions.put("surrender", surrender);
+					}
+					{
+						JSONObject split = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canSplit(activePlayer);
+						split.put("isActive", isActive);
+						actions.put("split", split);
+					}
+					{
+						JSONObject doubleBet = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canDouble(activePlayer);
+						doubleBet.put("isActive", isActive);
+						actions.put("double", doubleBet);
+					}
+					{
+						JSONObject hit = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canHit(activePlayer);
+						hit.put("isActive", isActive);
+						actions.put("hit", hit);
+					}
+					{
+						JSONObject deal = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage() == GameStage.DEAL && GameLogic.canDeal(activePlayer);
+						deal.put("isActive", isActive);
+						actions.put("deal", deal);
+					}
+					{
+						JSONObject stay = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage().compareTo(GameStage.PLAY) <= 0 && GameLogic.canStay(activePlayer);
+						stay.put("isActive", isActive);
+						actions.put("stay", stay);
+					}
+					{
+						JSONObject insurance = new JSONObject();
+						boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY
+								&& GameLogic.canInsurance(game.getDealer(), activePlayer);
+						insurance.put("isActive", isActive);
+						actions.put("insurance", insurance);
+					}
+					controls.put("actions", actions);
 				}
 				{
-					JSONObject doubleBet = new JSONObject();
-					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canDouble(activePlayer);
-					doubleBet.put("isActive", isActive);
-					actions.put("double", doubleBet);
-				}
-				{
-					JSONObject hit = new JSONObject();
-					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY && GameLogic.canHit(activePlayer);
-					hit.put("isActive", isActive);
-					actions.put("hit", hit);
-				}
-				{
-					JSONObject deal = new JSONObject();
+					JSONObject bid = new JSONObject();
 					boolean isActive = isUserActive && game.getGameStage() == GameStage.DEAL && GameLogic.canDeal(activePlayer);
-					deal.put("isActive", isActive);
-					actions.put("deal", deal);
+					bid.put("isActive", isActive);
+					controls.put("bid", bid);
 				}
-				{
-					JSONObject stay = new JSONObject();
-					boolean isActive = isUserActive && game.getGameStage().compareTo(GameStage.PLAY) <= 0 && GameLogic.canStay(activePlayer);
-					stay.put("isActive", isActive);
-					actions.put("stay", stay);
-				}
-				{
-					JSONObject insurance = new JSONObject();
-					boolean isActive = isUserActive && game.getGameStage() == GameStage.PLAY
-							&& GameLogic.canInsurance(game.getDealer(), activePlayer);
-					insurance.put("isActive", isActive);
-					actions.put("insurance", insurance);
-				}
-				controls.put("actions", actions);
+				result.put("controls", controls);
 			}
-			{
-				JSONObject bid = new JSONObject();
-				boolean isActive = isUserActive && game.getGameStage() == GameStage.DEAL && GameLogic.canDeal(activePlayer);
-				bid.put("isActive", isActive);
-				controls.put("bid", bid);
-			}
-			result.put("controls", controls);
+		} else {
+			result.put("result", "ERROR");
 		}
 
 		return result;
@@ -112,7 +121,8 @@ public class GameJSONizer {
 		User user = userPool.get(player.getUserId());
 		result.put("id", player.getUserId().getValue());
 		if (user != null) {
-			result.put("id", user.getDisplayName());
+			result.put("id", user.getId().getValue());
+			result.put("name", user.getDisplayName());
 			result.put("img", photoManager.findPhotoRelativePath(player.getUserId()));
 			result.put("hands", toJSON(player.getHandsListCopy()));
 			result.put("isActive", player.isActive());

@@ -16,51 +16,51 @@ export default class Controls extends React.Component {
                 <div className="column-left">
                     <Balance initValues={this.props.initValues.balance} stateValues={balance}/>
                 </div>
-                <ul className="gorizontal-menu column-center">
+                <ul className="gorizontal-menu column-center contr-actions">
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.insurance}>
+                        <ActionButton stateValues={this.props.stateValues.actions.insurance} command={this.props.initValues.actions.insurance.command} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.insurance.text}
                         </ActionButton>
                     </li>
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.surrender}>
+                        <ActionButton stateValues={this.props.stateValues.actions.surrender} command={this.props.initValues.actions.surrender.command} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.surrender.text}
                         </ActionButton>
                     </li>
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.split}>
+                        <ActionButton stateValues={this.props.stateValues.actions.split} command={this.props.initValues.actions.split.command} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.split.text}
                         </ActionButton>
                     </li>
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.double}>
+                        <ActionButton stateValues={this.props.stateValues.actions.double} command={this.props.initValues.actions.double.command} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.double.text}
                         </ActionButton>
                     </li>
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.hit}>
+                        <ActionButton stateValues={this.props.stateValues.actions.hit} command={this.props.initValues.actions.hit.command} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.hit.text}
                         </ActionButton>
                     </li>
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.deal}>
+                        <ActionButton stateValues={this.props.stateValues.actions.deal} command={this.props.initValues.actions.deal.command} curBid={this.props.stateValues.curBid} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.deal.text}
                         </ActionButton>
                     </li>
                     <li>
-                        <ActionButton stateValues={this.props.stateValues.actions.stay}>
+                        <ActionButton stateValues={this.props.stateValues.actions.stay} command={this.props.initValues.actions.stay.command} doOnAction={this.props.doOnAction}>
                             {this.props.initValues.actions.stay.text}
                         </ActionButton>
                     </li>
                 </ul>
-                <ul className="gorizontal-menu column-right">
+                <ul className="gorizontal-menu column-right contr-bid">
                     {this.props.initValues.bid.buttonValues.map((value, idx) => {
                         let isActive = this.props.stateValues.bid.isActive;
                         if (balance.value < value) {
                             isActive = false;
                         }
                         return (
-                            <li key={idx}><BidButton value={value} isActive={isActive}/></li>
+                            <li key={idx}><BidButton value={value} isActive={isActive} doOnBid={this.props.doOnBid}/></li>
                         );
                     })}
                 </ul>

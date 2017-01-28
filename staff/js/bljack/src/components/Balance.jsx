@@ -10,7 +10,7 @@ export default class Balance extends React.Component {
         return (
             <figure className="balance">
                 <p className="currency cur-balance">
-                    {this.props.stateValues.value}
+                    {this.props.stateValues.value.toFixed(2)}
                 </p>
                 <figcaption>{this.props.initValues.text}</figcaption>
             </figure>

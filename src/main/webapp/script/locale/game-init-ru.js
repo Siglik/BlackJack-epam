@@ -13,129 +13,128 @@ const gameinit = {
         },
         "actions": {
             "surrender": {
-                "text": "Сдаться"
+                "text": "Сдаться",
+                "command": "/blackjack/$/game/surrender"
             },
             "split": {
-                "text": "Разделить"
+                "text": "Разделить",
+                "command": "/blackjack/$/game/split"
             },
             "double": {
-                "text": "Удвоить"
+                "text": "Удвоить",
+                "command": "/blackjack/$/game/double"
             },
             "hit": {
-                "text": "Еще"
+                "text": "Еще",
+                "command": "/blackjack/$/game/hit"
             },
             "deal": {
-                "text": "Ставка"
+                "text": "Ставка",
+                "command": "/blackjack/$/game/deal"
             },
             "stay": {
-                "text": "Хватит"
+                "text": "Хватит",
+                "command": "/blackjack/$/game/stay"
             },
             "insurance": {
-                "text": "Застраховать"
+                "text": "Страховка",
+                "command": "/blackjack/$/game/insurance"
             }
         },
         "bid": {
-            "buttonValues": [1, 5, 25, 100]
+            "buttonValues": [0.5, 1, 5, 25, 100]
         }
     }
 }
 
 
-/* TESTING VARIABLE */
 let game = {
-    "dealer": {
-        "hand": {
-            "cards": ["/blackjack/img/card/ace.gif", "/blackjack/img/card/back.gif", "/blackjack/img/card/back.gif"]
-        }
-    },
-    "timer": {
-        "timeLimit": 5
-    },
-    "result": null,
-    "players": [
-        {
-            "id": 0,
-            "name": "qqq175",
-            "img": "/blackjack/img//user/p_one.jpg",
-            "hands": [
-                {
-                    "score": 10,
-                    "cards": [
-                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/ace.gif"
-                    ],
-                    "bet": 10,
-                    "isActive": false
-                }, {
-                    "score": 10,
-                    "cards": [
-                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/ace.gif", "/blackjack/img/card/ace.gif"
-                    ],
-                    "bet": 75,
-                    "isActive": true
-                }
-            ],
-            "isActive": true
-        }, {
-            "id": 0,
-            "name": "Player Two",
-            "img": "/blackjack/img/user/pl_three.jpg",
-            "hands": [
-                {
-                    "score": "blackjack",
-                    "cards": [
-                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/back.gif"
-                    ],
-                    "bet": 11,
-                    "isActive": false
-                }
-            ],
-            "isActive": false
-        }, {
-            "id": 0,
-            "name": "Player Three",
-            "img": "/blackjack/img/user/pl_two.png",
-            "hands": [
-                {
-                    "score": 10,
-                    "cards": [
-                        "/blackjack/img/card/ace.gif", "/blackjack/img/card/back.gif"
-                    ],
-                    "bet": 17,
-                    "isActive": false
-                }
-            ],
-            "isActive": false
-        }
-    ],
-    "controls": {
-        "balance": {
-            "value": 0.25
-        },
-        "actions": {
-            "surrender": {
-                "isActive": false
-            },
-            "split": {
-                "isActive": true
-            },
-            "double": {
-                "isActive": true
-            },
-            "hit": {
-                "isActive": true
-            },
-            "deal": {
-                "isActive": true
-            },
-            "stay": {
-                "isActive": true
-            },
-            "insurance": {
-                "isActive": true
-            }
-        },
-        "bid": {
-            "isActive": true
-        }
-    }
-}
+	    "dealer": {
+	        "hand": {
+	            "cards": []
+	        }
+	    },
+	    "timer": {
+	        "timeLimit": 120
+	    },
+	    "result": null,
+	    "players": [
+	        {
+	            "id": 0,
+	            "name": "PLAYER",
+	            "img": "/blackjack/img/user/noimage.png",
+	            "hands": [
+	                {
+	                    "score": 0,
+	                    "cards": [
+	                    ],
+	                    "bet": 0,
+	                    "isActive": true
+	                }, {
+	                    "score": 0,
+	                    "cards": [ ],
+	                    "bet": 0,
+	                    "isActive": false
+	                }
+	            ],
+	            "isActive": true
+	        },/* {
+	            "id": 0,
+	            "name": "PLAYER",
+	            "img": "/blackjack/img/user/noimage.png",
+	            "hands": [
+	                {
+	                    "score": 0,
+	                    "cards": [ ],
+	                    "bet": 0,
+	                    "isActive": false
+	                }
+	            ],
+	            "isActive": false
+	        }, {
+	            "id": 0,
+	            "name": "PLAYER",
+	            "img": "/blackjack/img/user/noimage.png",
+	            "hands": [
+	                {
+	                    "score": 0,
+	                    "cards": [ ],
+	                    "bet": 0,
+	                    "isActive": false
+	                }
+	            ],
+	            "isActive": false
+	        }*/
+	    ],
+	    "controls": {
+	        "balance": {
+	            "value": 1000.0
+	        },
+	        "actions": {
+	            "surrender": {
+	                "isActive": true
+	            },
+	            "split": {
+	                "isActive": true
+	            },
+	            "double": {
+	                "isActive": true
+	            },
+	            "hit": {
+	                "isActive": true
+	            },
+	            "deal": {
+	                "isActive": true
+	            },
+	            "stay": {
+	                "isActive": true
+	            },
+	            "insurance": {
+	                "isActive": true
+	            }
+	        },
+	        "bid": {
+	            "isActive": true
+	        }
+	    }
+	}
