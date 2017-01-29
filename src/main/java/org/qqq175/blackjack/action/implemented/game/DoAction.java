@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
@@ -16,7 +18,8 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.GamePool;
 
 public class DoAction implements Action {
-	ActionType actionType;
+	private static Logger log = LogManager.getLogger(DoAction.class);
+	private ActionType actionType;
 
 	public DoAction(ActionType actionType) {
 		this.actionType = actionType;
@@ -34,12 +37,18 @@ public class DoAction implements Action {
 		JSONObject resultJson = new JSONObject();
 		if (user != null) {
 			BlackJackGame bjGame = GamePool.getInstance().get(user.getId());
+			boolean isOk = true;
 			if (bjGame != null) {
 				try {
 					switch (actionType) {
 					case DEAL:
-						BigDecimal bid = new BigDecimal(request.getParameter(StringConstant.PARAMETER_BID));
-						bjGame.deal(user, bid);
+						String bidString = request.getParameter(StringConstant.PARAMETER_BID);
+						if (bidString != null) {
+							BigDecimal bid = new BigDecimal(request.getParameter(StringConstant.PARAMETER_BID));
+							bjGame.deal(user, bid);
+						} else {
+							isOk = false;
+						}
 						break;
 					case DOUBLE:
 						bjGame.doubleBet(user);
@@ -64,20 +73,30 @@ public class DoAction implements Action {
 					}
 					ModifyUserLogic muLogic = new ModifyUserLogic();
 					muLogic.updateSessionUser(request.getSession());
-					resultJson.put("result", "OK");
+					if (isOk) {
+						resultJson.put("result", "OK");
+					} else {
+						resultJson.put("result", "ERROR");
+						resultJson.put("message", "MISSING PARAMS");
+						log.warn("Missing params. User: " + user.getId().getValue());
+					}
 				} catch (GameActionDeniedException e) {
 					resultJson.put("result", "ERROR");
-					e.printStackTrace();
+					resultJson.put("message", "ACTION DENIED");
+					log.warn("Action denied for user " + user.getId().getValue(), e);
 				} catch (NumberFormatException e) {
 					resultJson.put("result", "ERROR");
-					e.printStackTrace();
+					resultJson.put("message", "WRONG PARAMS");
+					log.warn("Wrong params. User: " + user.getId().getValue(), e);
 				}
 			} else {
 				resultJson.put("result", "ERROR");
 				resultJson.put("message", "NO GAME");
+				log.warn("No game. User: " + user.getId().getValue());
 			}
 		} else {
 			resultJson.put("result", "ERROR");
+			log.warn("User is null. Session: " + request.getSession().getId());
 		}
 
 		request.setAttribute(StringConstant.ATTRIBUTE_JSON, resultJson);

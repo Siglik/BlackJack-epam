@@ -3,25 +3,26 @@
 xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
-    <tlib-version>1.0</tlib-version>
+    <tlib-version>2.0</tlib-version>
     <short-name>ctg</short-name>
     <uri>customtags</uri>
     <tag>
-    <name>user-table</name>
-    <tag-class>org.qqq175.blackjack.customtag.UserTable</tag-class>
+    <name>user-avatar</name>
+    <tag-class>org.qqq175.blackjack.customtag.UserPhotoTag</tag-class>
     
     <body-content>scriptless</body-content>
     <attribute>
-        <name>rows</name>
+        <name>user</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
         <elexprvalue>true</elexprvalue>
+        <type>org.qqq175.blackjack.persistence.entity.User</type>
         </attribute>
     <attribute>
-        <name>head</name>
+        <name>className</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
          <elexprvalue>true</elexprvalue>
-        </attribute>
+    </attribute>
  </tag>
 </taglib>

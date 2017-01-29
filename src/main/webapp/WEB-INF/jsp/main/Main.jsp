@@ -1,8 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${curLocale}" />
+<fmt:setBundle basename="conf.i18n.jsp" />
 
-<!DOCTYPE html>
+<!DOCTYPE html lang="${curLocale}">
 <html>
 <head>
 <meta charset="utf-8">
@@ -26,8 +28,9 @@
 		<!-- IMPORT LEFT MENU -->
 		<jsp:include page="/WEB-INF/jsp/element/GuestSideMenu.jsp" />
 
+         <fmt:message key="page.main.welcome" var="welcome" />
 		<jsp:include
-			page='${not empty mainform ? mainform : "/WEB-INF/jsp/main/Welcome.jsp"}' />
+			page='${not empty mainform ? mainform : welcome}' />
 
 
 		<!-- IMPORT ASIDE HERE -->
@@ -44,8 +47,7 @@
 	<script type="text/javascript" src="/blackjack/script/page-style.js"
 		charset="utf-8"></script>
 	<script type="text/javascript">
-		let
-		popupMessage = '${sessionScope.popupMessage}';
+		let popupMessage = '${sessionScope.popupMessage}';
 		if (popupMessage.length > 0) {
 			alert(popupMessage);
 		}

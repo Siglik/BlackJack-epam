@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.exception.LogicException;
+import org.qqq175.blackjack.game.GameStage;
 import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
 import org.qqq175.blackjack.persistence.dao.GameDAO;
@@ -35,8 +36,11 @@ public class GameUtilLogic {
 	public Set<BlackJackGame> getJoinableGameList() {
 		Collection<BlackJackGame> allGames = GamePool.getInstance().getGamesList();
 		return allGames.stream()
-				.filter((game) -> game.getFreeSlots() > 0)
+				.filter(
+						(game) -> 
+						game.getFreeSlots() > 0 && game.getGameStage() != GameStage.UNACTIVE)
 				.collect(Collectors.toSet());
+		
 	}
 
 }

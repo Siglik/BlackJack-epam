@@ -64,8 +64,9 @@ h1 {
 }
 
 span.nav-elem {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 100;
+    margin-left:7px;
 }
 
 a.button#show-menu {
@@ -407,6 +408,10 @@ aside {
 .show {display:block;}
 
 @media screen and (max-width: 800px) {
+    p.tm{
+       font-size:32px;
+       padding-left:24px;
+    }
     h1{
       font-size: 22px;
     }
@@ -422,6 +427,13 @@ aside {
         position: absolute;
         top: 110px;
         z-index: 99;
+    }
+    a.button.join{
+        padding: 10px 25px;
+        margin-right:30px;
+    }
+    a.button.login{
+        margin-right:18px;
     }
     nav.left-menu:hover {}
 }

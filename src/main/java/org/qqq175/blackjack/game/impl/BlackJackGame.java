@@ -21,7 +21,6 @@ public class BlackJackGame {
 	private static Logger log = LogManager.getLogger(BlackJackGame.class);
 	private static final int MAX_PLAYERS = 3;
 	private GameId id;
-	private AtomicInteger modifyCount;
 	private Deck deck;
 	private List<Player> players;
 	private List<Player> leavingPlayers;
@@ -52,7 +51,6 @@ public class BlackJackGame {
 		playersCount = new AtomicInteger(1);
 
 		gameStage = GameStage.UNACTIVE;
-		modifyCount = new AtomicInteger(1);
 		lock = new ReentrantLock();
 	}
 
@@ -69,8 +67,8 @@ public class BlackJackGame {
 	}
 
 	private void modify() {
-		int modCount = modifyCount.incrementAndGet();
-		// WebSocket.send(this, List<UserId>);
+		// pulling:do nothing
+		// websocket: do callback
 	}
 
 	/**
@@ -428,10 +426,10 @@ public class BlackJackGame {
 		case DONE:
 			if (!nextHand(gameStage)) {
 				if (players.size() > 0) {
-					log.debug(newStage + " empty -> nextStage()");
+					log.debug("Game id: " + this.id.getValue() + " " + newStage + "empty -> nextStage()");
 					nextStage();
 				} else {
-					log.debug(newStage + " empty -> finish");
+					log.debug("Game id: " + this.id.getValue() + " " + newStage + " empty -> finish");
 					this.finishEmptyGame();
 				}
 			} else {
@@ -439,7 +437,7 @@ public class BlackJackGame {
 				modify();
 				try {
 					// sleep for user to look results
-					Thread.currentThread().sleep(4000L);
+					Thread.sleep(4000L);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -461,8 +459,6 @@ public class BlackJackGame {
 
 	private void finishEmptyGame() {
 		gameStage = GameStage.UNACTIVE;
-		// TODO Auto-generated method stub
-
 	}
 
 	private void calcResults() {
@@ -491,10 +487,6 @@ public class BlackJackGame {
 
 	public GameId getId() {
 		return id;
-	}
-
-	public AtomicInteger getModifyCount() {
-		return modifyCount;
 	}
 
 	public Deck getDeck() {

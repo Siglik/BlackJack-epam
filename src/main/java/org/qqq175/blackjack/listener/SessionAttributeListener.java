@@ -52,8 +52,10 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 			User value = (User) event.getValue();
 			if (value != null) {
 				BlackJackGame game = GamePool.getInstance().get(value.getId());
-				game.leave(value);
-				GamePool.getInstance().remove(value.getId());
+				if (game != null) {
+					game.leave(value);
+					GamePool.getInstance().remove(value.getId());
+				}
 				UserPool.getInstance().remove(value.getId());
 			}
 		}

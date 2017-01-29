@@ -2,21 +2,22 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${curLocale}" />
+<fmt:setBundle basename="conf.i18n.jsp" />
 <link href="/blackjack/css/user-list.css" rel="stylesheet" />
 <main class="column-center" id="statistic">
-<h2 class="title">
-	<span class="tm">Players list - Список</span>
-	</h3>
+<h2 class="title"><span class="tm"><fmt:message key="playerslist.header" /></span></h2>
 	<div class="list">
 		<table class="list">
 			<thead>
 				<tr>
-					<th>E-mail</th>
-					<th class="big-screen">Name</th>
-					<th class="big-screen">Display name</th>
-					<th class="big-screen">Balance</th>
-					<th class="big-screen">Rating</th>
-					<th>Rank</th>
+					<th><fmt:message key="playerslist.email" /></th>
+					<th class="big-screen"><fmt:message key="playerslist.name" /></th>
+					<th class="big-screen"><fmt:message key="playerslist.displayname" /></th>
+					<th class="big-screen"><fmt:message key="playerslist.balance" /></th>
+					<th class="big-screen"><fmt:message key="playerslist.rating" /></th>
+					<th><fmt:message key="playerslist.rank" /></th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -34,10 +35,10 @@
 						<td>${item.type}</td>
 						<c:choose>
 							<c:when test="${item.active =='true'}">
-								<td><a href='#' class="ban-btn ban">ban</a></td>
+								<td><a href='#' class="ban-btn ban"><fmt:message key="playerslist.ban" /></a></td>
 							</c:when>
 							<c:otherwise>
-								<td><a href="#" class="ban-btn unban">unban</a></td>
+								<td><a href="#" class="ban-btn unban"><fmt:message key="playerslist.unban" /></a></td>
 							</c:otherwise>
 						</c:choose>
 					</tr>
@@ -46,15 +47,16 @@
 		</table>
 		<div class="list-control">
 			<ul class="pagination">
+			    <li><fmt:message key="label.page" />:</li>
 				<c:set var="curPage" value="${empty param.page ? 1 : param.page}"
 					scope="page" />
-				Page:
 				<c:forEach begin="1" end="${pageCount}" varStatus="loop">
 					<li ${curPage == loop.index ? "class='current'" : "" }><a
 						href="/blackjack/$/admin/playerslist?page=${loop.index}">${loop.index}</a></li>
 				</c:forEach>
 			</ul>
 		</div>
+	</div>
 </main>
 <script src="/blackjack/script/players-list.js" charset="utf-8"
 	type="text/javascript"></script>

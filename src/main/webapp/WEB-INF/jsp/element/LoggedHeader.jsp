@@ -1,20 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${curLocale}" />
+<fmt:setBundle basename="conf.i18n.jsp" />
 <header>
 	<div class="header-top">
 		<img src="/blackjack/img/main-logo.png" alt="logo" class="logo">
 		<p class="tm">THE QASINO</p>
 		<ul class="gorizontal-menu right" id="login-buttons">
 			<li id="logout-top"><a href="/blackjack/$/logout"
-				class="button login">LOGOUT</a></li>
+				class="button login"><fmt:message key="header.button.logout" /></a></li>
 			<li id="settings-top"><a href="/blackjack/$/player/settings"
-				class="button join">SETTINGS</a></li>
+				class="button join"><fmt:message key="header.button.settings" /></a></li>
 		</ul>
 	</div>
 	<div class="header-bottom">
-		<a href="#" class="button" id="show-menu">Menu</a>
+		<a href="#" class="button" id="show-menu"><fmt:message key="header.button.menu" /></a>
 		<h1>
-			<span class="nav-elem">Black Jack</span>
+			<span class="nav-elem"><fmt:message key="healer.slogan" /></span>
 		</h1>
 		<div class="dropdown">
 			<a href="#" class="button language" id="lang-btn">${sessionScope.curLocale.language}</a>

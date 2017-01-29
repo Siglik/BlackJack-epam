@@ -2,9 +2,7 @@
 	pageEncoding="UTF-8"%>
 <link href="/blackjack/css/welcome.css" rel="stylesheet" />
 <main class="column-center main-content">
-<h2 class="title">
-	<span class="tm">THE QASINO</span>
-	</h3>
+<h2 class="title"><span class="tm">THE QASINO</span></h2>
 	<p>Учебный проект представляет собой реализацию онлайн-игры Black
 		Jack.</p>
 	<p class="pad-left">
@@ -19,17 +17,16 @@
 	</p>
 	<p>Для доступа к пользовательскому функционалу зарегистрируйтесь,
 		указав любые валидные данные, либо используйте следующие учетные
-		данные или нажмите <a href="/blackjack/$/login?email=user@qqq175.org&password=foobarbaz">сюда</a>:
+		данные или нажмите <a href="/blackjack/$/login?email=user@qqq175.org&password=foobarbaz">сюда</a>:</p>
 	<ul>
 		<li>Email: <span class="data">user@qqq175.org</span></li>
-		<li>Password: <span class="data">foobarbaz</span></li>
+		<li>Пароль: <span class="data">foobarbaz</span></li>
 	</ul>
-	</p>
 	<p>Для доступа к функциям администратора используйте следующие
-		учетные данные или нажмите <a href="/blackjack/$/login?email=admin@qqq175.org&password=qwerty123">сюда</a>:
+		учетные данные или нажмите <a href="/blackjack/$/login?email=admin@qqq175.org&password=qwerty123">сюда</a>:</p>
 	<ul>
 		<li>Email: <span class="data">admin@qqq175.org</span></li>
-		<li>Password: <span class="data">qwerty123</span></li>
+		<li>Пароль: <span class="data">qwerty123</span></li>
 	</ul>
 	<p class="attention">ВНИМАНИЕ: пожалуйста не меняйте пароль этих учетных записей.</p>
 </main>

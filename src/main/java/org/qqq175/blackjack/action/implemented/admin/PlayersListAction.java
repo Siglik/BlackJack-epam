@@ -14,7 +14,7 @@ import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
 public class PlayersListAction implements Action {
-	private static final int PAGINATION = 7;
+	private static final int PAGINATION = 15;
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {

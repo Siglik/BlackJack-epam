@@ -15,7 +15,7 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 public class ConnectionPool {
 	private static AtomicReference<ConnectionPool> instance = new AtomicReference<>();
-	private static int VALID_TIMEOUT = 2; // seconds
+	private static int VALID_TIMEOUT = 3; // seconds
 	private static int RETRIEVE_TIMEOUT = 300; // milliseconds
 	private static int MAX_POOL_SIZE = Settings.getInstance().getDatabase().getMaxPoolSize();
 	private static int MIN_POOL_SIZE = Settings.getInstance().getDatabase().getMinPoolSize();
@@ -80,7 +80,6 @@ public class ConnectionPool {
 			try {
 				availableConnections.take().close();
 				int left = connectionsCount.decrementAndGet();
-				System.out.println("Closing pool. Connection left: " + left);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -99,7 +98,6 @@ public class ConnectionPool {
 			if (conn == null) {
 				if (connectionsCount.get() < MAX_POOL_SIZE) {
 					conn = this.createConnection();
-					System.out.println("size " + availableConnections.size());
 				} else {
 					conn = availableConnections.take();
 				}
@@ -125,9 +123,7 @@ public class ConnectionPool {
 	void putbackConnection(Connection conn) {
 		if (availableConnections.size() < MIN_POOL_SIZE) {
 			try {
-				System.out.println("size " + availableConnections.size());
 				availableConnections.put(conn);
-				System.out.println("size " + availableConnections.size());
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
