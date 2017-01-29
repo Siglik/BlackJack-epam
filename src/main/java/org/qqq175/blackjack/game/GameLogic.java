@@ -13,6 +13,7 @@ import org.qqq175.blackjack.game.impl.Hand;
 import org.qqq175.blackjack.game.impl.Player;
 import org.qqq175.blackjack.game.impl.Score;
 import org.qqq175.blackjack.logic.player.AccountOperationLogic;
+import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
 import org.qqq175.blackjack.persistence.dao.UserDAO;
 import org.qqq175.blackjack.persistence.dao.UserstatDAO;
@@ -37,6 +38,7 @@ public class GameLogic {
 
 	public static void dealerHit(Dealer dealer, Deck deck) {
 		Hand hand = dealer.getHand();
+
 		hand.addCard(deck.pullCard());
 		hand.addCard(deck.pullCard());
 	}
@@ -597,6 +599,8 @@ public class GameLogic {
 					break;
 				}
 				activeHand.setStage(GameStage.UNACTIVE);
+				ModifyUserLogic muLogic = new ModifyUserLogic();
+				muLogic.updateUserInPool(userId);
 			} catch (DAOException e) {
 				log.error("Unable to update user's stats.", e);
 			} finally {

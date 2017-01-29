@@ -7,7 +7,9 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
+import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.pool.GamePool;
 import org.qqq175.blackjack.pool.UserPool;
 
 /**
@@ -49,6 +51,9 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			User value = (User) event.getValue();
 			if (value != null) {
+				BlackJackGame game = GamePool.getInstance().get(value.getId());
+				game.leave(value);
+				GamePool.getInstance().remove(value.getId());
 				UserPool.getInstance().remove(value.getId());
 			}
 		}

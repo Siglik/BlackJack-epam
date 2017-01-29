@@ -110,7 +110,7 @@ public class GameJSONizer {
 
 	private static JSONObject toJSON(Dealer dealer) {
 		JSONObject result = new JSONObject();
-		result.put("hand", toJSON(dealer.getHand(), dealer.isShowAllCards()));
+		result.put("hand", toJSON(dealer.getHand(), dealer.isShowAllCards(), false));
 		return result;
 	}
 
@@ -138,30 +138,31 @@ public class GameJSONizer {
 	private static JSONArray toJSON(List<Hand> hands) {
 		JSONArray result = new JSONArray();
 		for (Hand hand : hands) {
-			result.add(toJSON(hand, true));
+			result.add(toJSON(hand, true, true));
 		}
 		return result;
 	}
 
-	private static JSONObject toJSON(Hand hand, boolean showAll) {
+	private static JSONObject toJSON(Hand hand, boolean showAll, boolean isPlayer) {
 		JSONObject result = new JSONObject();
-		result.put("score", toJSON(hand.getScore(), true));
 		result.put("cards", toJSON(hand.getCardsListCopy(), showAll));
 		if (showAll) {
-			result.put("bet", hand.getBid());// ?toString
+			result.put("score", toJSON(hand.getScore()));
+		}
+		if (isPlayer) {
+			result.put("bet", hand.getBid());
+			result.put("insurance", hand.getInsurance());
 			result.put("isActive", hand.isActive());
 		}
 		return result;
 	}
 
-	private static String toJSON(Score score, boolean showScore) {
+	private static String toJSON(Score score) {
 		String result = "";
-		if (showScore) {
-			if (score.isBlackJack()) {
-				result = "blackjack";
-			} else {
-				result = Integer.toString(score.getValue());
-			}
+		if (score.isBlackJack()) {
+			result = "blackjack";
+		} else {
+			result = Integer.toString(score.getValue());
 		}
 
 		return result;

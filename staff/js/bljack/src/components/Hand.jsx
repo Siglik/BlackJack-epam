@@ -12,7 +12,7 @@ export default class Hand extends React.Component {
         let bet,
             score;
         if (!!this.props.stateValues.bet) {
-            bet = (<Bet stateValues={this.props.stateValues.bet}/>);
+            bet = (<Bet stateValues={this.props.stateValues}/>);
         } else {
             bet = "";
         }

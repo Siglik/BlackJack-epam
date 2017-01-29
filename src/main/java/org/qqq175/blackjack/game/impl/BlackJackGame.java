@@ -51,10 +51,6 @@ public class BlackJackGame {
 		activePlayer = null;
 		playersCount = new AtomicInteger(1);
 
-		for (int i = 1; i < maxPlayers; i++) {
-			players.add(null);
-		}
-
 		gameStage = GameStage.UNACTIVE;
 		modifyCount = new AtomicInteger(1);
 		lock = new ReentrantLock();
@@ -152,7 +148,7 @@ public class BlackJackGame {
 				if (GameLogic.tryHit(activePlayer, deck)) {
 					if (!GameLogic.canHit(activePlayer)) {
 						if (!nextHand(gameStage)) {
-							nextStage();
+							parallelNextSage();
 						}
 					}
 					modify();
@@ -178,7 +174,7 @@ public class BlackJackGame {
 			if (gameStage == GameStage.PLAY) {
 				if (GameLogic.tryDouble(activePlayer, deck)) {
 					if (!nextHand(gameStage)) {
-						nextStage();
+						parallelNextSage();
 					}
 					modify();
 				} else {
@@ -203,7 +199,7 @@ public class BlackJackGame {
 				if (GameLogic.trySplit(activePlayer, deck)) {
 					activePlayer.resetActiveHand();
 					if (!nextHand(gameStage)) {
-						nextStage();
+						parallelNextSage();
 					}
 					modify();
 				} else {
@@ -228,7 +224,7 @@ public class BlackJackGame {
 			if (gameStage == GameStage.PLAY || gameStage == GameStage.DEAL) {
 				if (GameLogic.trySurrender(activePlayer)) {
 					if (!nextHand(gameStage)) {
-						nextStage();
+						parallelNextSage();
 					}
 					modify();
 				} else {
@@ -253,13 +249,9 @@ public class BlackJackGame {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.DEAL) {
 				if (GameLogic.tryDeal(activePlayer, bid, deck)) {
-					log.debug("deal. Next hand is: " + activePlayer != null
-							? activePlayer.getUserId().getValue() + " size " + activePlayer.getActiveHand().getCardsListCopy().size() : "null");
 					if (!nextHand(gameStage)) {
-						nextStage();
+						parallelNextSage();
 					}
-					log.debug("deal. Next hand is: " + activePlayer != null
-							? activePlayer.getUserId().getValue() + " size " + activePlayer.getActiveHand().getCardsListCopy().size() : "null");
 					modify();
 				} else {
 					throw new GameActionDeniedException("error.game.error");
@@ -299,7 +291,7 @@ public class BlackJackGame {
 			if (gameStage == GameStage.PLAY) {
 				if (GameLogic.tryStay(activePlayer)) {
 					if (!nextHand(gameStage)) {
-						nextStage();
+						parallelNextSage();
 					}
 					modify();
 				} else {
@@ -338,8 +330,51 @@ public class BlackJackGame {
 
 	public void leave(User user) {
 		Player player = players.get(indexOfPlayer(user.getId()));
-		leavingPlayers.add(player);
+		switch (player.getStage()) {
+		case UNACTIVE:
+		case DEAL:
+			leavingPlayers.add(player);
+			while (player == activePlayer) {
+				try {
+					this.surrender(user);
+				} catch (GameActionDeniedException e) {
+					log.error("Game exception at user " + user.getId().getValue() + " leaving.", e);
+				}
+			}
+			player.setStage(GameStage.DONE);
+			break;
+		case PLAY:
+			leavingPlayers.add(player);
+			while (player == activePlayer) {
+				try {
+					this.stay(user);
+				} catch (GameActionDeniedException e) {
+					log.error("Game exception at user " + user.getId().getValue() + " leaving.", e);
+				}
+			}
+			player.setStage(GameStage.RESULT);
+			break;
+		case RESULT:
+			leavingPlayers.add(player);
+		case DONE:
+			leavingPlayers.add(player);
+		}
 		modify();
+	}
+
+	private void parallelNextSage() {
+		BlackJackGame thisGame = this;
+		Thread thread = new Thread() {
+			private BlackJackGame game = thisGame;
+
+			@Override
+			public void run() {
+				thisGame.lock.lock();
+				thisGame.nextStage();
+				thisGame.lock.unlock();
+			}
+		};
+		thread.start();
 	}
 
 	private void nextStage() {
@@ -404,13 +439,15 @@ public class BlackJackGame {
 				modify();
 				try {
 					// sleep for user to look results
-					Thread.currentThread().sleep(3000L);
+					Thread.currentThread().sleep(4000L);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				for (Player player : leavingPlayers) {
-					players.remove(player);
+					if (players.remove(player)) {
+						playersCount.decrementAndGet();
+					}
 					GamePool.getInstance().remove(player.getUserId());
 				}
 				leavingPlayers.clear();

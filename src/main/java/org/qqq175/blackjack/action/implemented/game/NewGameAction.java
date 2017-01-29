@@ -1,5 +1,7 @@
 package org.qqq175.blackjack.action.implemented.game;
 
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,6 +10,7 @@ import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.exception.LogicException;
 import org.qqq175.blackjack.game.impl.BlackJackGame;
+import org.qqq175.blackjack.game.impl.Player;
 import org.qqq175.blackjack.logic.game.GameUtilLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
@@ -54,7 +57,21 @@ public class NewGameAction implements Action {
 			try {
 				GameUtilLogic guLogic = new GameUtilLogic();
 				gameId = guLogic.newGameEntity(user);
-				game = BlackJackGame.createGame(gameId, user, mode.getMaxPlayers());
+				if (mode != Mode.SINGLEPLAYER) {
+					Iterator<BlackJackGame> games = guLogic.getJoinableGameList().iterator();
+					boolean found = false;
+					while (!found && games.hasNext()) {
+						BlackJackGame localGame = games.next();
+						Player player = localGame.join(user);
+						if (player != null) {
+							game = localGame;
+							found = true;
+						}
+					}
+				}
+				if (game == null) {
+					game = BlackJackGame.createGame(gameId, user, mode.getMaxPlayers());
+				}
 				gamePool.put(user.getId(), game);
 			} catch (LogicException e) {
 				request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Sorry, some error occurred! " + e.getMessage());

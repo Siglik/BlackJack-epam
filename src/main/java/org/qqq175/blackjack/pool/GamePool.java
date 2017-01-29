@@ -1,6 +1,7 @@
 package org.qqq175.blackjack.pool;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
@@ -118,5 +119,13 @@ public class GamePool implements Serializable {
 	 */
 	public BlackJackGame putIfAbsent(UserId key, BlackJackGame value) {
 		return games.putIfAbsent(key, value);
+	}
+
+	/**
+	 * @return
+	 * @see java.util.concurrent.ConcurrentHashMap#values()
+	 */
+	public Collection<BlackJackGame> getGamesList() {
+		return games.values();
 	}
 }
