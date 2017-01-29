@@ -32,7 +32,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	 */
 	@Override
 	public void attributeAdded(HttpSessionBindingEvent event) {
-		log.debug(event.getName() + " added");
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			User value = (User) event.getValue();
@@ -46,7 +45,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	 */
 	@Override
 	public void attributeRemoved(HttpSessionBindingEvent event) {
-		log.debug(event.getName() + " removed");
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			User value = (User) event.getValue();
@@ -66,7 +64,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	 */
 	@Override
 	public void attributeReplaced(HttpSessionBindingEvent event) {
-		log.debug(event.getName() + " replaced");
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			/* getting new user value */

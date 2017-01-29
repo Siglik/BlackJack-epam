@@ -13,29 +13,36 @@ const gameinit = {
         },
         "actions": {
             "surrender": {
-                "text": "Surrender"
+                "text": "Surrender",
+                "command": "/blackjack/$/game/surrender"
             },
             "split": {
-                "text": "Split"
+                "text": "Split",
+                "command": "/blackjack/$/game/split"
             },
             "double": {
-                "text": "Double"
+                "text": "Double",
+                "command": "/blackjack/$/game/double"
             },
             "hit": {
-                "text": "Hit"
+                "text": "Hit",
+                "command": "/blackjack/$/game/hit"
             },
             "deal": {
-                "text": "Deal"
+                "text": "Deal",
+                "command": "/blackjack/$/game/deal"
             },
             "stay": {
-                "text": "Stay"
+                "text": "Stay",
+                "command": "/blackjack/$/game/stay"
             },
             "insurance": {
-                "text": "Insurance"
+                "text": "Insurance",
+                "command": "/blackjack/$/game/insurance"
             }
         },
         "bid": {
-            "buttonValues": [1, 5, 25, 100]
+            "buttonValues": [0.5, 1, 5, 25, 100]
         }
     }
 }

@@ -5,6 +5,7 @@ import org.qqq175.blackjack.action.ActionEnum;
 import org.qqq175.blackjack.action.implemented.game.DoAction;
 import org.qqq175.blackjack.action.implemented.game.GameAction;
 import org.qqq175.blackjack.action.implemented.game.GetStateAction;
+import org.qqq175.blackjack.action.implemented.game.LeaveGameAction;
 import org.qqq175.blackjack.action.implemented.game.NewGameAction;
 import org.qqq175.blackjack.action.implemented.main.IndexAction;
 
@@ -67,6 +68,11 @@ public enum GameActionEnum implements ActionEnum {
 	SURRENDER {
 		{
 			this.action = new DoAction(DoAction.ActionType.SURRENDER);
+		}
+	},
+	LEAVE {
+		{
+			this.action = new LeaveGameAction();
 		}
 	};
 	Action action;

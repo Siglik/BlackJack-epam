@@ -127,7 +127,6 @@ public class BlackJackGame {
 				activePlayer = null;
 			}
 		}
-		log.debug("Next player found: " + foundNext);
 		return foundNext;
 	}
 
@@ -387,7 +386,6 @@ public class BlackJackGame {
 		GameStage newStage = gameStage = gameStage.nextState();
 		for (Player player : players) {
 			GameStage plStage = player.getStage();
-			log.debug("=======" + player.getUserId() + " --- " + plStage + " ? " + gameStage + " = " + plStage.compareTo(gameStage));
 			if ((plStage != GameStage.UNACTIVE && plStage.compareTo(gameStage) < 0) || gameStage == GameStage.DEAL) {
 				player.setStage(gameStage);
 			}
@@ -396,7 +394,6 @@ public class BlackJackGame {
 		switch (newStage) {
 		case DEAL:
 			if (!nextHand(gameStage)) {
-				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
 				dealer = new Dealer();
@@ -405,7 +402,6 @@ public class BlackJackGame {
 			break;
 		case PLAY:
 			if (!nextHand(gameStage)) {
-				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
 				GameLogic.dealerHit(dealer, deck);
@@ -414,7 +410,6 @@ public class BlackJackGame {
 			break;
 		case RESULT:
 			if (!nextHand(gameStage)) {
-				log.debug(newStage + " empty -> nextStage()");
 				nextStage();
 			} else {
 				// dealer plays and calcResults
@@ -426,7 +421,6 @@ public class BlackJackGame {
 		case DONE:
 			if (!nextHand(gameStage)) {
 				if (players.size() > 0) {
-					log.debug("Game id: " + this.id.getValue() + " " + newStage + "empty -> nextStage()");
 					nextStage();
 				} else {
 					log.debug("Game id: " + this.id.getValue() + " " + newStage + " empty -> finish");
@@ -442,15 +436,15 @@ public class BlackJackGame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				for (Player player : leavingPlayers) {
-					if (players.remove(player)) {
-						playersCount.decrementAndGet();
-					}
-					GamePool.getInstance().remove(player.getUserId());
-				}
-				leavingPlayers.clear();
-				nextStage();
 			}
+			for (Player player : leavingPlayers) {
+				if (players.remove(player)) {
+					playersCount.decrementAndGet();
+				}
+				GamePool.getInstance().remove(player.getUserId());
+			}
+			leavingPlayers.clear();
+			nextStage();
 			break;
 		case UNACTIVE:
 			log.warn("wrong game state after nextStage()");
@@ -530,6 +524,20 @@ public class BlackJackGame {
 	 */
 	public GameStage getGameStage() {
 		return gameStage;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		if (this.getGameStage() != GameStage.UNACTIVE) {
+			log.fatal("ATTEMT to finalize ACTIVE game " + this.getId() + " " + this.getGameStage() + " " + players.toString());
+			this.nextStage();
+		}
+		super.finalize();
 	}
 
 }
