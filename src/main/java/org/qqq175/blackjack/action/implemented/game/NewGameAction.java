@@ -71,16 +71,14 @@ public class NewGameAction implements Action {
 							found = true;
 						}
 					}
-				}
-				if (game != null) {
-					log.debug("Game found " + game.getId().getValue());
+					request.getSession().setAttribute(StringConstant.ATTRIBUTE_SHOWCHAT, true);
+				} else {
+					request.getSession().setAttribute(StringConstant.ATTRIBUTE_SHOWCHAT, false);
 				}
 				if (game == null) {
 					game = BlackJackGame.createGame(gameId, user, mode.getMaxPlayers());
-					log.debug("Creating new game " + game.getId().getValue());
 				}
 				gamePool.put(user.getId(), game);
-				log.debug("Put to pool game " + gamePool.get(user.getId()).getId().getValue());
 			} catch (LogicException e) {
 				request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Sorry, some error occurred! " + e.getMessage());
 			}

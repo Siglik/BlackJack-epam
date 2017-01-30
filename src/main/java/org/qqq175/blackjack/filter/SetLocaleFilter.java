@@ -53,7 +53,6 @@ public class SetLocaleFilter implements Filter {
 			session.setAttribute(StringConstant.ATTRIBUTE_LOCALE, locale);
 		}
 		response.setLocale(locale);
-		System.out.println(locale.getLanguage());
 		chain.doFilter(request, response);
 	}
 

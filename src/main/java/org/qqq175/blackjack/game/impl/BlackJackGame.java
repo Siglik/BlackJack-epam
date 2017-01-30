@@ -22,6 +22,7 @@ public class BlackJackGame {
 	private static final int MAX_PLAYERS = 3;
 	private GameId id;
 	private Deck deck;
+	private int maxPlayers;
 	private List<Player> players;
 	private List<Player> leavingPlayers;
 	private AtomicInteger playersCount;
@@ -42,6 +43,7 @@ public class BlackJackGame {
 	private BlackJackGame(GameId gameId, int decksCount, int maxPlayers, User creator) {
 		id = gameId;
 		deck = new Deck(decksCount);
+		this.maxPlayers = maxPlayers;
 
 		players = new CopyOnWriteArrayList<>();
 		leavingPlayers = new CopyOnWriteArrayList<>();
@@ -311,7 +313,7 @@ public class BlackJackGame {
 	public Player join(User user) {
 		if (gameStage != GameStage.UNACTIVE) {
 			int nextPlayersCount = playersCount.incrementAndGet();
-			if (nextPlayersCount <= MAX_PLAYERS) {
+			if (nextPlayersCount <= maxPlayers) {
 				Player player = new Player(user.getId(), false);
 				players.add(player);
 				modify();
@@ -475,10 +477,6 @@ public class BlackJackGame {
 
 	}
 
-	public static int getMaxPlayers() {
-		return MAX_PLAYERS;
-	}
-
 	public GameId getId() {
 		return id;
 	}
@@ -497,7 +495,7 @@ public class BlackJackGame {
 	}
 
 	public int getFreeSlots() {
-		return MAX_PLAYERS - playersCount.get();
+		return maxPlayers - playersCount.get();
 	}
 
 	public Player getActivePlayer() {

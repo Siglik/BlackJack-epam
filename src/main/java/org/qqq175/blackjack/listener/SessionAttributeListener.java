@@ -35,7 +35,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 		String attrName = event.getName();
 		if (attrName.equals(StringConstant.ATTRIBUTE_USER)) {
 			User value = (User) event.getValue();
-			log.debug(value.getAccountBalance() + "->" + UserPool.getInstance().get(value.getId()));
 			UserPool.getInstance().put(value);
 		}
 	}

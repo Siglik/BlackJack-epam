@@ -19,6 +19,7 @@ public interface StringConstant {
 	public static final String ATTRIBUTE_OPERATIONS = "operations";
 	public static final String ATTRIBUTE_GAME = "game";
 	public static final String ATTRIBUTE_IN_GAME = "inGame";
+	public static final String ATTRIBUTE_SHOWCHAT = "showChat";
 
 	public static final String PARAMETER_EMAIL = "email";
 	public static final String PARAMETER_PASSWORD = "password";
@@ -43,6 +44,7 @@ public interface StringConstant {
 	public static final String PARAMETER_BID = "bid";
 
 	public static final String COOKIE_LOCALE = "locale";
+	public static final String COOKIE_VISITED = "visited";
 
 	public static final String SCOPE_DEFAULT = "main";
 	public static final String ACTION_DEFAULT = "index";

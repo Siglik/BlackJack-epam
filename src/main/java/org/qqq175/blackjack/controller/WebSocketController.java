@@ -1,6 +1,9 @@
 package org.qqq175.blackjack.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
+import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -9,33 +12,63 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.qqq175.blackjack.action.BlackJackSessionHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.qqq175.blackjack.StringConstant;
+import org.qqq175.blackjack.action.implemented.chat.ChatSessionHandler;
+import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.entity.User;
+import org.qqq175.blackjack.persistence.entity.id.GameId;
+import org.qqq175.blackjack.pool.GamePool;
+import org.qqq175.blackjack.pool.UserPool;
 
-@ServerEndpoint(value = "/game/api", configurator = GetHttpSessionConfigurator.class)
+@ServerEndpoint(value = "/chat", configurator = GetHttpSessionConfigurator.class)
 public class WebSocketController {
+	private static Logger log = LogManager.getLogger(WebSocketController.class);
 	private Session wsSession;
 	private HttpSession httpSession;
+	private GameId gameId;
 
-	private static BlackJackSessionHandler sessionHandler = BlackJackSessionHandler.getInstance();
+	private static ChatSessionHandler sessionHandler = ChatSessionHandler.getInstance();
 
 	@OnOpen
 	public void open(Session session, EndpointConfig config) {
+		boolean isSessionRegistred = false;
 		this.wsSession = session;
 		this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
-		User user = (User) httpSession.getAttribute("user");
+		User user = (User) httpSession.getAttribute(StringConstant.ATTRIBUTE_USER);
 		if (user != null) {
-			System.out.println(user.getDisplayName());
+			User userFromPool = UserPool.getInstance().get(user.getId());
+			if (userFromPool != null) {
+				BlackJackGame game = GamePool.getInstance().get(user.getId());
+				if (game != null) {
+					this.gameId = game.getId();
+					sessionHandler.addSession(session, game.getId());
+					log.debug("Connected to game " + game.getId().getValue());
+					isSessionRegistred = true;
+				}
+			} else {
+				log.warn("User " + user.getDisplayName() + "@" + user.getId().getValue() + " in pool is null. Closing session.");
+			}
+		} else {
+			log.warn("Session is closing. User is null");
 		}
-		sessionHandler.addSession(session);
+
+		if (!isSessionRegistred) {
+			try {
+				session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "User is unautorized"));
+			} catch (IOException e) {
+				log.warn("Unable to close session " + session.getId());
+			}
+		}
 	}
 
 	@OnClose
 	public void close(Session session) {
-		sessionHandler.removeSession(session);
+		if (gameId != null) {
+			log.debug("Clossing connection to game" + gameId.getValue());
+			sessionHandler.removeSession(session, gameId);
+		}
 	}
 
 	@OnError
@@ -45,25 +78,28 @@ public class WebSocketController {
 
 	@OnMessage
 	public void handleMessage(String message, Session session) {
-		JSONParser reader = new JSONParser();
-		JSONObject jsonMessage;
-		try {
-			jsonMessage = (JSONObject) reader.parse(message);
-
-			if ("add".equals(jsonMessage.get("action"))) {
-
+		boolean isValid = false;
+		User user = (User) httpSession.getAttribute("user");
+		log.debug("Got message: " + message);
+		if (user != null) {
+			User userFromPool = UserPool.getInstance().get(user.getId());
+			if (userFromPool != null) {
+				BlackJackGame game = GamePool.getInstance().get(user.getId());
+				if (game != null && game.getId().equals(gameId)) {
+					sessionHandler.handleNewMessage(gameId, message, userFromPool);
+					isValid = true;
+				}
 			}
-
-			if ("remove".equals(jsonMessage.get("action"))) {
-
+			if (!isValid) {
+				sessionHandler.removeSession(session, gameId);
+				this.close(session);
+				try {
+					session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "User is unautorized"));
+				} catch (IOException e) {
+					log.warn("Unable to close session " + session.getId());
+				}
+				log.warn("User " + user.getDisplayName() + "@" + user.getId().getValue() + " in pool is null. Closing session.");
 			}
-
-			if ("toggle".equals(jsonMessage.get("action"))) {
-
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

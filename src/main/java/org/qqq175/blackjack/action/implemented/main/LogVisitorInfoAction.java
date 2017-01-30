@@ -1,5 +1,6 @@
 package org.qqq175.blackjack.action.implemented.main;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,18 +27,37 @@ public class LogVisitorInfoAction implements Action {
 		JSONObject result = new JSONObject();
 		String info = request.getParameter("info");
 		if (info != null) {
-			JSONParser parser = new JSONParser();
-			try {
-				JSONObject infoJSON = (JSONObject) parser.parse(info);
-				infoJSON.put("ip", request.getRemoteAddr());
-				infoJSON.put("sessionId", request.getSession().getId());
-				infoJSON.put("forwardIp", request.getHeader("X-FORWARDED-FOR"));
-				infoJSON.put("hostName", request.getRemoteHost());
-				infoJSON.put("lang", request.getLocale().getLanguage());
-				log.log(Level.toLevel("VISITINFO", Level.INFO), infoJSON.toJSONString() + "\n");
-				result.put("status", "OK");
-			} catch (ParseException e) {
-				log.log(Level.toLevel("VISITINFO", Level.INFO), "unable to log visitor info", e);
+			Cookie[] cookies = request.getCookies();
+			boolean cookieFound = false;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals(StringConstant.COOKIE_VISITED)) {
+						cookieFound = true;
+						break;
+					}
+				}
+			}
+			if (!cookieFound) {
+				JSONParser parser = new JSONParser();
+				try {
+					JSONObject infoJSON = (JSONObject) parser.parse(info);
+					infoJSON.put("ip", request.getRemoteAddr());
+					infoJSON.put("sessionId", request.getSession().getId());
+					infoJSON.put("forwardIp", request.getHeader("X-FORWARDED-FOR"));
+					infoJSON.put("hostName", request.getRemoteHost());
+					infoJSON.put("lang", request.getLocale().getLanguage());
+					log.log(Level.toLevel("VISITINFO", Level.INFO), infoJSON.toJSONString() + "\n");
+
+					Cookie cookie = new Cookie(StringConstant.COOKIE_VISITED, "true");
+					cookie.setMaxAge(8 * 60 * 60);
+					response.addCookie(cookie);
+
+					result.put("status", "OK");
+				} catch (ParseException e) {
+					log.log(Level.toLevel("VISITINFO", Level.INFO), "unable to log visitor info", e);
+				}
+			} else {
+				result.put("status", "NO ACTION");
 			}
 		}
 		request.setAttribute(StringConstant.ATTRIBUTE_JSON, result);

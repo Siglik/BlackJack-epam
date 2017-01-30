@@ -3,31 +3,26 @@
     src: url('../fonts/Planewalker.eot');
     src: local('Planewalker'), url('../fonts/Planewalker.woff') format('woff'), url('../fonts/Planewalker.ttf') format('truetype');
 }
-@font-face {
-    font-family: 'CashCurrency';
-    src: url('../fonts/CashCurrency.ttf') format('truetype');
-}
 
 body {
     margin: 0;
     padding: 0;
-    background-color: #212121;
-    color: #f2f2f2;
+    background-color: @bg-color;
+    color: @text-color ;
     font-family: 'Verdana', sans-serif;
-    min-width: 720px;
-    font-size:105%;
+    min-width: 680px;
+}
+
+main, aside, nav.left-menu {
+    background-color: @secondary-bg-color;
 }
 
 a{
-  color: #ffdd1f;
-}
-
-main, aside, nav.left-menu, div.container{
-    background-color: #2f2f2f;
+  color: @active-main-color;
 }
 
 div.header-top {
-    background-color: #242424;
+    background-color: @header-top-bg-color;
     height: 60px;
 }
 
@@ -43,13 +38,13 @@ p.tm {
     float: left;
     font-family: 'Planewalker';
     font-size: 36px;
-    color: red;
+    color: @casino-header-text-color;
     padding-left: 35px;
     margin-bottom: 0;
 }
 
 div.header-bottom {
-    background-color: #f6cd0f;
+    background-color: @header-bottom-bg-color;
     height: 42px;
 }
 
@@ -64,13 +59,12 @@ h1 {
 }
 
 span.nav-elem {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 100;
-    margin-left:7px;
 }
 
 a.button#show-menu {
-    background-color: rgba(0, 0, 0, 0.13);
+    background-color: @button-top-bg-color;
     display: none;
     float: left;
     margin-top: 4px;
@@ -78,7 +72,7 @@ a.button#show-menu {
 }
 
 a.button.language {
-    background-color: rgba(0, 0, 0, 0.13);
+    background-color: @button-top-bg-color;
     float: right;
     margin-top: 4px;
     margin-right: 80px;
@@ -86,11 +80,11 @@ a.button.language {
 }
 
 a.button.language:hover {
-    background-color: rgba(0, 0, 0, 0.10);
+    background-color: @button-top-hover-bg-color;
 }
 
 nav.left-menu {
-    padding: 20px 0px 0px 10px;
+    padding: 16px 0px 0px 0px;
     margin: 0;
 }
 
@@ -123,19 +117,19 @@ nav.left-menu {
     display: block;
 }
 
+a.button:hover {
+    background-color: @button-hover-bg-color;
+    color: @secondary-text-color;
+}
+
 a.button {
-    background-color: #88909B;
+    background-color: @button-bg-color;
     display: block;
-    color: #f2f2f2;
+    color: @text-color;
     text-align: center;
     padding: 14px 16px;
     margin: 0px 6px;
     text-decoration: none;
-}
-
-a.button:hover {
-    background-color: #bf3b24;
-    color: white;
 }
 
 a.menu-item {
@@ -155,13 +149,13 @@ a.menu-item {
 
 a.button.login {
     padding: 10px 30px;
-    background-color: #bf3b24;
+    background-color: @button-login-bg-color;
     margin-top: 12px;
     margin-right: 25px;
 }
 
 a.button.login:hover {
-    background-color: #df4b34;
+    background-color: @button-hover-bg-color;
 }
 
 a.button.join {
@@ -171,7 +165,7 @@ a.button.join {
 }
 
 a.button.join:hover {
-    background-color: #98a0aB;
+    background-color: @button-join-hover-bg-color;
 }
 
 .right {
@@ -180,6 +174,10 @@ a.button.join:hover {
 
 main {
     width: 100%;
+}
+
+div.game {
+    text-align: center;
 }
 
 .container {
@@ -193,11 +191,11 @@ main {
 }
 
 .column-center {
-    order: 5;
+    order: 2;
 }
 
 .column-right {
-    order: 10;
+    order: 3;
 }
 
 aside {
@@ -223,8 +221,8 @@ aside {
 }
 
 .player-info.active {
-    border: 2px dotted #dfc;
-    color: #ffdd1f;
+    border: 2px dotted @active-secondary-color;
+    color: @active-main-color;
     border-radius: 6px;
 }
 
@@ -245,7 +243,7 @@ a.control-key:hover {
 a.control-key.not-active {
     pointer-events: none;
     cursor: default;
-    background-color: #53606B;
+    background-color: @button-not-active-bg-color;
 }
 
 a.control-key.not-active:hover {
@@ -259,20 +257,20 @@ a.bid {
     align-content: center;
     padding: 14px;
     margin: 6px;
-    background-color: rgb(75, 173, 43);
+    background-color: @button-bid-bg-collor;
 }
 
 a.bid:hover {
     padding: 18px;
     margin: 2px;
-    background-color: #e64d24;
+    background-color: @menu-hover-bg-color;
 }
 
 .card {
-    border: 1px solid black;
-    margin-left: -41px;
-    width: 66px;
-    height: 95px;
+    border: 1px solid @img-border-color ;
+    margin-left: -31px;
+    width: 51px;
+    height: 73px;
 }
 
 .card.first-card {
@@ -282,8 +280,6 @@ a.bid:hover {
 .hand {
     display: inline-block;
     padding: 5px 0 0 5px;
-    min-width:140px;
-    min-height:140px;
 }
 
 .dealer .hand {
@@ -296,7 +292,7 @@ a.bid:hover {
 }
 
 .hand.active {
-    border: 1px solid yellow;
+    border: 1px solid @active-main-color;
     border-radius: 5px;
 }
 
@@ -305,45 +301,57 @@ a.bid:hover {
 }
 
 div.messages {
-    height: 200px;
-    font-size:85%;
+    min-height: 120px;
     overflow-y: scroll;
-    border: 1px solid rgba(255,255,255, 0.2);
-    background-color: rgba(255, 200, 170, 0.1);
-}
-p.message{
-	margin: 0px 3px;
-	word-break: break-all;
+    border: 1px solid @messages-border-color;
+    background-color: @messages-bg-color;
 }
 
-#gamechat {
-    margin-top:12px;
-}
 #send-message {
     width: auto;
 }
-#send-message input {
+#send-message input[type="text"] {
   padding: 6px;
   border: none;
-  border-bottom: solid 2px #c9c9c9;
+  border-bottom: solid 2px @third-bg-color;
   transition: border 0.3s;
-  width: 100%;
 }
-#send-message input:focus,
-#send-message input.focus {
-  border-bottom: solid 2px #696;
+#send-message input[type="text"]:focus,
+#send-message input[type="text"].focus {
+  border-bottom: solid 2px @button-join-hover-bg-color;
+}
+
+#send-message input[type="button"]{
+  border-radius: 4px;
+  padding: 4px 20px;
+  font-size: 16px;
+  text-decoration: none;
+  margin: 4px;
+  color: @secondary-text-color;
+  position: relative;
+  display: inline-block;
+  background-color: @button-hover-bg-color;
+  box-shadow: 0px 3px 0px 0px @menu-hover-bg-color;
+}
+#send-message input[type="button"]:hover{
+  background-color: @button-login-bg-color;
+}
+
+#send-message input[type="button"]:active {
+  transform: translate(0px, 5px);
+  -webkit-transform: translate(0px, 5px);
+  box-shadow: 0px 1px 0px 0px;
 }
 
 .chat-logo {
-    width: 20px;
-    height: 20px;
-    margin-bottom:-5px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
 }
 
 span.sender {
     font-style: oblique;
-    color: #ffdd1f;
+    color: @active-main-color;
 }
 
 span.message-text {}
@@ -353,6 +361,7 @@ span.message-text {}
     padding: 7px;
     float: right;
 }
+
 div#shadow {
     position: absolute;
     top: 100px;
@@ -360,58 +369,10 @@ div#shadow {
     height: 250%;
     z-index: 10;
     display: none;
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: @shadow-color;
 }
-
-aside {
-  text-align: justify;
-  padding: 70px 12px 5px 0;
-}
-
-a.button.leave-game {
-    background-color: green;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 4px 16px;
-    text-decoration: none;
-    position:relative;
-}
-a.button.leave-game.hidden{
-	display:none;
-}
-.dropdown {
-    position: relative;
-    display: inline-block;
-    float: right;
-}
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #d6b20d;
-    min-width: 50px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display:block;}
 
 @media screen and (max-width: 800px) {
-    p.tm{
-       font-size:32px;
-       padding-left:24px;
-    }
     h1{
       font-size: 22px;
     }
@@ -427,13 +388,6 @@ a.button.leave-game.hidden{
         position: absolute;
         top: 110px;
         z-index: 99;
-    }
-    a.button.join{
-        padding: 10px 25px;
-        margin-right:30px;
-    }
-    a.button.login{
-        margin-right:18px;
     }
     nav.left-menu:hover {}
 }

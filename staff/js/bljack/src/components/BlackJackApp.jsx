@@ -19,7 +19,7 @@ export default class BlackJackApp extends React.Component {
         };
     }
     componentDidMount() {
-        console.log("did mount");
+        //console.log("did mount");
         this.startUpdateTick();
     }
     componentWillUnmount() {
@@ -27,7 +27,7 @@ export default class BlackJackApp extends React.Component {
     }
 
     startUpdateTick() {
-        this.updateTicker = setInterval(() => this.tick(), 1800);
+        this.updateTicker = setInterval(() => this.tick(), 1200);
     }
 
     stopUpdateTick() {
@@ -40,7 +40,7 @@ export default class BlackJackApp extends React.Component {
     update() {
         var inst=this;
         $.getJSON('/blackjack/$/game/getstate', function() {
-            console.log("success got data");
+          //  console.log("success got data");
         }).done(function(data) {
             if (data.result !== "ERROR") {
                 let newGame = data;
@@ -53,11 +53,11 @@ export default class BlackJackApp extends React.Component {
                 alert(data.result)
             }
         }).fail(function() {
-            console.log("error update");
+            //console.log("error update");
         });
     }
     onTimeOff() {
-        console.log('time is off!');
+        //console.log('time is off!');
         let newGame = this.state.game;
         this.setState((prevState) => {
             return {game: newGame}
@@ -66,7 +66,6 @@ export default class BlackJackApp extends React.Component {
     onAction() {
       this.curBid = 0;
       this.update();
-      console.log("onAction");
     }
     onBid(value) {
         this.curBid += value;
@@ -74,10 +73,10 @@ export default class BlackJackApp extends React.Component {
     }
     render() {
         let game = this.state.game;
+        /*<GameTimer initValues={this.props.initValues.timer} stateValues={game.timer} onTimeOff={this.onTimeOff.bind(this)}/>*/
         return (
             <div className="game">
               <Dealer initValues={this.props.initValues.dealer} stateValues={game.dealer}/>
-              <GameTimer initValues={this.props.initValues.timer} stateValues={game.timer} onTimeOff={this.onTimeOff.bind(this)}/>
               <Players initValues={this.props.initValues.players} stateValues={game.players}/>
               <Controls initValues={this.props.initValues.controls} stateValues={game.controls} doOnAction={this.onAction.bind(this)} doOnBid={this.onBid.bind(this)}/>
             </div>
