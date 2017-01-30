@@ -329,10 +329,10 @@ public class BlackJackGame {
 
 	public void leave(User user) {
 		Player player = players.get(indexOfPlayer(user.getId()));
+		leavingPlayers.add(player);
 		switch (player.getStage()) {
 		case UNACTIVE:
 		case DEAL:
-			leavingPlayers.add(player);
 			while (player == activePlayer) {
 				try {
 					this.surrender(user);
@@ -343,7 +343,6 @@ public class BlackJackGame {
 			player.setStage(GameStage.DONE);
 			break;
 		case PLAY:
-			leavingPlayers.add(player);
 			while (player == activePlayer) {
 				try {
 					this.stay(user);
@@ -354,9 +353,9 @@ public class BlackJackGame {
 			player.setStage(GameStage.RESULT);
 			break;
 		case RESULT:
-			leavingPlayers.add(player);
+			break;
 		case DONE:
-			leavingPlayers.add(player);
+			break;
 		}
 		modify();
 	}
@@ -438,7 +437,7 @@ public class BlackJackGame {
 				}
 			}
 			for (Player player : leavingPlayers) {
-				if (players.remove(player)) {
+				while (players.remove(player)) {
 					playersCount.decrementAndGet();
 				}
 				GamePool.getInstance().remove(player.getUserId(), this);

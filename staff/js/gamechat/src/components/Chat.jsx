@@ -15,7 +15,7 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount() {
-        this.wsocket = new WebSocket("ws://localhost:8080/blackjack/chat");
+        this.wsocket = new WebSocket("ws://www.qqq175.org/blackjack/chat");
         this.wsocket.onmessage = this.onMessage.bind(this);
     }
     componentWillUnmount() {}

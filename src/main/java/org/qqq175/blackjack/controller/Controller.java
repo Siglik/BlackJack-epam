@@ -71,7 +71,7 @@ public class Controller extends HttpServlet {
 			Action concreteAction = actionFactory.defineAction(comandContext.getScope(), comandContext.getAction());
 
 			ActionResult result = concreteAction.execute(request, response);
-			System.out.println(comandContext.getScope() + "->" + comandContext.getAction());
+			log.debug(comandContext.getScope() + "->" + comandContext.getAction());
 
 			switch (result.getType()) {
 			case FORWARD:

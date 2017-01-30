@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
 	<CustomLevels>
-		<CustomLevel name="VISITINFO" intLevel="450" />
+		<CustomLevel name="VISITINFO" intLevel="350" />
 	</CustomLevels>
 	<Properties>
 		<Property name="log-path">/logs/</Property>
@@ -20,12 +20,12 @@
 			<DefaultRolloverStrategy max="512" />
 		</RollingFile>
 		<Async name="ASYNC">
-			<AppenderRef ref="console" />
+			<!--<AppenderRef ref="console" /> -->
 			<AppenderRef ref="logFile" />
 		</Async>
 	</Appenders>
 	<Loggers>
-		<Root level="all">
+		<Root level="info">
 			<AppenderRef ref="logFile" />
 			<AppenderRef ref="console" />
 		</Root>
