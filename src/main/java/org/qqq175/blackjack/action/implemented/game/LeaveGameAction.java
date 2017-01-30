@@ -15,10 +15,6 @@ import org.qqq175.blackjack.pool.GamePool;
 
 public class LeaveGameAction implements Action {
 
-	public LeaveGameAction() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) request.getSession().getAttribute(StringConstant.ATTRIBUTE_USER);

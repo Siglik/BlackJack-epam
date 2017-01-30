@@ -35,7 +35,6 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	@Override
 	public I create(T entity) throws DAOException {
 		String query = sqlQuery.getQuery("sql." + tableName + ".insert");
-		System.out.println(query);
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 				prepareWithEntity(prepStatment, entity);

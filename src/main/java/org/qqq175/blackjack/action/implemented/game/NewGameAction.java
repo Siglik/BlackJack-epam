@@ -65,10 +65,12 @@ public class NewGameAction implements Action {
 					boolean found = false;
 					while (!found && games.hasNext()) {
 						BlackJackGame localGame = games.next();
-						Player player = localGame.join(user);
-						if (player != null) {
-							game = localGame;
-							found = true;
+						if (!localGame.isInGame(user)) {
+							Player player = localGame.join(user);
+							if (player != null) {
+								game = localGame;
+								found = true;
+							}
 						}
 					}
 					request.getSession().setAttribute(StringConstant.ATTRIBUTE_SHOWCHAT, true);

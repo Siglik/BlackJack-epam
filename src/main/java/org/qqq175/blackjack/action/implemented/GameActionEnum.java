@@ -7,6 +7,7 @@ import org.qqq175.blackjack.action.implemented.game.GameAction;
 import org.qqq175.blackjack.action.implemented.game.GetStateAction;
 import org.qqq175.blackjack.action.implemented.game.LeaveGameAction;
 import org.qqq175.blackjack.action.implemented.game.NewGameAction;
+import org.qqq175.blackjack.action.implemented.game.ShowRulesAction;
 import org.qqq175.blackjack.action.implemented.main.IndexAction;
 
 public enum GameActionEnum implements ActionEnum {
@@ -73,6 +74,11 @@ public enum GameActionEnum implements ActionEnum {
 	LEAVE {
 		{
 			this.action = new LeaveGameAction();
+		}
+	},
+	RULES {
+		{
+			this.action = new ShowRulesAction();
 		}
 	};
 	Action action;

@@ -25,6 +25,8 @@ import org.qqq175.blackjack.persistence.entity.id.UserId;
 import org.qqq175.blackjack.pool.UserPool;
 
 public class GameLogic {
+	private static final int DEALER_PLAY_LIMIT = 17;
+
 	private static Logger log = LogManager.getLogger(GameLogic.class);
 
 	private final static BigDecimal INSURANCE_MULTIPLER_PAY = BigDecimal.valueOf(2.00);
@@ -47,7 +49,7 @@ public class GameLogic {
 		Hand hand = dealer.getHand();
 		dealer.setShowAllCards(true);
 		// modify
-		while (hand.getScore().getValue() < 17) {
+		while (hand.getScore().getValue() < DEALER_PLAY_LIMIT) {
 			// wait 1.5 sec
 			hand.addCard(deck.pullCard());
 			// modify

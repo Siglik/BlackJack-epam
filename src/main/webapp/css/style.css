@@ -407,6 +407,25 @@ a.button.leave-game.hidden{
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
 
+div.rules{
+	color:#d8c898;
+	padding: 30px 60px;
+}
+
+div.rules h2{
+	margin:auto;
+	margin-left:12%;
+	color:#bf3b24;
+}
+
+div.rules p{
+	color: #df4b34;
+}
+
+div.rules p, ul{
+    font-size:90%;
+}
+
 @media screen and (max-width: 800px) {
     p.tm{
        font-size:32px;

@@ -505,6 +505,10 @@ public class BlackJackGame {
 		return dealer;
 	}
 
+	public boolean isInGame(User user) {
+		return indexOfPlayer(user.getId()) != -1;
+	}
+
 	private int indexOfPlayer(UserId userId) {
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
@@ -531,6 +535,13 @@ public class BlackJackGame {
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
+	}
+
+	/**
+	 * @return the maxPlayers
+	 */
+	public int getMaxPlayers() {
+		return maxPlayers;
 	}
 
 }
