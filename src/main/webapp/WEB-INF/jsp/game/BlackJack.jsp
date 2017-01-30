@@ -5,8 +5,6 @@
 <fmt:setBundle basename="conf.i18n.jsp" />
 
 <main class="column-center"> 
-    <a href="/blackjack/$/game/leave"
-	   class="button leave-game"><fmt:message key="button.leavegame" /></a>
     <div id="black-jack"></div>
 </main>
 <script

@@ -5,6 +5,8 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
@@ -19,6 +21,7 @@ import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.pool.GamePool;
 
 public class NewGameAction implements Action {
+	private static Logger log = LogManager.getLogger(NewGameAction.class);
 	private Mode mode;
 
 	public enum Mode {
@@ -69,10 +72,15 @@ public class NewGameAction implements Action {
 						}
 					}
 				}
+				if (game != null) {
+					log.debug("Game found " + game.getId().getValue());
+				}
 				if (game == null) {
 					game = BlackJackGame.createGame(gameId, user, mode.getMaxPlayers());
+					log.debug("Creating new game " + game.getId().getValue());
 				}
 				gamePool.put(user.getId(), game);
+				log.debug("Put to pool game " + gamePool.get(user.getId()).getId().getValue());
 			} catch (LogicException e) {
 				request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Sorry, some error occurred! " + e.getMessage());
 			}

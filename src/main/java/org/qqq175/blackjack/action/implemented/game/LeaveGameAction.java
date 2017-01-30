@@ -25,8 +25,8 @@ public class LeaveGameAction implements Action {
 		if (user != null) {
 			BlackJackGame game = GamePool.getInstance().get(user.getId());
 			if (game != null) {
-				game.leave(user);
 				GamePool.getInstance().remove(user.getId());
+				game.leave(user);
 			}
 		}
 		return new ActionResult(REDIRECT, Settings.getInstance().getContextPath());

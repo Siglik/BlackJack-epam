@@ -380,6 +380,18 @@ aside {
   padding: 70px 12px 5px 0;
 }
 
+a.button.leave-game {
+    background-color: green;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 4px 16px;
+    text-decoration: none;
+    position:relative;
+}
+a.button.leave-game.hidden{
+	display:none;
+}
 .dropdown {
     position: relative;
     display: inline-block;

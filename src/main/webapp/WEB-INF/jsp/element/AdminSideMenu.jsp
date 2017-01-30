@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <fmt:setLocale value="${curLocale}" />
 <fmt:setBundle basename="conf.i18n.jsp" />
 <nav class="left-menu column-left sidebar" id="left-menu">
 	<ul class="vertical-menu top">
+	    <c:if test="${inGame}">
+                <li><a href='/blackjack/$/game/leave' class='button leave-game'><fmt:message key='button.leavegame'/></a>
+        </c:if>
 		<li><a href="/blackjack/$/" class="button menu-item"><fmt:message key="menu.homepage" /></a></li>
 		<li><a href="/blackjack/$/game/newsolo" class="button menu-item"><fmt:message key="menu.play.solo" /></a></li>
         <li><a href="/blackjack/$/game/newmulti" class="button menu-item"><fmt:message key="menu.play.multi" /></a></li>

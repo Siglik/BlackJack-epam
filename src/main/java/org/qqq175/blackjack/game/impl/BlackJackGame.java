@@ -420,9 +420,7 @@ public class BlackJackGame {
 			break;
 		case DONE:
 			if (!nextHand(gameStage)) {
-				if (players.size() > 0) {
-					nextStage();
-				} else {
+				if (players.size() == 0) {
 					log.debug("Game id: " + this.id.getValue() + " " + newStage + " empty -> finish");
 					this.finishEmptyGame();
 				}
@@ -441,10 +439,12 @@ public class BlackJackGame {
 				if (players.remove(player)) {
 					playersCount.decrementAndGet();
 				}
-				GamePool.getInstance().remove(player.getUserId());
+				GamePool.getInstance().remove(player.getUserId(), this);
 			}
 			leavingPlayers.clear();
-			nextStage();
+			if (players.size() > 0) {
+				nextStage();
+			}
 			break;
 		case UNACTIVE:
 			log.warn("wrong game state after nextStage()");
@@ -533,10 +533,6 @@ public class BlackJackGame {
 	 */
 	@Override
 	protected void finalize() throws Throwable {
-		if (this.getGameStage() != GameStage.UNACTIVE) {
-			log.fatal("ATTEMT to finalize ACTIVE game " + this.getId() + " " + this.getGameStage() + " " + players.toString());
-			this.nextStage();
-		}
 		super.finalize();
 	}
 

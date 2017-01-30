@@ -20,9 +20,7 @@ public class ActionFactoryImpl implements ActionFactory {
 		if ((scope != null && !scope.isEmpty()) && (action != null && !action.isEmpty())) {
 			try {
 				scopeEnum = ScopeEnum.valueOf(scope.toUpperCase()).getScope();
-				System.out.println(scopeEnum.getName());
 			} catch (IllegalArgumentException e) {
-				System.out.println("null scope");
 				concreteAction = MainActionEnum.UNKNOWN.getAction();
 			}
 			if (scopeEnum != null) {
@@ -41,7 +39,6 @@ public class ActionFactoryImpl implements ActionFactory {
 				concreteAction = MainActionEnum.NONE.getAction();
 			}
 		}
-		System.out.println(concreteAction.getClass().getName());
 		return concreteAction;
 	}
 }

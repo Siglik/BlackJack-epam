@@ -102,7 +102,9 @@ public class GameJSONizer {
 				result.put("controls", controls);
 			}
 		} else {
-			result.put("result", "ERROR");
+			result.put("result", "NULL");
+			result.put("message", "game is null");
+			System.out.println("game is " + game);
 		}
 
 		return result;

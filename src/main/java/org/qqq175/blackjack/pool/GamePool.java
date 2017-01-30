@@ -85,7 +85,8 @@ public class GamePool implements Serializable {
 	 * @see java.util.concurrent.ConcurrentHashMap#remove(java.lang.Object)
 	 */
 	public BlackJackGame remove(UserId key) {
-		return games.remove(key);
+		BlackJackGame removed = games.remove(key);
+		return removed;
 	}
 
 	/**
@@ -127,5 +128,16 @@ public class GamePool implements Serializable {
 	 */
 	public Collection<BlackJackGame> getGamesList() {
 		return games.values();
+	}
+
+	/**
+	 * @param key
+	 * @param value
+	 * @return
+	 * @see java.util.concurrent.ConcurrentHashMap#remove(java.lang.Object,
+	 *      java.lang.Object)
+	 */
+	public boolean remove(UserId key, BlackJackGame value) {
+		return games.remove(key, value);
 	}
 }

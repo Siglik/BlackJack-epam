@@ -23,8 +23,8 @@ public class GameAction implements Action {
 		ActionResult result;
 
 		request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.blackjack"));
+		request.setAttribute(StringConstant.ATTRIBUTE_IN_GAME, true);
 		IndexLogic logic = new IndexLogic();
-		System.out.println(user + " " + logic.definePathByUser(user));
 		result = new ActionResult(FORWARD, logic.definePathByUser(user));
 
 		return result;
