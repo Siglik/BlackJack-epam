@@ -11,6 +11,11 @@ import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.logic.main.LoginLogic;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
+/**
+ * Perform users login
+ * @author qqq175
+ *
+ */
 public class LoginAction implements Action {
 
 	@Override

@@ -14,12 +14,14 @@ import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 
+/**
+ * log some data about new visitors (got from client-side script and add some server data info) and save cookie for prevent "overlogging"
+ * @author qqq175
+ *
+ */
 public class LogVisitorInfoAction implements Action {
+	private static final int COOKIE_AGE = 8 * 60 * 60;
 	private static Logger log = LogManager.getLogger(LogVisitorInfoAction.class);
-
-	public LogVisitorInfoAction() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -49,7 +51,7 @@ public class LogVisitorInfoAction implements Action {
 					log.log(Level.toLevel("VISITINFO", Level.INFO), infoJSON.toJSONString() + "\n");
 
 					Cookie cookie = new Cookie(StringConstant.COOKIE_VISITED, "true");
-					cookie.setMaxAge(8 * 60 * 60);
+					cookie.setMaxAge(COOKIE_AGE);
 					response.addCookie(cookie);
 
 					result.put("status", "OK");

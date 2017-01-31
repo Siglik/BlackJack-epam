@@ -50,7 +50,8 @@ export default class BlackJackApp extends React.Component {
                     return {game: newGame}
                 });
             } else {
-                alert(data.result)
+                console.log(data.result)
+                console.log(data.message)
             }
         }).fail(function() {
             //console.log("error update");

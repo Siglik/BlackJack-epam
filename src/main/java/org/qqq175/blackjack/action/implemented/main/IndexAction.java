@@ -11,6 +11,10 @@ import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.logic.main.IndexLogic;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * shows main page
+ * @author qqq175
+ */
 public class IndexAction implements Action {
 
 	@Override

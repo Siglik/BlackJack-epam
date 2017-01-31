@@ -16,11 +16,11 @@ import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * Fill balance or withdrawal money 
+ * @author qqq175
+ */
 public class PaymentAction implements Action {
-
-	public PaymentAction() {
-
-	}
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {

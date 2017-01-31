@@ -11,8 +11,17 @@ import org.qqq175.blackjack.logic.admin.BanLogic;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * Ban or unban player
+ * @author qqq175
+ */
 public class PlayerBanUnbanAction implements Action {
 
+	/**
+	 * avaliable subactions
+	 * @author Maksim.Mikhalkou
+	 *
+	 */
 	public enum Mode {
 		BAN(true), UNBAN(false);
 
@@ -31,7 +40,11 @@ public class PlayerBanUnbanAction implements Action {
 	}
 
 	private final Mode MODE;
-
+	
+	/**
+	 * Counstructor
+	 * @param mode - specify command subaction BAN or UNBAN
+	 */
 	public PlayerBanUnbanAction(Mode mode) {
 		MODE = mode;
 	}

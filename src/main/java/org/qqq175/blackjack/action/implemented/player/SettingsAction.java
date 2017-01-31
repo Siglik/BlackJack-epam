@@ -12,6 +12,10 @@ import org.qqq175.blackjack.logic.main.IndexLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * shows user settings page
+ * @author qqq175
+ */
 public class SettingsAction implements Action {
 
 	public SettingsAction() {

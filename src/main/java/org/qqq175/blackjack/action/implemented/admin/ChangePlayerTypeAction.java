@@ -11,11 +11,12 @@ import org.qqq175.blackjack.logic.admin.RankLogic;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * Toogles user's rank ADMIN<-PLAYER
+ * request param - "id" 
+ * @author qqq175
+ */
 public class ChangePlayerTypeAction implements Action {
-
-	public ChangePlayerTypeAction() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {

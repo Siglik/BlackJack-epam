@@ -224,6 +224,36 @@ public class GameLogic {
 	/**
 	 * 
 	 * @param player
+	 * @return
+	 */
+	public static boolean trySurrender(Player player, boolean isLeaving) {
+		boolean result = false;
+		if (isLeaving) {
+			for (Hand hand : player.getHandsListCopy()) {
+				if (hand != null) {
+					if (hand.getScore().getValue() > 0) {
+						hand.setStage(GameStage.DONE);
+						hand.setResult(GameResult.SURRENDER);
+					} else {
+						hand.setStage(GameStage.UNACTIVE);
+						hand.setResult(GameResult.NONE);
+					}
+					if (hand.isFirstAction()) {
+						hand.setFirstAction(false);
+					}
+				}
+			}
+			result = true;
+
+		} else {
+			result = trySurrender(player);
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param player
 	 * @param deck
 	 * @return
 	 */
@@ -259,6 +289,33 @@ public class GameLogic {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public static boolean tryStay(Player player, boolean isLeaving) {
+		boolean result = false;
+		if (isLeaving) {
+			for (Hand hand : player.getHandsListCopy()) {
+				if (hand != null) {
+					if (hand.getScore().getValue() > 0) {
+						hand.setStage(GameStage.RESULT);
+						if (hand.isFirstAction()) {
+							hand.setFirstAction(false);
+						}
+					} else {
+						hand.setStage(GameStage.UNACTIVE);
+					}
+				}
+			}
+			result = true;
+
+		} else {
+			result = tryStay(player);
+		}
+		return result;
+	}
 	/*
 	 * ****** can ******
 	 */

@@ -6,10 +6,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * pool for created game management
+ * 
+ * @author qqq175
+ *
+ */
 public class GamePool implements Serializable {
+	private static final String UNEXPECTED_INTERRUPT = "Unexpected interrupt";
+	private static Logger log = LogManager.getLogger(GamePool.class);
 	private static final long serialVersionUID = 1L;
 	private static AtomicReference<GamePool> instance = new AtomicReference<>();
 	private ConcurrentHashMap<UserId, BlackJackGame> games;
@@ -25,7 +35,7 @@ public class GamePool implements Serializable {
 			try {
 				lock.acquire();
 			} catch (InterruptedException e) {
-				// TODO log
+				log.error(UNEXPECTED_INTERRUPT, e);
 			}
 			if (instance.get() == null) {
 				instance.set(new GamePool());

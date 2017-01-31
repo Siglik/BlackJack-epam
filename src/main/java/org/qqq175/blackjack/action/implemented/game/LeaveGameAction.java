@@ -13,6 +13,11 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.GamePool;
 
+/**
+ * Leave current user's game
+ * @author qqq175
+ *
+ */
 public class LeaveGameAction implements Action {
 
 	@Override

@@ -14,12 +14,12 @@ import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.GamePool;
 
+/**
+ * return current user's game state as JSON object
+ * @author qqq175
+ */
 public class GetStateAction implements Action {
 	private static Logger log = LogManager.getLogger(GetStateAction.class);
-
-	public GetStateAction() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -31,9 +31,9 @@ public class GetStateAction implements Action {
 			BlackJackGame bjGame = GamePool.getInstance().get(user.getId());
 			resultJson = GameJSONizer.toJSON(bjGame, user);
 		} else {
-			log.debug("---------------------------- user is NULL ----------------------");
 			resultJson = new JSONObject();
 			resultJson.put("result", "ERROR");
+			resultJson.put("message", "user is NULL");
 		}
 
 		request.setAttribute(StringConstant.ATTRIBUTE_JSON, resultJson);

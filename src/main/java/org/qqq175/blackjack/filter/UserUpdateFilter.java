@@ -20,6 +20,7 @@ import org.qqq175.blackjack.pool.UserPool;
 
 /**
  * Servlet Filter implementation class UserUpdateFilter
+ * Updates user in session from user pool if changed
  */
 @WebFilter({ "/$/*", "/game/*" })
 public class UserUpdateFilter implements Filter {
@@ -43,6 +44,7 @@ public class UserUpdateFilter implements Filter {
 
 		if (user != null) {
 			User userFromPool = UserPool.getInstance().get(user.getId());
+			//if user from pool is changed - update session value
 			if (userFromPool != null && !userFromPool.equals(user)) {
 				log.debug(user.getAccountBalance() + "->" + userFromPool.getAccountBalance());
 				session.setAttribute(StringConstant.ATTRIBUTE_USER, userFromPool);

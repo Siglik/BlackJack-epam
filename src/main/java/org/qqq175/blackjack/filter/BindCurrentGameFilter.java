@@ -19,6 +19,8 @@ import org.qqq175.blackjack.pool.GamePool;
 
 /**
  * Servlet Filter implementation class BindCurrentGameFilter
+ * Monitor logged users active Games and set ATTRIBUTE_CURRENT_GAME_TYPE 
+ * to users session/ This attribute used by side menu to represent active game type.
  */
 @WebFilter({ "/$/player/*", "/$/admin/*", "/$/", "/$/game/game/*" })
 public class BindCurrentGameFilter implements Filter {

@@ -22,7 +22,9 @@ import org.qqq175.blackjack.persistence.connection.ConnectionPool;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
 /**
- * Servlet implementation class Controller
+ * Main application Controller (HttpServlet)
+ * @author qqq175
+ *
  */
 @WebServlet(urlPatterns = { "/$/*" })
 @MultipartConfig(fileSizeThreshold = 1024 * 512, // 512 KB
@@ -59,20 +61,31 @@ public class Controller extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
-
+	
+	/**
+	 * processes request
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getPathInfo();
-
+		
+		//parse query
 		CommandParser cp = new CommandParser();
 		CommandParser.CommandContext comandContext = cp.parse(query);
 
 		if (!comandContext.isEmpty()) {
+			//define and execute action
 			ActionFactory actionFactory = new ActionFactoryImpl();
 			Action concreteAction = actionFactory.defineAction(comandContext.getScope(), comandContext.getAction());
 
 			ActionResult result = concreteAction.execute(request, response);
+			
 			log.debug(comandContext.getScope() + "->" + comandContext.getAction());
 
+			/*proceed action result*/
 			switch (result.getType()) {
 			case FORWARD:
 				RequestDispatcher dispatcher = request.getRequestDispatcher(result.getContent());
@@ -95,6 +108,7 @@ public class Controller extends HttpServlet {
 				break;
 			}
 		} else {
+			/*if not parsed send 404*/
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}

@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
@@ -17,11 +19,14 @@ import org.qqq175.blackjack.logic.player.AccountOperationLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * shows user balance information
+ * 
+ * @author qqq175
+ */
 public class BalanceAction implements Action {
-
-	public BalanceAction() {
-		// TODO Auto-generated constructor stub
-	}
+	private static final String BALANCE_DATA_ERROR = "Can't get balance data";
+	private static Logger log = LogManager.getLogger(BalanceAction.class);
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -32,9 +37,9 @@ public class BalanceAction implements Action {
 			Map<String, BigDecimal> totals = aoLogic.calcTotals(user.getId());
 			request.setAttribute(StringConstant.ATTRIBUTE_TOTAL, totals);
 		} catch (LogicException e) {
-			// TODO LOG
+			log.error(BALANCE_DATA_ERROR, e);
 			e.printStackTrace();
-			request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Error " + e.getMessage());
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, "Error: " + e.getMessage());
 		}
 
 		request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.balance"));

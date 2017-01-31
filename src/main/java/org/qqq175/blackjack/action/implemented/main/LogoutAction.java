@@ -11,6 +11,11 @@ import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
+/**
+ * perform user log out
+ * @author qqq175
+ *
+ */
 public class LogoutAction implements Action {
 	private static Logger log = LogManager.getLogger(LogoutAction.class);
 

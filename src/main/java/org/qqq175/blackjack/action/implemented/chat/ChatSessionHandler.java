@@ -19,6 +19,11 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.MessageId;
 
+/**
+ * Handles chat websocket connections and messages
+ * @author qqq175
+ *
+ */
 public class ChatSessionHandler {
 	private static Logger log = LogManager.getLogger(ChatSessionHandler.class);
 	private static PhotoManager photoManager = new PhotoManager();
@@ -33,6 +38,11 @@ public class ChatSessionHandler {
 		return INSTANCE;
 	}
 
+	/**
+	 * add new session to game chat
+	 * @param session
+	 * @param gameId
+	 */
 	public void addSession(Session session, GameId gameId) {
 		if (chats.containsKey(gameId)) {
 			Set<Session> chatSessions = chats.get(gameId);
@@ -42,9 +52,13 @@ public class ChatSessionHandler {
 			chatSessions.add(session);
 			chats.put(gameId, chatSessions);
 		}
-		// chats.add(session);
 	}
 
+	/**
+	 * remove session from game chat
+	 * @param session
+	 * @param gameId
+	 */
 	public void removeSession(Session session, GameId gameId) {
 		Set<Session> chatSessions = chats.get(gameId);
 		if (chatSessions != null) {
@@ -55,6 +69,12 @@ public class ChatSessionHandler {
 		}
 	}
 
+	/**
+	 * handle new message - parse, add necessary data, store to database and send to game sessions
+	 * @param gameId
+	 * @param message
+	 * @param user
+	 */
 	public void handleNewMessage(GameId gameId, String message, User user) {
 		JSONParser reader = new JSONParser();
 		JSONObject jsonMessage;
@@ -77,6 +97,11 @@ public class ChatSessionHandler {
 		}
 	}
 
+	/**
+	 * send message to all game session
+	 * @param gameId
+	 * @param message
+	 */
 	private void sendToGameSessions(GameId gameId, String message) {
 		Set<Session> chatSessions = chats.get(gameId);
 		for (Session session : chatSessions) {

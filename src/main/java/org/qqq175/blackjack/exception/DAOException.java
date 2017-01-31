@@ -4,8 +4,8 @@
 package org.qqq175.blackjack.exception;
 
 /**
+ * DAO layer exception
  * @author qqq175
- *
  */
 public class DAOException extends Exception {
 

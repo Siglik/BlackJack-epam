@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
@@ -13,7 +15,15 @@ import org.qqq175.blackjack.logic.admin.PlayersListLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * shows players list
+ * 
+ * @author qqq175
+ *
+ */
 public class PlayersListAction implements Action {
+	private static Logger log = LogManager.getLogger(PlayerInfoAction.class);
+	private static final String DATA_ERROR = "Unable to prepare necessay data";
 	private static final int PAGINATION = 15;
 
 	@Override
@@ -21,6 +31,7 @@ public class PlayersListAction implements Action {
 		ActionResult result = null;
 
 		PlayersListLogic plLogic = new PlayersListLogic();
+		/* parse page number. if no such parameter or wrong format set to 1 */
 		String page = request.getParameter(StringConstant.PARAMETER_PAGE);
 		int pageNumber;
 		if (page != null && !page.isEmpty()) {
@@ -34,6 +45,7 @@ public class PlayersListAction implements Action {
 			pageNumber = 1;
 		}
 
+		/* prepare user list data */
 		List<User> users = null;
 		Long userCount = null;
 		try {
@@ -41,8 +53,7 @@ public class PlayersListAction implements Action {
 			userCount = plLogic.countUsers();
 		} catch (LogicException e) {
 			result = new ActionResult(ActionResult.ActionType.SENDERROR, e.getMessage());
-			// LOG
-			e.printStackTrace();
+			log.warn(DATA_ERROR, e);
 		}
 
 		if (result == null) {

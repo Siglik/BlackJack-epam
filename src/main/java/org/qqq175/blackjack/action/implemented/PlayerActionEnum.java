@@ -11,6 +11,11 @@ import org.qqq175.blackjack.action.implemented.player.PaymentAction;
 import org.qqq175.blackjack.action.implemented.player.SettingsAction;
 import org.qqq175.blackjack.action.implemented.player.ShowStatsAction;
 
+/**
+ * contains PLAYER scope actions
+ * @author qqq175
+ *
+ */
 public enum PlayerActionEnum implements ActionEnum {
 	UNKNOWN {
 		{

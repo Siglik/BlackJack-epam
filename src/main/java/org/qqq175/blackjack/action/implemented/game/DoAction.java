@@ -17,14 +17,26 @@ import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.GamePool;
 
+/**
+ * Handles game actions such as DEAL, DOUBLE, HIT, INSURANCE, SPLIT, STAY, SURRENDER
+ * @author qqq175
+ */
 public class DoAction implements Action {
 	private static Logger log = LogManager.getLogger(DoAction.class);
 	private ActionType actionType;
 
+	/**
+	 * construct DoAction class with specified action
+	 * @param actionType
+	 */
 	public DoAction(ActionType actionType) {
 		this.actionType = actionType;
 	}
 
+	/**
+	 * Avaliable game actions
+	 * @author qqq175
+	 */
 	public enum ActionType {
 		DEAL, DOUBLE, HIT, INSURANCE, SPLIT, STAY, SURRENDER;
 	}

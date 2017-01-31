@@ -10,13 +10,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.logic.main.RegisterLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 
+/**
+ * Perform user registration(if params got) or show registration form(if no
+ * params)
+ * 
+ * @author qqq175
+ *
+ */
 public class RegisterAction implements Action {
+	private static final String BIG_FILE = "File is too big";
+	private static final String UNABLE_TO_SAVE_FILE = "Unable to save file";
+	private static Logger log = LogManager.getLogger(RegisterAction.class);
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -32,11 +44,11 @@ public class RegisterAction implements Action {
 			try {
 				part = request.getPart(StringConstant.PARAMETER_PHOTO);
 			} catch (IOException e) {
-				// TODO LOG HERE
+				log.error(UNABLE_TO_SAVE_FILE, e);
 			} catch (ServletException e) {
-				// no file - it's ok
+				// no file - it's ok;
 			} catch (IllegalStateException e) {
-				// file is too big
+				log.warn(BIG_FILE, e);
 				request.setAttribute(StringConstant.ATTRIBUTE_ERROR_REGISTRATION, "message.error.bigfile");
 				request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.register"));
 
@@ -47,12 +59,7 @@ public class RegisterAction implements Action {
 			if (result == null) {
 				RegisterLogic.Result registerResult = rLogic.registerUser(params, part);
 				if (registerResult == RegisterLogic.Result.OK) {
-					// request.getSession().setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE,
-					// "Registration complete! Now you can log in.");
-					// result = new ActionResult(REDIRECT,
-					// Settings.getInstance().getContextPath());
 					result = new ActionResult(FORWARD, JSPPathManager.getProperty("command.login"));
-
 				} else {
 					request.setAttribute(StringConstant.ATTRIBUTE_ERROR_REGISTRATION, registerResult.getMessage());
 					request.setAttribute(StringConstant.ATTRIBUTE_MAIN_FORM, JSPPathManager.getProperty("form.register"));

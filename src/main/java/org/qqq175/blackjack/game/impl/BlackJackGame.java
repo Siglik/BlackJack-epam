@@ -68,11 +68,6 @@ public class BlackJackGame {
 		return instance;
 	}
 
-	private void modify() {
-		// pulling:do nothing
-		// websocket: do callback
-	}
-
 	/**
 	 * 
 	 * @param stage
@@ -150,7 +145,7 @@ public class BlackJackGame {
 							parallelNextSage();
 						}
 					}
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -175,7 +170,7 @@ public class BlackJackGame {
 					if (!nextHand(gameStage)) {
 						parallelNextSage();
 					}
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -200,7 +195,7 @@ public class BlackJackGame {
 					if (!nextHand(gameStage)) {
 						parallelNextSage();
 					}
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -225,7 +220,7 @@ public class BlackJackGame {
 					if (!nextHand(gameStage)) {
 						parallelNextSage();
 					}
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -251,7 +246,7 @@ public class BlackJackGame {
 					if (!nextHand(gameStage)) {
 						parallelNextSage();
 					}
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -273,7 +268,7 @@ public class BlackJackGame {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
 			if (gameStage == GameStage.PLAY) {
 				if (GameLogic.tryInsurance(dealer, activePlayer)) {
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -292,7 +287,7 @@ public class BlackJackGame {
 					if (!nextHand(gameStage)) {
 						parallelNextSage();
 					}
-					modify();
+
 				} else {
 					throw new GameActionDeniedException("error.game.error");
 				}
@@ -316,7 +311,7 @@ public class BlackJackGame {
 			if (nextPlayersCount <= maxPlayers) {
 				Player player = new Player(user.getId(), false);
 				players.add(player);
-				modify();
+
 				return player;
 			} else {
 				playersCount.decrementAndGet();
@@ -333,21 +328,19 @@ public class BlackJackGame {
 		switch (player.getStage()) {
 		case UNACTIVE:
 		case DEAL:
+			GameLogic.trySurrender(player, true);
 			while (player == activePlayer) {
-				try {
-					this.surrender(user);
-				} catch (GameActionDeniedException e) {
-					log.error("Game exception at user " + user.getId().getValue() + " leaving.", e);
+				if (!nextHand(gameStage)) {
+					parallelNextSage();
 				}
 			}
 			player.setStage(GameStage.DONE);
 			break;
 		case PLAY:
+			GameLogic.tryStay(player, true);
 			while (player == activePlayer) {
-				try {
-					this.stay(user);
-				} catch (GameActionDeniedException e) {
-					log.error("Game exception at user " + user.getId().getValue() + " leaving.", e);
+				if (!nextHand(gameStage)) {
+					parallelNextSage();
 				}
 			}
 			player.setStage(GameStage.RESULT);
@@ -357,14 +350,12 @@ public class BlackJackGame {
 		case DONE:
 			break;
 		}
-		modify();
+
 	}
 
 	private void parallelNextSage() {
 		BlackJackGame thisGame = this;
 		Thread thread = new Thread() {
-			private BlackJackGame game = thisGame;
-
 			@Override
 			public void run() {
 				thisGame.lock.lock();
@@ -376,7 +367,6 @@ public class BlackJackGame {
 	}
 
 	private void nextStage() {
-		StringBuilder debugStr;
 
 		if (activePlayer != null) {
 			activePlayer.resetActiveHand();
@@ -426,8 +416,6 @@ public class BlackJackGame {
 					this.finishEmptyGame();
 				}
 			} else {
-				payOut();
-				modify();
 				try {
 					// sleep for user to look results
 					Thread.sleep(4000L);
@@ -435,6 +423,7 @@ public class BlackJackGame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				payOut();
 			}
 			for (Player player : leavingPlayers) {
 				while (players.remove(player)) {

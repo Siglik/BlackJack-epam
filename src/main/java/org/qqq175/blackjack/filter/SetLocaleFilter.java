@@ -19,6 +19,7 @@ import org.qqq175.blackjack.logic.main.LocaleLogic;
 
 /**
  * Servlet Filter implementation class SetLocaleFilter
+ * set session lovale based on cookies or browser settings if it is supported. Else set default.
  */
 @WebFilter({ "/$/*", "/api/*" })
 public class SetLocaleFilter implements Filter {
@@ -30,6 +31,8 @@ public class SetLocaleFilter implements Filter {
 
 		if (locale == null) {
 			String localeStr = "";
+			
+			//search locale cookies
 			Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 			Cookie localeCookie = null;
 			if (cookies != null) {
@@ -43,11 +46,14 @@ public class SetLocaleFilter implements Filter {
 			if (localeCookie != null) {
 				localeStr = localeCookie.getValue();
 			} else {
+				//if no cookie - get browser lang
 				String browserLocale = request.getLocale().getLanguage();
 				if (browserLocale != null) {
 					localeStr = browserLocale;
 				}
 			}
+			
+			//store locale to session
 			LocaleLogic localeLogic = new LocaleLogic();
 			locale = localeLogic.getLocaleByString(localeStr);
 			session.setAttribute(StringConstant.ATTRIBUTE_LOCALE, locale);
@@ -58,13 +64,9 @@ public class SetLocaleFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
 	}
 }

@@ -2,10 +2,11 @@ package org.qqq175.blackjack.persistence.entity.id;
 
 import java.io.Serializable;
 
+/**
+ * Generic entity id class
+ * @author qqq175
+ */
 public class EntityId implements Comparable<EntityId>, Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final long VALUE;
 

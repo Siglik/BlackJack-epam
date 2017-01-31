@@ -15,6 +15,10 @@ import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * change users password
+ * @author qqq175
+ */
 public class ChangePasswordAction implements Action {
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {

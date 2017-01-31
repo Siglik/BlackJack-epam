@@ -8,6 +8,10 @@ import org.qqq175.blackjack.action.implemented.admin.PlayerInfoAction;
 import org.qqq175.blackjack.action.implemented.admin.PlayersListAction;
 import org.qqq175.blackjack.action.implemented.main.IndexAction;
 
+/**
+ * contains actions of ADMIN scope
+ * @author qqq175
+ */
 public enum AdminActionEnum implements ActionEnum {
 	UNKNOWN {
 		{

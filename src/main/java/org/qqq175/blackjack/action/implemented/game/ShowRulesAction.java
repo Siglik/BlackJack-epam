@@ -12,6 +12,10 @@ import org.qqq175.blackjack.logic.main.IndexLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * Shows game rules
+ * @author qqq175
+ */
 public class ShowRulesAction implements Action {
 
 	@Override

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.action.Action;
 import org.qqq175.blackjack.action.ActionResult;
@@ -18,11 +20,16 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * upload new user's avatar
+ * 
+ * @author qqq175
+ *
+ */
 public class ChangeAvatarAction implements Action {
-
-	public ChangeAvatarAction() {
-		// TODO Auto-generated constructor stub
-	}
+	private static final String BIG_FILE = "File is too big";
+	private static final String UNABLE_TO_SAVE_FILE = "Unable to save file";
+	private static Logger log = LogManager.getLogger(ChangeAvatarAction.class);
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -30,11 +37,12 @@ public class ChangeAvatarAction implements Action {
 		try {
 			part = request.getPart(StringConstant.PARAMETER_PHOTO);
 		} catch (IOException e) {
-			// TODO LOG HERE
+			log.error(UNABLE_TO_SAVE_FILE, e);
 		} catch (ServletException e) {
-			// no file - it's ok
+			log.warn(UNABLE_TO_SAVE_FILE, e);
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PHOTO_ERROR, "message.error.nofile");
 		} catch (IllegalStateException e) {
-			// file is too big
+			log.warn(BIG_FILE, e);
 			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PHOTO_ERROR, "message.error.bigfile");
 		}
 

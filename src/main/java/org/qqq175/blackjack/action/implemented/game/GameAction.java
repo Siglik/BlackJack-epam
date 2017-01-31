@@ -12,10 +12,11 @@ import org.qqq175.blackjack.logic.main.IndexLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * Main game actions - shows game application
+ * @author qqq175
+ */
 public class GameAction implements Action {
-
-	public GameAction() {
-	}
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {

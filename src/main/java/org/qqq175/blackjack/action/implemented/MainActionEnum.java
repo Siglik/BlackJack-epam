@@ -13,6 +13,7 @@ import org.qqq175.blackjack.action.implemented.main.LogVisitorInfoAction;
 import org.qqq175.blackjack.action.implemented.main.SetLocaleAction;
 
 /**
+ * contains MAIN scope actions (avaliable for guests)
  * @author qqq175
  *
  */

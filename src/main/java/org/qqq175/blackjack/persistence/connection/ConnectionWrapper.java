@@ -6,7 +6,17 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * Wrap connection to database. Create at retrieve connection from pool. And
+ * auto back connection to ConnectionPool at close.
+ * 
+ * @author qqq175
+ */
 public class ConnectionWrapper implements AutoCloseable {
+	private static Logger log = LogManager.getLogger(ConnectionWrapper.class);
 	private Connection connection;
 
 	private boolean isOpen;
@@ -211,8 +221,12 @@ public class ConnectionWrapper implements AutoCloseable {
 		return connection.setSavepoint(name);
 	}
 
+	/**
+	 * check is connection wrapper is not closed
+	 */
 	private void assertOpen() {
 		if (!isOpen) {
+			log.fatal("Unable to perform actions on closed connection wrapper");
 			throw new RuntimeException("Cannot perform operation: connection is closed.");
 		}
 	}

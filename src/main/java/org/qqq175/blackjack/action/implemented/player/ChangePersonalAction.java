@@ -15,11 +15,11 @@ import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * change users personal data
+ * @author qqq175
+ */
 public class ChangePersonalAction implements Action {
-
-	public ChangePersonalAction() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -28,11 +28,9 @@ public class ChangePersonalAction implements Action {
 		ModifyUserLogic muLogic = new ModifyUserLogic();
 		User user = (User) request.getSession().getAttribute(StringConstant.ATTRIBUTE_USER);
 
-		// TODO save modification
-
 		ModifyUserLogic.Result logicResult = muLogic.changePersonal(params, user);
 		if (logicResult != ModifyUserLogic.Result.OK) {
-			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PERSONAL_ERROR, "message.error.pass " + logicResult.getMessage());
+			request.getSession().setAttribute(StringConstant.ATTRIBUTE_PERSONAL_ERROR, "message.error.personal " + logicResult.getMessage());
 		}
 
 		muLogic.updateSessionUser(request.getSession());

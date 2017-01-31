@@ -14,18 +14,11 @@ import org.qqq175.blackjack.pool.UserPool;
 
 /**
  * Application Lifecycle Listener implementation class SessionAttributeListener
- *
+ * Listen session parameters and update UserPool at session parameter 'user' update, creation or removal.
  */
 @WebListener
 public class SessionAttributeListener implements HttpSessionAttributeListener {
 	private static Logger log = LogManager.getLogger(SessionAttributeListener.class);
-
-	/**
-	 * Default constructor.
-	 */
-	public SessionAttributeListener() {
-
-	}
 
 	/**
 	 * @see HttpSessionAttributeListener#attributeAdded(HttpSessionBindingEvent)

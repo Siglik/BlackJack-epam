@@ -22,6 +22,10 @@ import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.pool.GamePool;
 import org.qqq175.blackjack.pool.UserPool;
 
+/**
+ * Chat application controller (WebSocket)
+ * @author qqq175
+ */
 @ServerEndpoint(value = "/chat", configurator = GetHttpSessionConfigurator.class)
 public class WebSocketController {
 	private static Logger log = LogManager.getLogger(WebSocketController.class);
@@ -30,7 +34,12 @@ public class WebSocketController {
 	private GameId gameId;
 
 	private static ChatSessionHandler sessionHandler = ChatSessionHandler.getInstance();
-
+	
+	/**
+	 * Handles new sessions
+	 * @param session
+	 * @param config
+	 */
 	@OnOpen
 	public void open(Session session, EndpointConfig config) {
 		boolean isSessionRegistred = false;
@@ -42,6 +51,7 @@ public class WebSocketController {
 			if (userFromPool != null) {
 				BlackJackGame game = GamePool.getInstance().get(user.getId());
 				if (game != null) {
+					/* if user and game online - create session and register it*/
 					this.gameId = game.getId();
 					sessionHandler.addSession(session, game.getId());
 					log.debug("Connected to game " + game.getId().getValue());
@@ -53,7 +63,8 @@ public class WebSocketController {
 		} else {
 			log.warn("Session is closing. User is null");
 		}
-
+		
+		/* if session isn't registered - close it*/
 		if (!isSessionRegistred) {
 			try {
 				session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "User is unautorized"));
@@ -63,6 +74,10 @@ public class WebSocketController {
 		}
 	}
 
+	/**
+	 * handle session close
+	 * @param session
+	 */
 	@OnClose
 	public void close(Session session) {
 		if (gameId != null) {
@@ -71,11 +86,20 @@ public class WebSocketController {
 		}
 	}
 
+	/**
+	 * handle errors
+	 * @param error
+	 */
 	@OnError
 	public void onError(Throwable error) {
-		error.printStackTrace();
+		log.error(error);
 	}
 
+	/**
+	 * handle new incoming messages
+	 * @param message
+	 * @param session
+	 */
 	@OnMessage
 	public void handleMessage(String message, Session session) {
 		boolean isValid = false;
@@ -86,10 +110,12 @@ public class WebSocketController {
 			if (userFromPool != null) {
 				BlackJackGame game = GamePool.getInstance().get(user.getId());
 				if (game != null && game.getId().equals(gameId)) {
+					/* if user and game is still valid - send message to subscriers*/
 					sessionHandler.handleNewMessage(gameId, message, userFromPool);
 					isValid = true;
 				}
 			}
+			/*if user and game is invalid - close session*/
 			if (!isValid) {
 				sessionHandler.removeSession(session, gameId);
 				this.close(session);

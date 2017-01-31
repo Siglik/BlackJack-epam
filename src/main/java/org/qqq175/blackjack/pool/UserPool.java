@@ -9,11 +9,19 @@ import java.util.concurrent.ConcurrentHashMap.KeySetView;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
-//TODO make pool to save at Server restart (for example save in context or session)
+/**
+ * Pool for managing online users
+ * 
+ * @author qqq175
+ */
 public class UserPool implements Serializable {
+	private static final String UNEXPECTED_INTERRUPT = "Unexpected interrupt";
+	private static Logger log = LogManager.getLogger(UserPool.class);
 	private static final long serialVersionUID = 1L;
 	private static AtomicReference<UserPool> instance = new AtomicReference<>();
 	private ConcurrentHashMap<UserId, User> users;
@@ -29,7 +37,7 @@ public class UserPool implements Serializable {
 			try {
 				lock.acquire();
 			} catch (InterruptedException e) {
-				// TODO log
+				log.error(UNEXPECTED_INTERRUPT, e);
 			}
 			if (instance.get() == null) {
 				instance.set(new UserPool());

@@ -10,6 +10,11 @@ import org.qqq175.blackjack.action.implemented.game.NewGameAction;
 import org.qqq175.blackjack.action.implemented.game.ShowRulesAction;
 import org.qqq175.blackjack.action.implemented.main.IndexAction;
 
+/**
+ * contains GAME actions
+ * @author qqq175
+ *
+ */
 public enum GameActionEnum implements ActionEnum {
 	UNKNOWN {
 		{

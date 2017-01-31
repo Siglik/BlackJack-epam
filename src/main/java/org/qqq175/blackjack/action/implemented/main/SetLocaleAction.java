@@ -14,10 +14,14 @@ import org.qqq175.blackjack.action.ActionResult;
 import org.qqq175.blackjack.logic.main.LocaleLogic;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
+/**
+ * Set locale and save cookies
+ * @author qqq175
+ *
+ */
 public class SetLocaleAction implements Action {
 
-	public SetLocaleAction() {
-	}
+	private static final int COOKIE_LIFETIME = 7 * 24 * 60 * 60;
 
 	@Override
 	public ActionResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -28,7 +32,7 @@ public class SetLocaleAction implements Action {
 		request.getSession().setAttribute(StringConstant.ATTRIBUTE_LOCALE, locale);
 
 		Cookie cookie = new Cookie(StringConstant.COOKIE_LOCALE, locale.getLanguage());
-		cookie.setMaxAge(7 * 24 * 60 * 60);
+		cookie.setMaxAge(COOKIE_LIFETIME);
 		response.addCookie(cookie);
 
 		return new ActionResult(REDIRECT, Settings.getInstance().getContextPath());

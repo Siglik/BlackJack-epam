@@ -20,10 +20,18 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.pool.GamePool;
 
+/**
+ * Create new game, or if user already has active game - return it
+ * @author qqq175
+ */
 public class NewGameAction implements Action {
 	private static Logger log = LogManager.getLogger(NewGameAction.class);
 	private Mode mode;
 
+	/**
+	 * available game types
+	 * @author qqq175
+	 */
 	public enum Mode {
 		SINGLEPLAYER(1), MULTIPLAYER(3);
 
@@ -41,7 +49,11 @@ public class NewGameAction implements Action {
 		}
 
 	}
-
+	
+	/**
+	 * construct action to create game of type specified by mode
+	 * @param mode
+	 */
 	public NewGameAction(Mode mode) {
 		this.mode = mode;
 	}
@@ -60,11 +72,13 @@ public class NewGameAction implements Action {
 			try {
 				GameUtilLogic guLogic = new GameUtilLogic();
 				gameId = guLogic.newGameEntity(user);
+				/* try to find multiplayer game to join */
 				if (mode != Mode.SINGLEPLAYER) {
 					Iterator<BlackJackGame> games = guLogic.getJoinableGameList().iterator();
 					boolean found = false;
 					while (!found && games.hasNext()) {
 						BlackJackGame localGame = games.next();
+						/* prevent double join to same game after just leaving it and round isn't finished*/
 						if (!localGame.isInGame(user)) {
 							Player player = localGame.join(user);
 							if (player != null) {
@@ -77,6 +91,7 @@ public class NewGameAction implements Action {
 				} else {
 					request.getSession().setAttribute(StringConstant.ATTRIBUTE_SHOWCHAT, false);
 				}
+				/*if game isn't found or SOLO - create new*/
 				if (game == null) {
 					game = BlackJackGame.createGame(gameId, user, mode.getMaxPlayers());
 				}

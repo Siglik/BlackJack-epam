@@ -3,9 +3,8 @@ package org.qqq175.blackjack.controller;
 import org.qqq175.blackjack.StringConstant;
 
 /**
- * 
+ * Command path parcer
  * @author qqq175
- *
  */
 public class CommandParser {
 	public static final String DELIMETER = "/";
@@ -14,7 +13,7 @@ public class CommandParser {
 	}
 
 	/**
-	 * 
+	 * parse request path (without servlet context path) to CommandContext
 	 * @param path
 	 * @return
 	 */
@@ -24,10 +23,12 @@ public class CommandParser {
 		String action = null;
 		switch (queryParts.length) {
 		case 0:
+			/*if index - default action(/main/index)*/
 			scope = StringConstant.SCOPE_DEFAULT;
 			action = StringConstant.ACTION_DEFAULT;
 			break;
 		case 1:
+			/*if one param - default scope(/main/param)*/
 			scope = StringConstant.SCOPE_DEFAULT;
 			action = !queryParts[0].isEmpty() ? queryParts[0] : StringConstant.ACTION_DEFAULT;
 			break;
@@ -43,7 +44,7 @@ public class CommandParser {
 	}
 
 	/**
-	 * 
+	 * Data class that contains Scope and Action strings
 	 * @author qqq175
 	 *
 	 */

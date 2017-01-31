@@ -11,7 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
 /**
- * Servlet Filter implementation class CheckAutorized
+ * Servlet Filter implementation class SetEncodingFilter
+ * set characters encoding to UTF-8
  */
 @WebFilter({ "/$/*", "/api/*" })
 public class SetEncodingFilter implements Filter {

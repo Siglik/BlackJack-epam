@@ -1,5 +1,9 @@
 package org.qqq175.blackjack.action.implemented;
 
+/**
+ * contains list of available scopes
+ * @author qqq175
+ */
 public enum ScopeEnum {
 	MAIN {
 		{
@@ -9,11 +13,6 @@ public enum ScopeEnum {
 	GAME {
 		{
 			this.scope = GameActionEnum.class;
-		}
-	},
-	CHAT {
-		{
-			this.scope = ChatActionEnum.class;
 		}
 	},
 	ADMIN {

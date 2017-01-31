@@ -1,5 +1,10 @@
 package org.qqq175.blackjack.exception;
 
+/**
+ * logic layer exception
+ * @author qqq175
+ *
+ */
 public class LogicException extends Exception {
 
 	public LogicException(String arg0) {

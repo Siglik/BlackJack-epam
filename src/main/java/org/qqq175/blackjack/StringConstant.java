@@ -1,5 +1,9 @@
 package org.qqq175.blackjack;
 
+/**
+ * Contains application String constants
+ * @author qqq175
+ */
 public interface StringConstant {
 	public static final String ATTRIBUTE_USER = "user";
 	public static final String ATTRIBUTE_ERROR_LOGIN = "loginError";

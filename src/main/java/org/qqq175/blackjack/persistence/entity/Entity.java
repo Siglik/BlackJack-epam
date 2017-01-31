@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 import org.qqq175.blackjack.persistence.entity.id.EntityId;
 
+/**
+ * Data entity base class
+ * @author qqq175
+ * @param <K>
+ */
 public abstract class Entity<K extends EntityId> implements Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private K id;
 
