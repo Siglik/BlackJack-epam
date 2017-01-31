@@ -15,7 +15,11 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount() {
-        this.wsocket = new WebSocket("ws://www.qqq175.org/blackjack/chat");
+        let port = location.port == 80 || !location.port
+            ? ""
+            : ":" + location.port;
+        let url = "ws://" + document.domain + port + "/blackjack/chat";
+        this.wsocket = new WebSocket(url);
         this.wsocket.onmessage = this.onMessage.bind(this);
     }
     componentWillUnmount() {}
@@ -23,15 +27,15 @@ export default class Chat extends React.Component {
         this.wsocket.send(JSON.stringify(message));
     }
     onMessage(evt) {
-      //console.log("got message");
-      let newMessage = JSON.parse(evt.data);
-      //console.log(newMessage);
-      let newChat = this.state.chat;
-      newChat.messages.push(newMessage);
-      //console.log(newChat);
-      this.setState((prevState) => {
-          return {chat: newChat}
-      });
+        //console.log("got message");
+        let newMessage = JSON.parse(evt.data);
+        //console.log(newMessage);
+        let newChat = this.state.chat;
+        newChat.messages.push(newMessage);
+        //console.log(newChat);
+        this.setState((prevState) => {
+            return {chat: newChat}
+        });
     }
 
     render() {

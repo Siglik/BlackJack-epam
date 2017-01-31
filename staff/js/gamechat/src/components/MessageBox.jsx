@@ -14,10 +14,9 @@ export default class MessageBox extends React.Component {
     }
 
     render() {
-        var messages = [];
-        for (var i = 0; i < this.props.messages.length; i++) {
-            messages.push(<Message message={this.props.messages[i]}/>);
-        }
+        var messages =  this.props.messages.map((message) =>
+        <Message message={message} key={message.id}/>
+      );
         return (
             <div className="messages">
               {messages}

@@ -17,7 +17,8 @@ export default class ActionButton extends React.Component {
           if (data.result === "OK") {
               inst.props.doOnAction();
           } else {
-              alert(data.result)
+            console.log(data.result);
+            console.log(data.message);
           }
       })
     }
@@ -29,7 +30,8 @@ export default class ActionButton extends React.Component {
           if (data.result === "OK") {
               inst.props.doOnAction();
           } else {
-              alert(data.result)
+              console.log(data.result);
+              console.log(data.message);
           }
       })
     }

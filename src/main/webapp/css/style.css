@@ -327,7 +327,7 @@ p.message{
   border: none;
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
-  width: 100%;
+  width: 98%;
 }
 #send-message input:focus,
 #send-message input.focus {

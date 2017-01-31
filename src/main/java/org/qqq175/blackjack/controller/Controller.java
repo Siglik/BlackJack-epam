@@ -14,12 +14,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.qqq175.blackjack.StringConstant;
-import org.qqq175.blackjack.action.Action;
-import org.qqq175.blackjack.action.ActionFactory;
-import org.qqq175.blackjack.action.ActionResult;
-import org.qqq175.blackjack.action.implemented.ActionFactoryImpl;
 import org.qqq175.blackjack.persistence.connection.ConnectionPool;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
+import org.qqq175.blackjack.service.Action;
+import org.qqq175.blackjack.service.ActionFactory;
+import org.qqq175.blackjack.service.ActionResult;
+import org.qqq175.blackjack.service.implemented.ActionFactoryImpl;
 
 /**
  * Main application Controller (HttpServlet)

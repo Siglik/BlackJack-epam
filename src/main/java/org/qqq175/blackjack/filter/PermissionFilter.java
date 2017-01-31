@@ -16,13 +16,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
-import org.qqq175.blackjack.action.implemented.GameActionEnum;
 import org.qqq175.blackjack.controller.CommandParser;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;
+import org.qqq175.blackjack.service.implemented.GameActionEnum;
 
 /**
  * Servlet Filter implementation class PermissionFilter

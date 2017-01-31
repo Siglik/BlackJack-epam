@@ -15,12 +15,12 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.StringConstant;
-import org.qqq175.blackjack.action.implemented.chat.ChatSessionHandler;
 import org.qqq175.blackjack.game.impl.BlackJackGame;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.pool.GamePool;
 import org.qqq175.blackjack.pool.UserPool;
+import org.qqq175.blackjack.service.implemented.chat.ChatSessionHandler;
 
 /**
  * Chat application controller (WebSocket)
