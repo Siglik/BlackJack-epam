@@ -20,7 +20,7 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.pool.GamePool;
 import org.qqq175.blackjack.pool.UserPool;
-import org.qqq175.blackjack.service.implemented.chat.ChatSessionHandler;
+import org.qqq175.blackjack.service.chat.ChatSessionHandler;
 
 /**
  * Chat application controller (WebSocket)

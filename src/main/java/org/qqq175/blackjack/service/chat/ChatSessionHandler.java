@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.service.implemented.chat;
+package org.qqq175.blackjack.service.chat;
 
 import java.io.IOException;
 import java.util.Collections;
