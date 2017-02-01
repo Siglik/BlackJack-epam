@@ -8,9 +8,20 @@ import org.qqq175.blackjack.persistence.dao.DAOFactory;
 import org.qqq175.blackjack.persistence.dao.UserDAO;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
-
+/**
+ * Contains methods to get user's list data
+ * @author qqq175
+ *
+ */
 public class PlayersListLogic {
 
+	/**
+	 * Find in persistence list of user using pagination
+	 * @param page
+	 * @param usersPerPage
+	 * @return
+	 * @throws LogicException
+	 */
 	public List<User> findUsers(int page, int usersPerPage) throws LogicException {
 		List<User> result;
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
@@ -25,6 +36,11 @@ public class PlayersListLogic {
 		return result;
 	}
 
+	/**
+	 * return count of users in DB
+	 * @return
+	 * @throws LogicException
+	 */
 	public long countUsers() throws LogicException {
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 		UserDAO userDAO = daoFactory.getUserDAO();

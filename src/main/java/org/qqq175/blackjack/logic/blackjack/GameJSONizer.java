@@ -13,9 +13,19 @@ import org.qqq175.blackjack.persistence.dao.util.PhotoManager;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;
 
+/**
+ * Represents game state as JSON object
+ * @author qqq175
+ */
 @SuppressWarnings("unchecked")
 public class GameJSONizer {
 
+	/**
+	 * Represents GAME state as JSON object from USER's "point of view" 
+	 * @param game
+	 * @param user
+	 * @return
+	 */
 	public static JSONObject toJSON(BlackJackGame game, User user) {
 		JSONObject result = new JSONObject();
 		JSONArray players = new JSONArray();
@@ -37,7 +47,8 @@ public class GameJSONizer {
 			}
 			result.put("result", null);
 			result.put("players", players);
-			result.put("controls", null);
+
+			/* controls */
 			{
 				JSONObject controls = new JSONObject();
 				{
@@ -109,12 +120,23 @@ public class GameJSONizer {
 		return result;
 	}
 
+	/**
+	 * Represent dealer state as JSON
+	 * @param dealer
+	 * @return
+	 */
 	private static JSONObject toJSON(Dealer dealer) {
 		JSONObject result = new JSONObject();
 		result.put("hand", toJSON(dealer.getHand(), dealer.isShowAllCards(), false));
 		return result;
 	}
 
+	/**
+	 * represent players state as JSON object. 
+	 * @param player
+	 * @param isCurrentUser
+	 * @return
+	 */
 	private static JSONObject toJSON(Player player, boolean isCurrentUser) {
 		JSONObject result = new JSONObject();
 		UserPool userPool = UserPool.getInstance();
@@ -136,6 +158,11 @@ public class GameJSONizer {
 		return result;
 	}
 
+	/**
+	 * represent hands as JSON object. 
+	 * @param hands
+	 * @return
+	 */
 	private static JSONArray toJSON(List<Hand> hands) {
 		JSONArray result = new JSONArray();
 		for (Hand hand : hands) {
@@ -144,6 +171,13 @@ public class GameJSONizer {
 		return result;
 	}
 
+	/**
+	 * represent hand state as JSON object.
+	 * @param hand
+	 * @param showAll - shows score and all cards if true, else show only first card and cards backs 
+	 * @param isPlayer - for player aslo add bet, insurance and active state
+	 * @return
+	 */
 	private static JSONObject toJSON(Hand hand, boolean showAll, boolean isPlayer) {
 		JSONObject result = new JSONObject();
 		result.put("cards", toJSON(hand.getCardsListCopy(), showAll));
@@ -158,6 +192,11 @@ public class GameJSONizer {
 		return result;
 	}
 
+	/**
+	 * represent score as JSON object. 
+	 * @param score
+	 * @return
+	 */
 	private static String toJSON(Score score) {
 		String result = "";
 		if (score.isBlackJack()) {
@@ -169,6 +208,12 @@ public class GameJSONizer {
 		return result;
 	}
 
+	/**
+	 * represent cards list as JSON object. 
+	 * @param cards
+	 * @param showAll - true - show all cards, false - show only first card and back of other cards
+	 * @return
+	 */
 	private static JSONArray toJSON(List<Card> cards, boolean showAll) {
 		JSONArray result = new JSONArray();
 		if (showAll) {
