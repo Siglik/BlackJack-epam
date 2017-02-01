@@ -629,7 +629,7 @@ public class GameLogic {
 						result = true;
 					}
 					break;
-				case LOSS_INSURANCE:
+				case TIE_LOSS_INSURANCE:
 					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, betSize, insurance, userId, AccountOperation.Type.LOSS, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementTie(userId);
@@ -704,7 +704,7 @@ public class GameLogic {
 					if (playerHand.getInsurance().equals(BigDecimal.ZERO)) {
 						playerHand.setResult(GameResult.TIE);
 					} else {
-						playerHand.setResult(GameResult.LOSS_INSURANCE);
+						playerHand.setResult(GameResult.TIE_LOSS_INSURANCE);
 					}
 				}
 			} else if (playerScore.getValue() > 21) {

@@ -44,7 +44,9 @@ public class Settings {
 		Properties props = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		try (InputStream in = classLoader.getResourceAsStream(APP_PROPS_PATH);) {
-			props.load(in);
+			if (in != null) {
+				props.load(in);
+			}
 		} catch (IOException e) {
 			// LOG fatal
 			throw new RuntimeException("Unable to read " + APP_PROPS_PATH);
@@ -96,7 +98,9 @@ public class Settings {
 			Properties props = new Properties();
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			try (InputStream in = classLoader.getResourceAsStream(DBPROPS_PATH);) {
-				props.load(in);
+				if (in != null) {
+					props.load(in);
+				}
 			} catch (IOException e) {
 				throw new RuntimeException("Unable to read " + DBPROPS_PATH);
 			}
