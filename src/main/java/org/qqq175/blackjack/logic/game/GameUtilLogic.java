@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.exception.LogicException;
-import org.qqq175.blackjack.game.GameStage;
-import org.qqq175.blackjack.game.impl.BlackJackGame;
+import org.qqq175.blackjack.logic.blackjack.BlackJackGame;
+import org.qqq175.blackjack.logic.blackjack.GameStage;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
 import org.qqq175.blackjack.persistence.dao.GameDAO;
 import org.qqq175.blackjack.persistence.dao.util.Settings;

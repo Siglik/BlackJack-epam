@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.game.impl;
+package org.qqq175.blackjack.logic.blackjack.entity;
 
 public class Dealer {
 	private Hand hand;

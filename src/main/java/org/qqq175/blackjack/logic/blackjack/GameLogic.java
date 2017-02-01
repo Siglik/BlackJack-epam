@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.game;
+package org.qqq175.blackjack.logic.blackjack;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.exception.DAOException;
-import org.qqq175.blackjack.game.impl.Card;
-import org.qqq175.blackjack.game.impl.Dealer;
-import org.qqq175.blackjack.game.impl.Deck;
-import org.qqq175.blackjack.game.impl.Hand;
-import org.qqq175.blackjack.game.impl.Player;
-import org.qqq175.blackjack.game.impl.Score;
+import org.qqq175.blackjack.logic.blackjack.entity.Card;
+import org.qqq175.blackjack.logic.blackjack.entity.Dealer;
+import org.qqq175.blackjack.logic.blackjack.entity.Deck;
+import org.qqq175.blackjack.logic.blackjack.entity.Hand;
+import org.qqq175.blackjack.logic.blackjack.entity.Player;
+import org.qqq175.blackjack.logic.blackjack.entity.Score;
 import org.qqq175.blackjack.logic.player.AccountOperationLogic;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;

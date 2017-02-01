@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.game.impl;
+package org.qqq175.blackjack.logic.blackjack;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,8 +10,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.exception.GameActionDeniedException;
-import org.qqq175.blackjack.game.GameLogic;
-import org.qqq175.blackjack.game.GameStage;
+import org.qqq175.blackjack.logic.blackjack.entity.Dealer;
+import org.qqq175.blackjack.logic.blackjack.entity.Deck;
+import org.qqq175.blackjack.logic.blackjack.entity.Hand;
+import org.qqq175.blackjack.logic.blackjack.entity.Player;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
@@ -388,6 +390,7 @@ public class BlackJackGame {
 				nextStage();
 			} else {
 				dealer = new Dealer();
+				deck.newRound();
 				// just lets deal
 			}
 			break;

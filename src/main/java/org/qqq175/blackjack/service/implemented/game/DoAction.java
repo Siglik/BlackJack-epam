@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.exception.GameActionDeniedException;
-import org.qqq175.blackjack.game.impl.BlackJackGame;
+import org.qqq175.blackjack.logic.blackjack.BlackJackGame;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.GamePool;

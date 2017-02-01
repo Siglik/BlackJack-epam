@@ -25,9 +25,9 @@ import org.qqq175.blackjack.pool.UserPool;
 import org.qqq175.blackjack.service.implemented.GameActionEnum;
 
 /**
- * Servlet Filter implementation class PermissionFilter
- * Check user type and ban state, compare user's permission with requested action scope
- * and prevent unautorized access.
+ * Servlet Filter implementation class PermissionFilter Check user type and ban
+ * state, compare user's permission with requested action scope and prevent
+ * unautorized access.
  */
 @WebFilter({ "/$/*" })
 public class PermissionFilter implements Filter {
@@ -72,10 +72,10 @@ public class PermissionFilter implements Filter {
 			if (userFromPool != null) {
 				if (userFromPool.isActive()) {
 					if (userFromPool.getType() == User.Type.ADMIN) {
-						//admin - grant access to all
+						// admin - grant access to all
 						grantAccess = true;
 					} else if (userFromPool.getType() == User.Type.PLAYER) {
-						//user - grant access to all except ADMIN scope
+						// user - grant access to all except ADMIN scope
 						if (comandContext.getScope().equalsIgnoreCase("admin")) {
 							grantAccess = false;
 						} else {
@@ -94,8 +94,8 @@ public class PermissionFilter implements Filter {
 				session = ((HttpServletRequest) request).getSession();
 			}
 		} else {
-			//grant access for all for scope
-			if (comandContext.getScope().equalsIgnoreCase("main")) {
+			// grant access for all for scope
+			if (!comandContext.isEmpty() && comandContext.getScope().equalsIgnoreCase("main")) {
 				grantAccess = true;
 			} else {
 				grantAccess = false;
@@ -106,23 +106,21 @@ public class PermissionFilter implements Filter {
 			chain.doFilter(request, response);
 		} else {
 			if (!banned) {
-				//if forbidden action for logge user
+				// if forbidden action for logge user
 				if (userFromPool == null) {
-					session.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE,
-							FORBIDDEN_ACTION);
+					session.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, FORBIDDEN_ACTION);
 				} else {
-					//if GUEST
-					session.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE,
-							FORBIDDEN_ACTION_GUEST);
+					// if GUEST
+					session.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, FORBIDDEN_ACTION_GUEST);
 				}
 				((HttpServletResponse) response).sendRedirect(Settings.getInstance().getContextPath() + JSPPathManager.getProperty("command.index"));
-				if (!comandContext.getAction().equalsIgnoreCase(GameActionEnum.GETSTATE.toString())) {
+				if (!comandContext.isEmpty() && !comandContext.getAction().equalsIgnoreCase(GameActionEnum.GETSTATE.toString())) {
 					log.warn(request.getRemoteAddr() + " | " + session.getId() + " - User type "
 							+ (userFromPool != null ? userFromPool.getType().name() : "GUEST") + " isn't allowed to perform action "
 							+ comandContext.getAction().toUpperCase() + " in scope " + comandContext.getScope().toUpperCase());
 				}
 			} else {
-				//if banned - invalidate session
+				// if banned - invalidate session
 				session.invalidate();
 				HttpSession newSession = ((HttpServletRequest) request).getSession();
 				newSession.setAttribute(StringConstant.ATTRIBUTE_POPUP_MESSAGE, BANNED);

@@ -1,9 +1,9 @@
-package org.qqq175.blackjack.game.impl;
+package org.qqq175.blackjack.logic.blackjack.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.game.GameStage;
+import org.qqq175.blackjack.logic.blackjack.GameStage;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 public class Player {

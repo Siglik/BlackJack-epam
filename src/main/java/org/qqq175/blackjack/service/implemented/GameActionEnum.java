@@ -8,17 +8,17 @@ import org.qqq175.blackjack.service.implemented.game.GetStateAction;
 import org.qqq175.blackjack.service.implemented.game.LeaveGameAction;
 import org.qqq175.blackjack.service.implemented.game.NewGameAction;
 import org.qqq175.blackjack.service.implemented.game.ShowRulesAction;
-import org.qqq175.blackjack.service.implemented.main.IndexAction;
 
 /**
  * contains GAME actions
+ * 
  * @author qqq175
  *
  */
 public enum GameActionEnum implements ActionEnum {
 	UNKNOWN {
 		{
-			this.action = new IndexAction();
+			this.action = ActionConstants.INDEX_ACTION;
 		}
 	},
 	GAME {

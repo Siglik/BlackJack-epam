@@ -9,6 +9,7 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>The Quasino!</title>
 <script type="text/javascript"
 	src='/blackjack/script/locale/messages-${not empty sessionScope.curLocale ? sessionScope.curLocale.language : "en"}.js'
@@ -35,8 +36,6 @@
 		<!-- IMPORT ASIDE HERE -->
 		<jsp:include page="/WEB-INF/jsp/element/Aside.jsp" />
 	</div>
-
-	<!-- chat is here (At game page)-->
 
 	<!-- IMPORT FOOTER -->
 	<jsp:include page="/WEB-INF/jsp/element/Footer.jsp" />

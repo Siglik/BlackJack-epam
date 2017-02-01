@@ -6,16 +6,16 @@ import org.qqq175.blackjack.service.implemented.admin.ChangePlayerTypeAction;
 import org.qqq175.blackjack.service.implemented.admin.PlayerBanUnbanAction;
 import org.qqq175.blackjack.service.implemented.admin.PlayerInfoAction;
 import org.qqq175.blackjack.service.implemented.admin.PlayersListAction;
-import org.qqq175.blackjack.service.implemented.main.IndexAction;
 
 /**
  * contains actions of ADMIN scope
+ * 
  * @author qqq175
  */
 public enum AdminActionEnum implements ActionEnum {
 	UNKNOWN {
 		{
-			this.action = new IndexAction();
+			this.action = ActionConstants.INDEX_ACTION;
 		}
 	},
 	CHANGEPLAYERTYPE {

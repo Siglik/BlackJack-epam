@@ -1,12 +1,12 @@
-package org.qqq175.blackjack.game.impl;
+package org.qqq175.blackjack.logic.blackjack.entity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.qqq175.blackjack.game.GameLogic;
-import org.qqq175.blackjack.game.GameResult;
-import org.qqq175.blackjack.game.GameStage;
+import org.qqq175.blackjack.logic.blackjack.GameLogic;
+import org.qqq175.blackjack.logic.blackjack.GameResult;
+import org.qqq175.blackjack.logic.blackjack.GameStage;
 
 public class Hand {
 

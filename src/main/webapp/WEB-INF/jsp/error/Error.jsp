@@ -4,7 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta charset="utf-8">
+<meta http-equiv="refresh" content="5;url=/blackjack/" />
 <title>Black jack!</title>
 <link href="/blackjack/css/style.css" rel="stylesheet" />
 <link href="/blackjack/css/error.css" rel="stylesheet" />

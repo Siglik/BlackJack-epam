@@ -143,7 +143,7 @@ a.menu-item {
     text-align: left;
     width: 120px;
     margin: 0px;
-    padding: 10px 0 10px 6px;
+    padding: 10px 0px 10px 6px;
 }
 
 .vertical-menu.top menu-item {
@@ -441,11 +441,16 @@ div.rules p, ul{
         display: inline-block;
     }
     nav.left-menu {
+        padding-right: 5px;
         height: 100%;
         display: none;
         position: absolute;
         top: 110px;
         z-index: 99;
+    }
+    nav.left-menu li a{
+        padding-left: 20px;
+        padding-right: 35px;
     }
     a.button.join{
         padding: 10px 25px;

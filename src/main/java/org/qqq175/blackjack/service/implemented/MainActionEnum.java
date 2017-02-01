@@ -5,7 +5,6 @@ package org.qqq175.blackjack.service.implemented;
 
 import org.qqq175.blackjack.service.Action;
 import org.qqq175.blackjack.service.ActionEnum;
-import org.qqq175.blackjack.service.implemented.main.IndexAction;
 import org.qqq175.blackjack.service.implemented.main.LogVisitorInfoAction;
 import org.qqq175.blackjack.service.implemented.main.LoginAction;
 import org.qqq175.blackjack.service.implemented.main.LogoutAction;
@@ -14,18 +13,24 @@ import org.qqq175.blackjack.service.implemented.main.SetLocaleAction;
 
 /**
  * contains MAIN scope actions (avaliable for guests)
+ * 
  * @author qqq175
  *
  */
 public enum MainActionEnum implements ActionEnum {
 	NONE {
 		{
-			this.action = new IndexAction();
+			this.action = ActionConstants.INDEX_ACTION;
 		}
 	},
 	UNKNOWN {
 		{
-			this.action = new IndexAction();
+			this.action = ActionConstants.INDEX_ACTION;
+		}
+	},
+	INDEX {
+		{
+			this.action = ActionConstants.INDEX_ACTION;
 		}
 	},
 	LOGIN {

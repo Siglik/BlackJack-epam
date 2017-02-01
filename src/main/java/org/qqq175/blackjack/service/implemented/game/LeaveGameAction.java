@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.qqq175.blackjack.StringConstant;
-import org.qqq175.blackjack.game.impl.BlackJackGame;
+import org.qqq175.blackjack.logic.blackjack.BlackJackGame;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.GamePool;

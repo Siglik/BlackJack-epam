@@ -2,7 +2,6 @@ package org.qqq175.blackjack.service.implemented;
 
 import org.qqq175.blackjack.service.Action;
 import org.qqq175.blackjack.service.ActionEnum;
-import org.qqq175.blackjack.service.implemented.main.IndexAction;
 import org.qqq175.blackjack.service.implemented.player.BalanceAction;
 import org.qqq175.blackjack.service.implemented.player.ChangeAvatarAction;
 import org.qqq175.blackjack.service.implemented.player.ChangePasswordAction;
@@ -13,13 +12,14 @@ import org.qqq175.blackjack.service.implemented.player.ShowStatsAction;
 
 /**
  * contains PLAYER scope actions
+ * 
  * @author qqq175
  *
  */
 public enum PlayerActionEnum implements ActionEnum {
 	UNKNOWN {
 		{
-			this.action = new IndexAction();
+			this.action = ActionConstants.INDEX_ACTION;
 		}
 	},
 	BALANCE {

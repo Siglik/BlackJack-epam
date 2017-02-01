@@ -1,4 +1,4 @@
-package org.qqq175.blackjack.game;
+package org.qqq175.blackjack.logic.blackjack;
 
 public enum GameStage {
 	UNACTIVE, DEAL, PLAY, RESULT, DONE;

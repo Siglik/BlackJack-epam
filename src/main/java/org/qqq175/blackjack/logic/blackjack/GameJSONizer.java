@@ -1,15 +1,14 @@
-package org.qqq175.blackjack.game;
+package org.qqq175.blackjack.logic.blackjack;
 
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.qqq175.blackjack.game.impl.BlackJackGame;
-import org.qqq175.blackjack.game.impl.Card;
-import org.qqq175.blackjack.game.impl.Dealer;
-import org.qqq175.blackjack.game.impl.Hand;
-import org.qqq175.blackjack.game.impl.Player;
-import org.qqq175.blackjack.game.impl.Score;
+import org.qqq175.blackjack.logic.blackjack.entity.Card;
+import org.qqq175.blackjack.logic.blackjack.entity.Dealer;
+import org.qqq175.blackjack.logic.blackjack.entity.Hand;
+import org.qqq175.blackjack.logic.blackjack.entity.Player;
+import org.qqq175.blackjack.logic.blackjack.entity.Score;
 import org.qqq175.blackjack.persistence.dao.util.PhotoManager;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;

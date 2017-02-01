@@ -23,6 +23,7 @@ import org.qqq175.blackjack.service.implemented.ActionFactoryImpl;
 
 /**
  * Main application Controller (HttpServlet)
+ * 
  * @author qqq175
  *
  */
@@ -61,9 +62,10 @@ public class Controller extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
-	
+
 	/**
 	 * processes request
+	 * 
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -71,21 +73,21 @@ public class Controller extends HttpServlet {
 	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getPathInfo();
-		
-		//parse query
+
+		// parse query
 		CommandParser cp = new CommandParser();
 		CommandParser.CommandContext comandContext = cp.parse(query);
 
 		if (!comandContext.isEmpty()) {
-			//define and execute action
+			// define and execute action
 			ActionFactory actionFactory = new ActionFactoryImpl();
-			Action concreteAction = actionFactory.defineAction(comandContext.getScope(), comandContext.getAction());
+			Action concreteAction = actionFactory.defineAction(comandContext);
 
 			ActionResult result = concreteAction.execute(request, response);
-			
+
 			log.debug(comandContext.getScope() + "->" + comandContext.getAction());
 
-			/*proceed action result*/
+			/* proceed action result */
 			switch (result.getType()) {
 			case FORWARD:
 				RequestDispatcher dispatcher = request.getRequestDispatcher(result.getContent());
@@ -108,7 +110,7 @@ public class Controller extends HttpServlet {
 				break;
 			}
 		} else {
-			/*if not parsed send 404*/
+			/* if not parsed send 404 */
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
