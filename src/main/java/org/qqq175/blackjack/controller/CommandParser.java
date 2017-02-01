@@ -20,6 +20,9 @@ public class CommandParser {
 	 * @return
 	 */
 	public CommandContext parse(String path) {
+		if (path == null) {
+			path = "";
+		}
 		String[] queryParts = path.trim().replaceFirst("^" + DELIMETER, "").split(DELIMETER);
 		String scope = null;
 		String action = null;
