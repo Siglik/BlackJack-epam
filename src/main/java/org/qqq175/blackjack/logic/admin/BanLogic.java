@@ -1,8 +1,8 @@
 package org.qqq175.blackjack.logic.admin;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
-import org.qqq175.blackjack.controller.Controller;
-import org.qqq175.blackjack.controller.Logger;
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
@@ -12,7 +12,8 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
 /**
- * COntaints methods that operate user ban status
+ * Containts methods that operate user ban status
+ * 
  * @author qqq175
  *
  */
@@ -27,14 +28,16 @@ public class BanLogic {
 
 	/**
 	 * possible operation result states
+	 * 
 	 * @author qqq175
 	 */
 	private enum ResultState {
 		OK, WRONG_NUMBER_FORMAT, DAO_ERROR, NOT_FOUND, MISSING_PARAMETER, SELF_FORBIDDEN, NOT_ALLOWED
 	}
-	
+
 	/**
 	 * Ban/unban user and return json object with operation result
+	 * 
 	 * @param ban
 	 * @param id
 	 * @param curUser
@@ -43,8 +46,8 @@ public class BanLogic {
 	@SuppressWarnings("unchecked")
 	public JSONObject changeUserBanState(boolean ban, String id, User curUser) {
 		JSONObject result = new JSONObject();
-		
-		/*check parameter*/
+
+		/* check parameter */
 		if (id != null && !id.isEmpty()) {
 			UserId userId = null;
 			try {
@@ -62,14 +65,14 @@ public class BanLogic {
 						/* check permission */
 						if (curUser.isActive() && curUser.getType().equals(User.Type.ADMIN)) {
 							boolean updateResult;
-							
-							/* change user state*/
+
+							/* change user state */
 							if (ban) {
 								updateResult = userDAO.disableUser(userId);
 							} else {
 								updateResult = userDAO.enableUser(userId);
 							}
-							
+
 							if (updateResult) {
 								/* update pool */
 								ModifyUserLogic muLogic = new ModifyUserLogic();

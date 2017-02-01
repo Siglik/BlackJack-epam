@@ -23,9 +23,25 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 import org.qqq175.blackjack.pool.UserPool;
 
+/**
+ * Containt methos that modify or update user in database, session, pool, etc
+ * 
+ * @author qqq175
+ *
+ */
 public class ModifyUserLogic {
+	private static final String UNABLE_GET_DATA = "Unable to get users data";
+	private static final String WRONG_PASSWORD = "Wrong password ";
+	private static final String UNABLE_UPDATE_DATA = "Unable to update users data";
+	private static final String UNABLE_HASH = "Unable to calc password hash";
 	private static Logger log = LogManager.getLogger(ModifyUserLogic.class);
 
+	/**
+	 * possible modify user operation results
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	public enum Result {
 		OK("Ok"), WRONG_PASSWORD("Passowrd is incorect!"), UNKNOWN_ERROR("Unkown user modifycation error."), WRONG_DATA("Icorrect data."), NOT_EQUAL(
 				"Password and password confirm isn't match.");
@@ -40,6 +56,14 @@ public class ModifyUserLogic {
 		}
 	}
 
+	/**
+	 * update users personal data in database
+	 * 
+	 * @param params
+	 *            - request params map
+	 * @param user
+	 * @return
+	 */
 	public Result changePersonal(Map<String, String[]> params, User user) {
 		Result result = null;
 		String firstName = extractParameter(StringConstant.PARAMETER_FIRST_NAME, params);
@@ -57,13 +81,21 @@ public class ModifyUserLogic {
 		return result;
 	}
 
+	/**
+	 * update users password in database
+	 * 
+	 * @param params
+	 *            - request params map
+	 * @param user
+	 * @return
+	 */
 	public Result changePassowrd(Map<String, String[]> params, User user) {
 		Result result = null;
 		String oldPassword = extractParameter(StringConstant.PARAMETER_PASSWORD_OLD, params);
 		String newPassword = extractParameter(StringConstant.PARAMETER_PASSWORD_NEW, params);
 		String repeatPassword = extractParameter(StringConstant.PARAMETER_PASSWORD_REPEAT, params);
 		if (oldPassword != null && newPassword != null && repeatPassword != null) {
-			result = setNewPassword(user, newPassword, repeatPassword, oldPassword);
+			result = updateNewPassword(user, newPassword, repeatPassword, oldPassword);
 		} else {
 			result = Result.WRONG_DATA;
 		}
@@ -71,6 +103,12 @@ public class ModifyUserLogic {
 		return result;
 	}
 
+	/**
+	 * update current session user from DB
+	 * 
+	 * @param session
+	 * @return
+	 */
 	public boolean updateSessionUser(HttpSession session) {
 		boolean result = false;
 		User user = (User) session.getAttribute(StringConstant.ATTRIBUTE_USER);
@@ -83,13 +121,19 @@ public class ModifyUserLogic {
 				result = true;
 			} catch (DAOException e) {
 				result = false;
-				e.printStackTrace();
+				log.error(UNABLE_GET_DATA, e);
 			}
 		}
 
 		return result;
 	}
 
+	/**
+	 * update user in ool from DB if users pool contains user, else do nothing
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	public boolean updateUserInPool(UserId userId) {
 		boolean result = false;
 		if (UserPool.getInstance().containsKey(userId)) {
@@ -103,14 +147,23 @@ public class ModifyUserLogic {
 				result = true;
 			} catch (DAOException e) {
 				result = false;
-				e.printStackTrace();
+				log.error(UNABLE_GET_DATA, e);
 			}
 		}
 
 		return result;
 	}
 
-	public Result setNewPassword(User user, String newPassword, String repeatPassword, String oldPassword) {
+	/**
+	 * update users password in database
+	 * 
+	 * @param user
+	 * @param newPassword
+	 * @param repeatPassword
+	 * @param oldPassword
+	 * @return
+	 */
+	public Result updateNewPassword(User user, String newPassword, String repeatPassword, String oldPassword) {
 		Result result = null;
 		UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
 		SecurityLogic sLogic = new SecurityLogic();
@@ -120,8 +173,7 @@ public class ModifyUserLogic {
 			oldPassHash = sLogic.calcSHA(sLogic.pepperPassword(sLogic.saltPassword(oldPassword), user.getEmail()));
 		} catch (LogicException e1) {
 			result = Result.UNKNOWN_ERROR;
-			// TODO LOG
-			e1.printStackTrace();
+			log.error(UNABLE_HASH, e1);
 		}
 
 		if (result == null) {
@@ -136,18 +188,26 @@ public class ModifyUserLogic {
 					}
 				} else {
 					result = Result.WRONG_PASSWORD;
+					log.warn(WRONG_PASSWORD + user.getId().getValue());
 				}
 			} catch (DAOException e) {
-				// TODO LOG
+				log.error(UNABLE_UPDATE_DATA, e);
 				result = Result.UNKNOWN_ERROR;
-				// LOG
-				e.printStackTrace();
 			}
 		}
 
 		return result;
 	}
 
+	/**
+	 * update users personal data in database
+	 * 
+	 * @param user
+	 * @param firstName
+	 * @param lastName
+	 * @param displayName
+	 * @return
+	 */
 	public Result setNewPerlsonal(User user, String firstName, String lastName, String displayName) {
 		Result result = null;
 		UserDAO userDAO = Settings.getInstance().getDaoFactory().getUserDAO();
@@ -159,14 +219,20 @@ public class ModifyUserLogic {
 				userDAO.updatePersonal(user.getId(), firstName, lastName, displayName);
 			} catch (DAOException e) {
 				result = Result.UNKNOWN_ERROR;
-				// LOG
-				e.printStackTrace();
+				log.error(UNABLE_UPDATE_DATA, e);
 			}
 		}
 
 		return result;
 	}
 
+	/**
+	 * extracts parameter from request params map
+	 * 
+	 * @param parameter
+	 * @param params
+	 * @return parameter value as string or null if not found
+	 */
 	private String extractParameter(String parameter, Map<String, String[]> params) {
 		String value = null;
 		if (params.containsKey(parameter)) {
@@ -181,6 +247,14 @@ public class ModifyUserLogic {
 		return value;
 	}
 
+	/**
+	 * validate personal data
+	 * 
+	 * @param firstName
+	 * @param lastName
+	 * @param displayName
+	 * @return
+	 */
 	private Result validatePersonal(String firstName, String lastName, String displayName) {
 		Result result = null;
 
@@ -194,6 +268,13 @@ public class ModifyUserLogic {
 		return result;
 	}
 
+	/**
+	 * validate passwords using
+	 * 
+	 * @param value
+	 * @param pattern
+	 * @return
+	 */
 	private Result validatePasswords(String password, String repeatPassword) {
 		Result result = Result.OK;
 
@@ -211,6 +292,13 @@ public class ModifyUserLogic {
 		return result;
 	}
 
+	/**
+	 * validate parameter using regex
+	 * 
+	 * @param value
+	 * @param pattern
+	 * @return
+	 */
 	private boolean validateParameter(String value, String pattern) {
 		Pattern ptn = Pattern.compile(pattern);
 		Matcher matcher = ptn.matcher(value);

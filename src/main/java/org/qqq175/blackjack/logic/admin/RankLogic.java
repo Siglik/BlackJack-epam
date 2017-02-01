@@ -1,5 +1,7 @@
 package org.qqq175.blackjack.logic.admin;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.logic.player.ModifyUserLogic;
@@ -9,11 +11,12 @@ import org.qqq175.blackjack.persistence.dao.util.Settings;
 import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
-**
-* COntaints methods that operate user rank
-* @author qqq175
-*
-*/
+/**
+ * COntaints methods that operate user rank
+ * 
+ * @author qqq175
+ *
+ */
 public class RankLogic {
 	private static final String SELF_RANK_CHANGE = "Self rank change is forbidden!";
 	private static final String NOT_ALLOWED_MESSAGE = "Insufficient permissions: banned or isn't ADMIN";
@@ -26,6 +29,7 @@ public class RankLogic {
 
 	/**
 	 * possible operation result states
+	 * 
 	 * @author qqq175
 	 */
 	private enum ResultState {
@@ -34,6 +38,7 @@ public class RankLogic {
 
 	/**
 	 * change user state and return json object with operation result
+	 * 
 	 * @param ban
 	 * @param id
 	 * @param curUser
@@ -42,8 +47,8 @@ public class RankLogic {
 	@SuppressWarnings("unchecked")
 	public JSONObject toogleRank(String id, User curUser) {
 		JSONObject result = new JSONObject();
-		
-		/*check parameter*/
+
+		/* check parameter */
 		if (id != null && !id.isEmpty()) {
 			UserId userId = null;
 			try {
@@ -56,17 +61,17 @@ public class RankLogic {
 				DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 				UserDAO userDAO = daoFactory.getUserDAO();
 				try {
-					
+
 					/* check self modification */
 					if (!curUser.getId().equals(userId)) {
 						/* check permission */
 						if (curUser.isActive() && curUser.getType().equals(User.Type.ADMIN)) {
 							boolean updateResult;
-							
+
 							/* get user rank */
 							User.Type type = userDAO.findEntityById(userId).getType();
 							User.Type newType;
-							
+
 							/* change user rank */
 							if (type == User.Type.ADMIN) {
 								newType = User.Type.PLAYER;

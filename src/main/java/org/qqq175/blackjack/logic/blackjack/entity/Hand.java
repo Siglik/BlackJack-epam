@@ -8,6 +8,12 @@ import org.qqq175.blackjack.logic.blackjack.GameLogic;
 import org.qqq175.blackjack.logic.blackjack.GameResult;
 import org.qqq175.blackjack.logic.blackjack.GameStage;
 
+/**
+ * Blackjack player's (dealer's) hand data class
+ * 
+ * @author qqq175
+ *
+ */
 public class Hand {
 
 	private List<Card> cards;
@@ -17,20 +23,13 @@ public class Hand {
 	private GameStage stage;
 	private GameResult result;
 
-	public GameResult getResult() {
-		return result;
-	}
-
-	public void setResult(GameResult result) {
-		this.result = result;
-	}
-
-	/**
-	 * 
-	 */
 	private boolean isActive;
 	private boolean isFirstAction;
 
+	/**
+	 * Construct empty hand. Initial game state is DEAL, initial GameResult is
+	 * NONE
+	 */
 	public Hand() {
 		this.cards = new ArrayList<>();
 		this.score = new Score();
@@ -181,4 +180,20 @@ public class Hand {
 	public void setInsurance(BigDecimal insurance) {
 		this.insurance = insurance;
 	}
+
+	/**
+	 * @return the result
+	 */
+	public GameResult getResult() {
+		return result;
+	}
+
+	/**
+	 * @param result
+	 *            the result to set
+	 */
+	public void setResult(GameResult result) {
+		this.result = result;
+	}
+
 }

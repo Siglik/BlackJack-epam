@@ -1,6 +1,12 @@
 package org.qqq175.blackjack.logic.blackjack.entity;
 
-public class Score implements Comparable<Score> {
+/**
+ * Hand score data class
+ * 
+ * @author qqq175
+ *
+ */
+public class Score {
 	private int value;
 	private boolean isBlackJack;
 
@@ -67,14 +73,5 @@ public class Score implements Comparable<Score> {
 		if (value != other.value)
 			return false;
 		return true;
-	}
-
-	@Override
-	public int compareTo(Score o) {
-		if (this.isBlackJack)
-			return 0;
-		return 0;
-
-		// realize it
 	}
 }

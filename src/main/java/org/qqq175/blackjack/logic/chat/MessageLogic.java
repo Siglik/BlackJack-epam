@@ -13,12 +13,23 @@ import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.MessageId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * contains methods that perform actions with messages
+ * 
+ * @author qqq175
+ *
+ */
 public class MessageLogic {
 	private static Logger log = LogManager.getLogger(MessageLogic.class);
 
-	public MessageLogic() {
-	}
-
+	/**
+	 * save message to database
+	 * 
+	 * @param gameId
+	 * @param sender
+	 * @param text
+	 * @return
+	 */
 	public MessageId saveNewMessage(GameId gameId, UserId sender, String text) {
 		Message message = new Message();
 		message.setGameId(gameId);

@@ -1,5 +1,11 @@
 package org.qqq175.blackjack.logic.blackjack.entity;
 
+/**
+ * Black jack dealer data class
+ * 
+ * @author qqq175
+ *
+ */
 public class Dealer {
 	private Hand hand;
 

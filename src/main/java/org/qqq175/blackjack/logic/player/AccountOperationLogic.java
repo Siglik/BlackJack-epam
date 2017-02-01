@@ -39,7 +39,25 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.id.AccountOperationId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * contains methods to perform account operations
+ * 
+ * @author qqq175
+ *
+ */
 public class AccountOperationLogic {
+	private static final String UNABLE_ACCOUNT_OPERATION = "Unable to perform account operation.";
+
+	private static final String UNABLE_ROLLBACK = "Unable to rollback.";
+
+	private static final String UNABLE_AUTOCOMMIT = "Unable to change autocommit state.";
+
+	private static final String UNABLE_TOTAL_OPERATIONS = "Unable to calc user's total operations";
+
+	private static final String UNABLE_OPERATIONS_LIST = "Unable to get user operations list.";
+
+	private static final String UNABLE_OPERATIONS_COUNT = "Unable to get operations count.";
+
 	private static Logger log = LogManager.getLogger(AccountOperationLogic.class);
 
 	private static final String CARD_NUM = "card number: ";
@@ -49,6 +67,12 @@ public class AccountOperationLogic {
 	private static final String REGEXP_MULTISPASE = "\\s{2,}";
 	private static final String NOT_DIGIT = "\\D";
 
+	/**
+	 * Possible account operation results
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	public enum Result {
 		OK("Ok"), NOT_ENOUGH_MONEY("Not enough money!"), BALANCE_ERROR("Unkown account balance error."), WRONG_DATA("Invalid data.");
 		private String message;
@@ -62,8 +86,19 @@ public class AccountOperationLogic {
 		}
 	}
 
+	/**
+	 * Make payment or withdrawal. Params must contain PARAMETER_PAYMENT_TYPE,
+	 * PARAMETER_PAYMENT_SUM, PARAMETER_PAYMENT_CARD_NUMBER,
+	 * PARAMETER_PAYMENT_CARDHOLDER.
+	 * 
+	 * @param params
+	 *            - request params map
+	 * @param userId
+	 * @return
+	 */
 	public Result doPayment(Map<String, String[]> params, UserId userId) {
 		Result result = null;
+		/* validate end extract params */
 		if (isValid(params)) {
 			AccountOperation oper = new AccountOperation();
 			oper.setType(Type.valueOf(params.get(PARAMETER_PAYMENT_TYPE)[0].toUpperCase()));
@@ -74,6 +109,7 @@ public class AccountOperationLogic {
 			oper.setComment(this.generatePaymentComment(card, cardHolder));
 
 			DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+			/* chack if have enough money */
 			if (oper.getType() == AccountOperation.Type.WITHDRAWAL) {
 				try {
 					User user = daoFactory.getUserDAO().findEntityById(userId);
@@ -82,11 +118,13 @@ public class AccountOperationLogic {
 					}
 				} catch (DAOException e2) {
 					result = Result.BALANCE_ERROR;
-					e2.printStackTrace();
+					log.error(UNABLE_ACCOUNT_OPERATION, e2);
 				}
 			}
+			/* if not error result - resume */
 			if (result == null) {
 				ConnectionWrapper conn = ConnectionPool.getInstance().retrieveConnection();
+				/* do transaction */
 				try {
 					conn.setAutoCommit(false);
 					UserDAO userDAO = daoFactory.getUserDAO();
@@ -100,23 +138,24 @@ public class AccountOperationLogic {
 
 					AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
 					AccountOperationId aoId = aoDAO.create(oper, conn);
-					conn.commit();
+
+					// check result and commit or roll back
 					if (aoId != null && balUpdated) {
 						conn.commit();
 						result = Result.OK;
 					} else {
 						conn.rollback();
 						result = Result.BALANCE_ERROR;
-						log.error("Unable to make game payment. " + oper.getComment() + " " + oper.getType() + " " + oper.getAmmount());
+						log.error(UNABLE_ACCOUNT_OPERATION + oper.getComment() + " " + oper.getType() + " " + oper.getAmmount());
 					}
 				} catch (SQLException | DAOException e) {
+					log.error(UNABLE_AUTOCOMMIT, e);
 					if (conn != null) {
 						try {
 							result = Result.BALANCE_ERROR;
 							conn.rollback();
 						} catch (SQLException e1) {
-							// TODO LOG
-							e1.printStackTrace();
+							log.error(UNABLE_ROLLBACK, e1);
 						}
 					}
 					e.printStackTrace();
@@ -125,8 +164,7 @@ public class AccountOperationLogic {
 						try {
 							conn.setAutoCommit(true);
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							log.error(UNABLE_AUTOCOMMIT, e);
 						}
 						conn.close();
 					}
@@ -154,7 +192,9 @@ public class AccountOperationLogic {
 			oper.setUserId(userId);
 			oper.setComment(comment);
 		}
-
+		/*
+		 * check if enough money on main and locked balance.
+		 */
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 		if (!back.equals(BigDecimal.ZERO) || !loss.equals(BigDecimal.ZERO)) {
 			try {
@@ -164,11 +204,13 @@ public class AccountOperationLogic {
 				}
 			} catch (DAOException e2) {
 				result = Result.BALANCE_ERROR;
-				e2.printStackTrace();
+				log.error(UNABLE_ACCOUNT_OPERATION, e2);
 			}
 		}
+		/* if not error result - resume */
 		if (result == null) {
 			ConnectionWrapper conn = ConnectionPool.getInstance().retrieveConnection();
+			/* do transaction */
 			try {
 				conn.setAutoCommit(false);
 				boolean balUpdated, balUnlocked, balDecreased, operOk;
@@ -195,23 +237,25 @@ public class AccountOperationLogic {
 				} else {
 					balDecreased = true;
 				}
+
+				// check result and commit or roll back
 				if (operOk && balUpdated && balUnlocked & balDecreased) {
 					conn.commit();
 					result = Result.OK;
 				} else {
 					conn.rollback();
 					result = Result.BALANCE_ERROR;
-					log.error("Unable to make game payment: " + comment);
+					log.error(UNABLE_ACCOUNT_OPERATION + comment);
 				}
 
 			} catch (SQLException | DAOException e) {
 				if (conn != null) {
+					log.error(UNABLE_AUTOCOMMIT, e);
 					try {
 						result = Result.BALANCE_ERROR;
 						conn.rollback();
 					} catch (SQLException e1) {
-						// TODO LOG
-						e1.printStackTrace();
+						log.error(UNABLE_ROLLBACK, e1);
 					}
 				}
 				e.printStackTrace();
@@ -220,8 +264,7 @@ public class AccountOperationLogic {
 					try {
 						conn.setAutoCommit(true);
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(UNABLE_AUTOCOMMIT, e);
 					}
 					conn.close();
 				}
@@ -234,6 +277,14 @@ public class AccountOperationLogic {
 		return result;
 	};
 
+	/**
+	 * Calc total user's operations of each Account operation type
+	 * 
+	 * @param id
+	 *            - user id
+	 * @return
+	 * @throws LogicException
+	 */
 	public Map<String, BigDecimal> calcTotals(UserId id) throws LogicException {
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
@@ -249,12 +300,18 @@ public class AccountOperationLogic {
 				}
 			}
 		} catch (DAOException e) {
-			throw new LogicException("Unable to calc user's total operations", e);
+			throw new LogicException(UNABLE_TOTAL_OPERATIONS, e);
 		}
 
 		return result;
 	}
 
+	/**
+	 * Calc total server operations of each Account operation type
+	 * 
+	 * @return
+	 * @throws LogicException
+	 */
 	public Map<String, BigDecimal> calcTotals() throws LogicException {
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
 		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
@@ -270,12 +327,23 @@ public class AccountOperationLogic {
 				}
 			}
 		} catch (DAOException e) {
-			throw new LogicException("Unable to calc user's total operations", e);
+			throw new LogicException(UNABLE_TOTAL_OPERATIONS, e);
 		}
 
 		return result;
 	}
 
+	/**
+	 * return user operations with pagination
+	 * 
+	 * @param userId
+	 * @param page
+	 *            - page to display
+	 * @param operationsPerPage
+	 *            - number of entries per page
+	 * @return
+	 * @throws LogicException
+	 */
 	public List<AccountOperation> findUserOperations(UserId userId, int page, int operationsPerPage) throws LogicException {
 		List<AccountOperation> result;
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
@@ -284,10 +352,28 @@ public class AccountOperationLogic {
 		try {
 			result = aoDAO.findUserOperationsLimit(userId, from, operationsPerPage);
 		} catch (DAOException e) {
-			throw new LogicException("Unable to get users list.", e);
+			throw new LogicException(UNABLE_OPERATIONS_LIST, e);
 		}
 
 		return result;
+	}
+
+	/**
+	 * count user operations count
+	 * 
+	 * @param id
+	 * @return
+	 * @throws LogicException
+	 */
+	public Long countOpers(UserId id) throws LogicException {
+		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
+		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
+
+		try {
+			return aoDAO.countOperations(id);
+		} catch (DAOException e) {
+			throw new LogicException(UNABLE_OPERATIONS_COUNT, e);
+		}
 	}
 
 	private String generatePaymentComment(String card, String cardHolder) {
@@ -309,6 +395,12 @@ public class AccountOperationLogic {
 		return sb.toString();
 	}
 
+	/**
+	 * validates request params
+	 * 
+	 * @param params
+	 * @return
+	 */
 	private boolean isValid(Map<String, String[]> params) {
 		return validateParameter(params, PARAMETER_PAYMENT_SUM, PATTERN_PAYMENT_SUM, true)
 				&& validateParameter(params, PARAMETER_PAYMENT_CARD_NUMBER, PATTERN_CARD, true)
@@ -319,6 +411,15 @@ public class AccountOperationLogic {
 				&& validateParameter(params, PARAMETER_PAYMENT_TYPE, PATTERN_PAYMENT_OPERATION, true);
 	}
 
+	/**
+	 * validate parameter by its pattern
+	 * 
+	 * @param params
+	 * @param parameter
+	 * @param pattern
+	 * @param isRequired
+	 * @return
+	 */
 	private boolean validateParameter(Map<String, String[]> params, String parameter, String pattern, boolean isRequired) {
 		boolean isValid = !isRequired;
 		if (params.containsKey(parameter)) {
@@ -336,16 +437,5 @@ public class AccountOperationLogic {
 			System.out.print(parameter + " is not valid");
 		}
 		return isValid;
-	}
-
-	public Long countOpers(UserId id) throws LogicException {
-		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
-		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
-
-		try {
-			return aoDAO.countOperations(id);
-		} catch (DAOException e) {
-			throw new LogicException("Unable to get operations count.", e);
-		}
 	}
 }

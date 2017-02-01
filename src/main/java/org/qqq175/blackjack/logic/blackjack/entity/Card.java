@@ -6,12 +6,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
+/**
+ * Playcard data class.
+ * 
+ * @author qqq175
+ *
+ */
 public class Card {
 	/**
 	 * contain all card types image locations.
 	 */
 	private static Map<Suit, Map<Rank, String>> imgPaths;
 	public final static String CARD_BACK;
+
 	/* init card image paths */
 	static {
 		String imgLocation = Settings.getInstance().getCardFolder();
@@ -40,10 +47,22 @@ public class Card {
 		this.rank = rank;
 	}
 
+	/**
+	 * playcard suits
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	public enum Suit {
 		CLUBS, DIAMONDS, HEARTS, SPADES;
 	}
 
+	/**
+	 * ranks suits
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	public enum Rank {
 		ACE(11), TWO(2), THREE(3), FOUR(4), FIVE(5), SIX(6), SEVEN(7), EIGHT(8), NINE(9), TEN(10), JACK(10), QUEEN(10), KING(10);
 

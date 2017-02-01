@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Playcard deck data class
+ * 
+ * @author qqq175
+ *
+ */
 public class Deck {
 	// deck is 52 cards, most popular is six-deck game (312 card)
 	private final static int ONE_DECK = 52;
@@ -17,12 +23,17 @@ public class Deck {
 	private ReentrantLock lock;
 
 	/**
-	 * creates standard six decks game
+	 * creates standard "six decks" Deck
 	 */
 	public Deck() {
 		this(6);
 	}
 
+	/**
+	 * creates Deck that contains 'deckCount' decks('deckCount'*52 cards)
+	 * 
+	 * @param decksCount
+	 */
 	public Deck(int decksCount) {
 		this.lock = new ReentrantLock();
 		this.decksCount = decksCount;
@@ -32,10 +43,16 @@ public class Deck {
 		Random rand = new Random();
 		int cardCount = decksCount * ONE_DECK;
 		rand.setSeed(System.currentTimeMillis());
-		// redeck random on 20-50% cards left
-		this.redeckOnLeft = (int) (cardCount * 0.5) - rand.nextInt((int) (cardCount * 0.3));
+		// redeck random on 30-50% cards left
+		this.redeckOnLeft = (int) (cardCount * 0.5) - rand.nextInt((int) (cardCount * 0.2));
 	}
 
+	/**
+	 * initialize and shuffle deck
+	 * 
+	 * @param decksCount
+	 * @return
+	 */
 	private static List<Card> initDeck(int decksCount) {
 		int cardCount = decksCount * ONE_DECK;
 		Random rand = new Random();
@@ -63,6 +80,10 @@ public class Deck {
 		return card;
 	}
 
+	/**
+	 * shuffle cards if 'redeck' value is reached, also shuffle if cards count
+	 * less than one deck(52), so for one deck game deck will be shuffled
+	 */
 	public void newRound() {
 		int cardsLeft = cards.size();
 		if (cardsLeft < ONE_DECK || cardsLeft < this.redeckOnLeft) {
@@ -70,6 +91,9 @@ public class Deck {
 		}
 	}
 
+	/**
+	 * reinit deck
+	 */
 	private void redeck() {
 		lock.lock();
 		this.cards = new ArrayDeque<>(Deck.initDeck(decksCount));

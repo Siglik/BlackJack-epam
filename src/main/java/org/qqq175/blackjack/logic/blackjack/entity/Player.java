@@ -6,6 +6,11 @@ import java.util.List;
 import org.qqq175.blackjack.logic.blackjack.GameStage;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * Player data class
+ * 
+ * @author qqq175
+ */
 public class Player {
 	private UserId userId;
 	private GameStage stage;
@@ -13,6 +18,14 @@ public class Player {
 	private boolean isActive;
 	private Hand activeHand = null;
 
+	/**
+	 * construct new player
+	 * 
+	 * @param userId
+	 *            - user's id
+	 * @param isActive
+	 *            - is player active (if it his turn to play)
+	 */
 	public Player(UserId userId, boolean isActive) {
 		this.userId = userId;
 		hands = new ArrayList<>();
@@ -26,6 +39,13 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Iterate user hands of given Stage. Found hand will be saved to
+	 * activeHand. If nothing found - next hand will be null
+	 * 
+	 * @param stage
+	 * @return true if next Hand found, else false
+	 */
 	public boolean nextHand(GameStage stage) {
 		int nextHandId = activeHand != null ? hands.indexOf(activeHand) + 1 : 0;
 		boolean foundNext = false;
@@ -58,6 +78,12 @@ public class Player {
 		return userId;
 	}
 
+	/**
+	 * add additional hand to player
+	 * 
+	 * @param hand
+	 * @return
+	 */
 	public boolean addHand(Hand hand) {
 		return hands.add(hand);
 	}
@@ -96,6 +122,12 @@ public class Player {
 		return stage;
 	}
 
+	/**
+	 * set new game stage, if new round(game stage is DEAL) - renicialize
+	 * player.
+	 * 
+	 * @param stage
+	 */
 	public void setStage(GameStage stage) {
 		if (stage == GameStage.DEAL) {
 			hands.clear();
@@ -112,6 +144,7 @@ public class Player {
 		this.stage = stage;
 	}
 
+	/** reset active hand to null */
 	public void resetActiveHand() {
 		if (activeHand != null) {
 			activeHand.setActive(false);
