@@ -12,14 +12,22 @@ import java.util.Properties;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
 import org.qqq175.blackjack.persistence.dao.impl.DAOFactoryImpl;
 
 /**
+ * Contains main application settings
+ * 
  * @author qqq175
  *
  */
 public class Settings {
+	private static final String UNEXPECTED_INTERRUPT = "Unexpected interrupt";
+
+	private static final String INITIALIZE_SETTINGS_FATAL = "Can't initialize application settings";
+
 	public static final boolean IS_DEBUG = true;
 
 	private static final String PROPS_DELIMETER = ";";
@@ -36,11 +44,14 @@ public class Settings {
 
 	private static AtomicReference<Settings> instance = new AtomicReference<>();;
 	private static Semaphore semaphore = new Semaphore(1);
+	private static Logger log = LogManager.getLogger(Settings.class);
 
-	/** Constructor */
+	/** 
+	*/
 	private Settings() {
 		this.DATABASE = new Database();
 		this.DAO_FACTORY = new DAOFactoryImpl();
+		// initialize setting from props file
 		Properties props = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		try (InputStream in = classLoader.getResourceAsStream(APP_PROPS_PATH);) {
@@ -48,7 +59,7 @@ public class Settings {
 				props.load(in);
 			}
 		} catch (IOException e) {
-			// LOG fatal
+			log.fatal(INITIALIZE_SETTINGS_FATAL, e);
 			throw new RuntimeException("Unable to read " + APP_PROPS_PATH);
 		}
 		PHOTO_FOLDER = props.getProperty("img.dir.avatar");
@@ -69,7 +80,7 @@ public class Settings {
 			try {
 				semaphore.acquire();
 			} catch (InterruptedException e) {
-				// TODO log
+				log.warn(UNEXPECTED_INTERRUPT, e);
 			}
 			instance.compareAndSet(null, new Settings());
 			semaphore.release();
@@ -102,6 +113,7 @@ public class Settings {
 					props.load(in);
 				}
 			} catch (IOException e) {
+				log.fatal(INITIALIZE_SETTINGS_FATAL, e);
 				throw new RuntimeException("Unable to read " + DBPROPS_PATH);
 			}
 

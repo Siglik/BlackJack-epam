@@ -18,13 +18,31 @@ import org.qqq175.blackjack.persistence.dao.util.SQLQueryManager;
 import org.qqq175.blackjack.persistence.entity.Entity;
 import org.qqq175.blackjack.persistence.entity.id.EntityId;
 
+/**
+ * Contains EntityDAO implementation for SQL(MySQL) database
+ * 
+ * @author qqq175
+ *
+ * @param <T>
+ * @param <I>
+ */
 public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> implements EntityDAO<T, I> {
+	private static final String UNABLE_OPERATION = "Unable to perform operation.";
+	private static final String UNABLE_EXTRACT_RESULT = "Unable to extract query result.";
+	private static final String UNABLE_PARSE_DATE = "Unable to parse date";
+	private static final String ZERO_ROWS_AFFECTED = "Unable to insert: 0 rows are affected.";
 	private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	private String tableName;
 	private int colCount;
 	protected ConnectionPool connPool;
 	protected SQLQueryManager sqlQuery;
 
+	/**
+	 * Construct entity with defined table name
+	 * 
+	 * @param tableName
+	 * @param colCount
+	 */
 	public EntityDAOImpl(String tableName, int colCount) {
 		this.tableName = tableName;
 		this.colCount = colCount;
@@ -34,9 +52,11 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 
 	@Override
 	public I create(T entity) throws DAOException {
+		/* find sql query for specific entity type */
 		String query = sqlQuery.getQuery("sql." + tableName + ".insert");
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+				/* prepare entity with specific entity type */
 				prepareWithEntity(prepStatment, entity);
 				int affectedRows = prepStatment.executeUpdate();
 				if (affectedRows > 0) {
@@ -48,17 +68,18 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 						return null;
 					}
 				} else {
-					throw new DAOException("Unable to insert: 0 rows are affected.");
+					throw new DAOException(ZERO_ROWS_AFFECTED);
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			throw new DAOException(UNABLE_OPERATION, e);
 		}
 	}
 
 	@Override
 	public List<T> findAll() throws DAOException {
 		String query = sqlQuery.getQuery("sql.entity.findAll");
+		/* prepare query string with specific entity type */
 		query = prepareQueryString(query);
 		return findMany(query, (s) -> {
 		});
@@ -67,21 +88,23 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	@Override
 	public T findEntityById(I id) throws DAOException {
 		String query = sqlQuery.getQuery("sql.entity.findBy.id");
+		/* prepare query string with specific entity type */
 		query = prepareQueryString(query);
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
 				prepareWithId(prepStatment, id);
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
-					return toDTO(resultSet);
+					return toEntity(resultSet);
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			throw new DAOException(UNABLE_OPERATION, e);
 		}
 	}
 
 	@Override
 	public boolean update(T entity) throws DAOException {
+		/* find sql query for specific entity type */
 		String query = sqlQuery.getQuery("sql." + tableName + ".update");
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
@@ -92,7 +115,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 					return true;
 			}
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			throw new DAOException(UNABLE_OPERATION, e);
 		}
 		return false;
 	}
@@ -100,6 +123,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	@Override
 	public boolean delete(I id) throws DAOException {
 		String query = sqlQuery.getQuery("sql.entity.deleteBy.id");
+		/* prepare query string with specific entity type */
 		query = prepareQueryString(query);
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
@@ -108,7 +132,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 				return prepStatment.executeUpdate() == 1;
 			}
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			throw new DAOException(UNABLE_OPERATION, e);
 		}
 	}
 
@@ -117,40 +141,57 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 		return delete(entity.getId());
 	}
 
-	private void prepareWithId(PreparedStatement prepStatment, I id) {
-		try {
-			prepStatment.setLong(1, id.getValue());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private void prepareWithId(PreparedStatement prepStatment, I id) throws SQLException {
+		prepStatment.setLong(1, id.getValue());
 	}
 
-	protected String prepareQueryString(String query) {
+	/**
+	 * Prepare query string(inser tabble and column names to query template)
+	 * 
+	 * @param queryTemplate
+	 *            - query template
+	 * @return
+	 */
+	String prepareQueryString(String queryTemplate) {
 		String id = sqlQuery.getQuery("sql." + tableName + ".id");
 		String columns = sqlQuery.getQuery("sql." + tableName + ".columns");
-		String result = query.replaceAll("\\{tableName\\}", tableName);
+		String result = queryTemplate.replaceAll("\\{tableName\\}", tableName);
 		result = result.replaceAll("\\{id\\}", id);
 		result = result.replaceAll("\\{columns\\}", columns);
 		return result;
 	}
 
-	protected abstract void prepareWithEntity(PreparedStatement prepStatment, T entity) throws DAOException;
-
-	protected List<T> findMany(String query, Preparator preparator) throws DAOException {
+	/**
+	 * Find list of entities of type T with some query. Its used Preparator
+	 * object (functional interface) to prepare statement for specific query.
+	 * 
+	 * @param query
+	 * @param preparator
+	 * @return
+	 * @throws DAOException
+	 */
+	List<T> findMany(String query, Preparator preparator) throws DAOException {
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
 				preparator.prepare(prepStatment);
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
-					return toDTOList(resultSet);
+					return toEntityList(resultSet);
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			throw new DAOException(UNABLE_OPERATION, e);
 		}
 	}
 
-	protected T toDTO(ResultSet resultSet) throws DAOException, SQLException {
+	/**
+	 * Extract one entity from Result set
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+	T toEntity(ResultSet resultSet) throws DAOException, SQLException {
 		if (resultSet.next()) {
 			return fillEntity(resultSet);
 		} else {
@@ -158,51 +199,98 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 		}
 	}
 
-	protected List<T> toDTOList(ResultSet resultSet) throws DAOException {
+	/**
+	 * Extract entities list from result set
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws DAOException
+	 */
+	List<T> toEntityList(ResultSet resultSet) throws DAOException {
 		List<T> resultList = new ArrayList<>();
 		try {
 			while (resultSet.next()) {
 				resultList.add(fillEntity(resultSet));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DAOException(UNABLE_EXTRACT_RESULT, e);
 		}
 		return resultList;
 	}
 
+	/**
+	 * prepare insert or update query. Must be implemented in sublcasses
+	 * 
+	 * @param prepStatment
+	 * @param entity
+	 * @throws DAOException
+	 */
+	protected abstract void prepareWithEntity(PreparedStatement prepStatment, T entity) throws DAOException;
+
+	/**
+	 * make specific id from long. Must be implemented in sublcasses
+	 * 
+	 * @param id
+	 * @return
+	 */
 	protected abstract I makeId(long id);
 
+	/**
+	 * Fill entity from result set. Must be implemented in sublcasses
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
 	protected abstract T fillEntity(ResultSet resultSet) throws DAOException, SQLException;
 
 	/**
 	 * @return the tableName
 	 */
-	protected String getTableName() {
+	String getTableName() {
 		return tableName;
 	}
 
 	/**
 	 * @return the sqlQuery
 	 */
-	protected SQLQueryManager getSqlQuery() {
+	SQLQueryManager getSqlQuery() {
 		return sqlQuery;
 	}
 
-	protected String dateToString(Date date) {
+	/**
+	 * covert java.util.Date to MySQL data string format
+	 * 
+	 * @param date
+	 * @return
+	 */
+	String dateToString(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		return sdf.format(date);
 	}
 
-	protected Date stringToDate(String string) throws DAOException {
+	/**
+	 * covert MySQL data string format to java.util.Date
+	 * 
+	 * @param string
+	 * @return
+	 * @throws DAOException
+	 */
+	Date stringToDate(String string) throws DAOException {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		try {
 			return sdf.parse(string);
 		} catch (ParseException e) {
-			throw new DAOException(e);
+			throw new DAOException(UNABLE_PARSE_DATE, e);
 		}
 	}
 
+	/**
+	 * Prepare prepared statement
+	 * 
+	 * @author qqq175
+	 */
 	@FunctionalInterface
 	interface Preparator {
 		void prepare(PreparedStatement ps) throws SQLException;

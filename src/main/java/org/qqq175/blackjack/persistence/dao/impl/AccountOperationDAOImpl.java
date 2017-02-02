@@ -15,7 +15,16 @@ import org.qqq175.blackjack.persistence.entity.AccountOperation.Type;
 import org.qqq175.blackjack.persistence.entity.id.AccountOperationId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * AccountOperationDAO implementation for MYSQL DB
+ * 
+ * @author qqq175
+ *
+ */
 public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, AccountOperationId> implements AccountOperationDAO {
+	private static final String ZERO_ROWS_AFFECTED = "Unable to insert: 0 rows are affected.";
+	private static final String UNABLE_OPER_COUNT = "Unable to get operations count";
+	private static final String UNABLE_SUM = "Unable to get operations sum";
 	private static final String TABLE_NAME = "account_operation";
 	private static final int COLUMN_COUNT = 6;
 
@@ -41,7 +50,7 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 					return null;
 				}
 			} else {
-				throw new DAOException("Unable to insert: 0 rows are affected.");
+				throw new DAOException(ZERO_ROWS_AFFECTED);
 			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
@@ -50,8 +59,6 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 
 	@Override
 	protected void prepareWithEntity(PreparedStatement prepStatment, AccountOperation entity) throws DAOException {
-		// INSERT INTO account_operation (user_id, ammount, type, time, comment)
-		// VALUES (?, ?, ?, ?, ?)
 		try {
 			prepStatment.setLong(1, entity.getUserId().getValue());
 			prepStatment.setBigDecimal(2, entity.getAmmount());
@@ -87,6 +94,7 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 	public BigDecimal calcTotal(Type type) throws DAOException {
 		BigDecimal total = null;
 		String query = sqlQuery.getQuery("sql.account_operation.total");
+		/* prepare query string with account operation entity */
 		query = prepareQueryString(query);
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
@@ -98,7 +106,7 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException("Unable to get operations sum", e);
+			throw new DAOException(UNABLE_SUM, e);
 		}
 
 		return total;
@@ -108,6 +116,7 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 	public BigDecimal calcTotal(Type type, UserId userId) throws DAOException {
 		BigDecimal total = null;
 		String query = sqlQuery.getQuery("sql.account_operation.total.user");
+		/* prepare query string with account operation entity */
 		query = prepareQueryString(query);
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
@@ -120,14 +129,14 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException("Unable to get operations sum", e);
+			throw new DAOException(UNABLE_SUM, e);
 		}
 
 		return total;
 	}
 
 	@Override
-	public List<AccountOperation> findUserOperationsLimit(UserId userId, long from, int count) throws DAOException {
+	public List<AccountOperation> findUserOperationsPaginated(UserId userId, long from, int count) throws DAOException {
 		String query = sqlQuery.getQuery("sql.account_operation.findByUser.limit");
 		query = prepareQueryString(query);
 		return this.findMany(query, (ps) -> {
@@ -151,7 +160,7 @@ public class AccountOperationDAOImpl extends EntityDAOImpl<AccountOperation, Acc
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException("Unable to get user count", e);
+			throw new DAOException(UNABLE_OPER_COUNT, e);
 		}
 
 		return count;

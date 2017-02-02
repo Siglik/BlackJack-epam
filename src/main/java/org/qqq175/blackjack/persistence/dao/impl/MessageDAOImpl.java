@@ -12,6 +12,12 @@ import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.MessageId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * MessageDAO implementation for MYSQL DB
+ * 
+ * @author qqq175
+ *
+ */
 public class MessageDAOImpl extends EntityDAOImpl<Message, MessageId> implements MessageDAO {
 	private static final String TABLE_NAME = "message";
 	private static final int COLUMN_COUNT = 5;
@@ -26,6 +32,7 @@ public class MessageDAOImpl extends EntityDAOImpl<Message, MessageId> implements
 	@Override
 	public List<Message> findGameMessages(GameId gameId) throws DAOException {
 		String query = sqlQuery.getQuery("sql.message.find.byGame");
+
 		return this.findMany(query, (ps) -> {
 			ps.setLong(1, gameId.getValue());
 		});
@@ -34,6 +41,7 @@ public class MessageDAOImpl extends EntityDAOImpl<Message, MessageId> implements
 	@Override
 	public List<Message> findUserMessages(UserId userId) throws DAOException {
 		String query = sqlQuery.getQuery("sql.message.find.byUser");
+
 		return this.findMany(query, (ps) -> {
 			ps.setLong(1, userId.getValue());
 		});
@@ -41,9 +49,6 @@ public class MessageDAOImpl extends EntityDAOImpl<Message, MessageId> implements
 
 	@Override
 	protected void prepareWithEntity(PreparedStatement prepStatment, Message entity) throws DAOException {
-		/*
-		 * INSERT INTO message (game_id, user_id, text, time) VALUES (?,?,?,?)
-		 */
 		try {
 			prepStatment.setLong(1, entity.getGameId().getValue());
 			prepStatment.setLong(2, entity.getUserId().getValue());

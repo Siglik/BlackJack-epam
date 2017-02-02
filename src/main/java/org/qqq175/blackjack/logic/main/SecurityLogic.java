@@ -8,11 +8,13 @@ import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.exception.LogicException;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
+/**
+ * Contains methods to calculate passowrd hash, perform salt
+ * 
+ * @author qqq175
+ *
+ */
 public class SecurityLogic {
-
-	public SecurityLogic() {
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
 	 * calc password sha-256 hash
@@ -39,6 +41,8 @@ public class SecurityLogic {
 	}
 
 	/**
+	 * salt password (add salt)
+	 * 
 	 * @param password
 	 * @return
 	 */
@@ -47,6 +51,8 @@ public class SecurityLogic {
 	}
 
 	/**
+	 * addition salt unique for each email
+	 * 
 	 * @param password
 	 * @return
 	 */

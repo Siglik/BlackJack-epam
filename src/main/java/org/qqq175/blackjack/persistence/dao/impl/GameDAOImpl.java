@@ -11,12 +11,18 @@ import org.qqq175.blackjack.persistence.entity.Game;
 import org.qqq175.blackjack.persistence.entity.id.GameId;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * GameDAO implementation for MYSQL DB
+ * 
+ * @author qqq175
+ *
+ */
 public class GameDAOImpl extends EntityDAOImpl<Game, GameId> implements GameDAO {
 	private static final String TABLE_NAME = "game";
 	private static final int COLUMN_COUNT = 3;
 
-	private static final String EXCEPTION_MESSAGE_PREPARE = "Exception in " + GameDAOImpl.class.getName() + " at preparing query.";
-	private static final String EXCEPTION_MESSAGE_FILL = "Exception in " + GameDAOImpl.class.getName() + " at reading query result.";
+	private static final String EXCEPTION_MESSAGE_PREPARE = "Exception at preparing query.";
+	private static final String EXCEPTION_MESSAGE_FILL = "Exception at reading query result.";
 
 	public GameDAOImpl() {
 		super(TABLE_NAME, COLUMN_COUNT);
@@ -24,7 +30,6 @@ public class GameDAOImpl extends EntityDAOImpl<Game, GameId> implements GameDAO 
 
 	@Override
 	protected void prepareWithEntity(PreparedStatement prepStatment, Game entity) throws DAOException {
-		// INSERT INTO game (user_id) VALUES (?)
 		try {
 			prepStatment.setLong(1, entity.getUserId().getValue());
 		} catch (SQLException e) {

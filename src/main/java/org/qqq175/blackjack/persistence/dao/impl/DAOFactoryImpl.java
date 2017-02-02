@@ -8,10 +8,25 @@ import org.qqq175.blackjack.persistence.dao.MessageDAO;
 import org.qqq175.blackjack.persistence.dao.UserDAO;
 import org.qqq175.blackjack.persistence.dao.UserstatDAO;
 
+/**
+ * MySQL daoFactory imolementation
+ * 
+ * @author qqq175
+ *
+ */
 public class DAOFactoryImpl implements DAOFactory {
+	/**
+	 * supported entity types
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	enum DAOType {
-		USER(new UserDAOImpl()), USERSTAT(new UserstatDAOImpl()), GAME(new GameDAOImpl()), MESSAGE(
-				new MessageDAOImpl()), ACCOUNT_OPERATION(new AccountOperationDAOImpl());
+		USER(new UserDAOImpl()), 
+		USERSTAT(new UserstatDAOImpl()), 
+		GAME(new GameDAOImpl()), 
+		MESSAGE(new MessageDAOImpl()), 
+		ACCOUNT_OPERATION(new AccountOperationDAOImpl());
 
 		private EntityDAO<?, ?> dao;
 

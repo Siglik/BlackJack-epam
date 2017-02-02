@@ -11,13 +11,14 @@ import static org.qqq175.blackjack.StringConstant.PATTERN_EMAIL;
 import static org.qqq175.blackjack.StringConstant.PATTERN_NAME;
 import static org.qqq175.blackjack.StringConstant.PATTERN_PASSWORD;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.Part;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.persistence.dao.DAOFactory;
 import org.qqq175.blackjack.persistence.dao.util.PhotoManager;
@@ -26,7 +27,20 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.Userstat;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * COntains method for users registration
+ * 
+ * @author qqq175
+ */
 public class RegisterLogic {
+	private static Logger log = LogManager.getLogger(RegisterLogic.class);
+
+	/**
+	 * possible registration result
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	public enum Result {
 		OK("Ok"), ALREADY_EXIST("This email is already used!"), REGISTRATION_ERROR("Unkown registration error."), WRONG_DATA(
 				"Please enter valid data.");
@@ -41,10 +55,17 @@ public class RegisterLogic {
 		}
 	}
 
+	/**
+	 * Create new user and save to database
+	 * 
+	 * @param params
+	 *            - request params map
+	 * @param part
+	 * @return
+	 */
 	public Result registerUser(Map<String, String[]> params, Part part) {
 		Result result;
 		UserId userId = null;
-		logParams(params);
 		if (isValid(params)) {
 			try {
 				if (isEmailAvaliable(params.get(PARAMETER_EMAIL)[0])) {
@@ -55,8 +76,7 @@ public class RegisterLogic {
 						result = Result.OK;
 					} catch (DAOException e) {
 						result = Result.REGISTRATION_ERROR;
-						// TODO log
-						e.printStackTrace();
+						log.error(Result.REGISTRATION_ERROR.getMessage(), e);
 					}
 					// try to save photo, if unable - register anyway
 					if (userId != null && part != null) {
@@ -68,7 +88,7 @@ public class RegisterLogic {
 				}
 			} catch (DAOException e) {
 				result = Result.REGISTRATION_ERROR;
-				// TODO log
+				log.error(Result.REGISTRATION_ERROR.getMessage(), e);
 				e.printStackTrace();
 			}
 		} else {
@@ -78,11 +98,26 @@ public class RegisterLogic {
 		return result;
 	};
 
+	/**
+	 * check if email already registered
+	 * 
+	 * @param email
+	 * @return
+	 * @throws DAOException
+	 */
 	private boolean isEmailAvaliable(String email) throws DAOException {
 		User user = Settings.getInstance().getDaoFactory().getUserDAO().findUser(email);
 		return user == null;
 	}
 
+	/**
+	 * saves user to database
+	 * 
+	 * @param user
+	 * @return id of saved user
+	 * @throws UnsupportedOperationException
+	 * @throws DAOException
+	 */
 	private UserId saveUserInDatabase(User user) throws UnsupportedOperationException, DAOException {
 
 		DAOFactory daoFactory = Settings.getInstance().getDaoFactory();
@@ -97,6 +132,12 @@ public class RegisterLogic {
 		return userId;
 	}
 
+	/**
+	 * create new user and fill from request params
+	 * 
+	 * @param params
+	 * @return
+	 */
 	private User createNewUser(Map<String, String[]> params) {
 		User user = new User();
 
@@ -124,6 +165,12 @@ public class RegisterLogic {
 		return user;
 	}
 
+	/**
+	 * validate registration request params
+	 * 
+	 * @param params
+	 * @return
+	 */
 	private boolean isValid(Map<String, String[]> params) {
 		return validatePasswords(params) && validateParameter(params, PARAMETER_EMAIL, PATTERN_EMAIL, true)
 				&& validateParameter(params, PARAMETER_FIRST_NAME, PATTERN_NAME, true)
@@ -131,19 +178,21 @@ public class RegisterLogic {
 				&& validateParameter(params, PARAMETER_DISPLAY_NAME, PATTERN_DISPLAY_NAME, false);
 	}
 
-	private void logParams(Map<String, String[]> params) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("\n{");
-		for (String key : params.keySet()) {
-			sb.append(key + "=");
-			sb.append(Arrays.toString(params.get(key)));
-			sb.append(", ");
-		}
-		sb.append("}\n");
-	}
-
+	/**
+	 * validate request parameter using regex
+	 * 
+	 * @param params
+	 *            - request params map
+	 * @param parameter
+	 *            - parameter name
+	 * @param pattern
+	 *            - regex pattern
+	 * @param isRequired
+	 *            - is parameter required
+	 * @return
+	 */
 	private boolean validateParameter(Map<String, String[]> params, String parameter, String pattern, boolean isRequired) {
-		boolean isValid = false;
+		boolean isValid = !isRequired;
 		if (params.containsKey(parameter)) {
 			String[] values = params.get(parameter);
 			if (values.length == 1) {
@@ -151,22 +200,19 @@ public class RegisterLogic {
 					Pattern ptn = Pattern.compile(pattern);
 					Matcher matcher = ptn.matcher(values[0]);
 					isValid = matcher.matches();
-				} else {
-					isValid = !isRequired;
 				}
-			} else {
-				isValid = !isRequired;
 			}
-		} else {
-			isValid = !isRequired;
 		}
 
-		if (!isValid) {
-			System.out.print(parameter + " is not valid");
-		}
 		return isValid;
 	}
 
+	/**
+	 * validate password and password repeat
+	 * 
+	 * @param params
+	 * @return
+	 */
 	private boolean validatePasswords(Map<String, String[]> params) {
 		boolean isPassValid = false, isValid = false;
 		String password = null;

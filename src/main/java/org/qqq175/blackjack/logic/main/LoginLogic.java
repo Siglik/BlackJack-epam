@@ -17,18 +17,26 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.pool.UserPool;
 
 /**
+ * Login logic methods
+ * 
  * @author qqq175
  *
  */
 public class LoginLogic {
 	private static Logger log = LogManager.getLogger(LoginLogic.class);
 
+	/**
+	 * avaliable login results
+	 * 
+	 * @author qqq175
+	 *
+	 */
 	public enum Result {
 		OK, NOTFOUND, UNACTIVE, INUSE;
 	}
 
 	/**
-	 * If user and pass is right return true, else return false
+	 * If user and pass is match return true, else return false
 	 * 
 	 * @param login
 	 * @param passwordHash

@@ -350,7 +350,7 @@ public class AccountOperationLogic {
 		AccountOperationDAO aoDAO = daoFactory.getAccountOperationDAO();
 		int from = (page - 1) * operationsPerPage;
 		try {
-			result = aoDAO.findUserOperationsLimit(userId, from, operationsPerPage);
+			result = aoDAO.findUserOperationsPaginated(userId, from, operationsPerPage);
 		} catch (DAOException e) {
 			throw new LogicException(UNABLE_OPERATIONS_LIST, e);
 		}

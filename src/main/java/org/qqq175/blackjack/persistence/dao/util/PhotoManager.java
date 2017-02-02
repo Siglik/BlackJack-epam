@@ -10,6 +10,12 @@ import javax.servlet.http.Part;
 import org.qqq175.blackjack.StringConstant;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * Contains methods to find or save user's avatars
+ * 
+ * @author qqq175
+ *
+ */
 public class PhotoManager {
 
 	public enum Result {
@@ -25,6 +31,12 @@ public class PhotoManager {
 		}
 	}
 
+	/**
+	 * find user's photo path by user id
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	public String findPhotoRelativePath(UserId userId) {
 		Settings settings = Settings.getInstance();
 		String photoDirPath = settings.getRealPath() + settings.getPhotoFolder() + File.separator;
@@ -44,6 +56,13 @@ public class PhotoManager {
 		return photoFilePath;
 	}
 
+	/**
+	 * Upload and save user's avatar
+	 * 
+	 * @param part
+	 * @param userId
+	 * @return
+	 */
 	public Result uploadPhoto(Part part, UserId userId) {
 		Result result;
 
@@ -63,10 +82,14 @@ public class PhotoManager {
 			result = Result.WRONG_FILETYPE;
 		}
 
-		// System.out.println(result);
 		return result;
 	}
 
+	/**
+	 * delete user's photo
+	 * 
+	 * @param photoFilePath
+	 */
 	private void deletePhoto(String photoFilePath) {
 		for (String extension : Settings.getInstance().getPhotoExtensions()) {
 			File photo = new File(photoFilePath + extension);
@@ -76,6 +99,13 @@ public class PhotoManager {
 		}
 	}
 
+	/**
+	 * Extract uploaded file extension and return it if supported? else return
+	 * an empty string
+	 * 
+	 * @param part
+	 * @return
+	 */
 	private String getFileExtension(Part part) {
 		final String HEADER = "content-disposition";
 		final String PARAMETER = "filename";
@@ -86,11 +116,13 @@ public class PhotoManager {
 		String partHeader = part.getHeader(HEADER);
 		String fileName = "";
 
+		// extract file name
 		for (String content : partHeader.split(PARAMS_DELIMETER)) {
 			if (content.trim().startsWith(PARAMETER)) {
 				fileName = content.substring(content.indexOf(VALUE_DELIMETER) + 1).trim().replace(QUOTE, "");
 			}
 		}
+		// try to find file supported extension
 		Pattern pattern = Pattern.compile(StringConstant.PATTERN_PHOTO_EXTENSION);
 		Matcher match = pattern.matcher(fileName.toLowerCase());
 		if (match.find()) {

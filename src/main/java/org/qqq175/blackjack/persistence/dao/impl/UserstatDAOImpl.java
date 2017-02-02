@@ -10,6 +10,12 @@ import org.qqq175.blackjack.persistence.dao.UserstatDAO;
 import org.qqq175.blackjack.persistence.entity.Userstat;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * implementation for MYSQL DB
+ * 
+ * @author qqq175
+ *
+ */
 public class UserstatDAOImpl extends EntityDAOImpl<Userstat, UserId> implements UserstatDAO {
 	private static final String TABLE_NAME = "userstat";
 	private static final int COLUMN_COUNT = 5;
@@ -26,6 +32,7 @@ public class UserstatDAOImpl extends EntityDAOImpl<Userstat, UserId> implements 
 		String query = sqlQuery.getQuery("sql.userstat.insert");
 		try (ConnectionWrapper connection = connPool.retrieveConnection()) {
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
+				/* prepare entity with Userstat entity */
 				prepareWithEntity(prepStatment, entity);
 				int affectedRows = prepStatment.executeUpdate();
 				if (affectedRows > 0) {

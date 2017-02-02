@@ -3,12 +3,20 @@ package org.qqq175.blackjack.logic.main;
 import org.qqq175.blackjack.persistence.dao.util.JSPPathManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
+/**
+ * Index action logic methods
+ * 
+ * @author qqq175
+ *
+ */
 public class IndexLogic {
 
-	public IndexLogic() {
-		// TODO Auto-generated constructor stub
-	}
-
+	/**
+	 * return index page path according to users type
+	 * 
+	 * @param user
+	 * @return
+	 */
 	public String definePathByUser(User user) {
 		String result = null;
 		if (user != null) {

@@ -13,7 +13,14 @@ import org.qqq175.blackjack.persistence.entity.User;
 import org.qqq175.blackjack.persistence.entity.User.Type;
 import org.qqq175.blackjack.persistence.entity.id.UserId;
 
+/**
+ * UserDAO implementation for MYSQL DB
+ * 
+ * @author qqq175
+ *
+ */
 public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO {
+	private static final String UNABLE_USER_COUNT = "Unable to get user count";
 	private static final String TABLE_NAME = "user";
 	private static final int COLUMN_COUNT = 12;
 
@@ -56,7 +63,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 				prepStatment.setString(1, email.toLowerCase());
 				prepStatment.setString(2, password);
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
-					return toDTO(resultSet);
+					return toEntity(resultSet);
 				}
 			}
 		} catch (SQLException e) {
@@ -72,7 +79,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 				prepStatment.setString(1, email.toLowerCase());
 				prepStatment.setString(2, passwordHash);
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
-					return toDTO(resultSet);
+					return toEntity(resultSet);
 				}
 			}
 		} catch (SQLException e) {
@@ -88,7 +95,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 			try (PreparedStatement prepStatment = connection.prepareStatement(query)) {
 				prepStatment.setString(1, email.toLowerCase());
 				try (ResultSet resultSet = prepStatment.executeQuery()) {
-					return toDTO(resultSet);
+					return toEntity(resultSet);
 				}
 			}
 		} catch (SQLException e) {
@@ -261,9 +268,10 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 	}
 
 	@Override
-	public List<User> findAllLimit(long from, int count) throws DAOException {
+	public List<User> findAllPaginated(long from, int count) throws DAOException {
 		String query = sqlQuery.getQuery("sql.user.findAll.limit");
 		query = prepareQueryString(query);
+
 		return this.findMany(query, (ps) -> {
 			ps.setLong(1, from);
 			ps.setInt(2, count);
@@ -284,7 +292,7 @@ public class UserDAOImpl extends EntityDAOImpl<User, UserId> implements UserDAO 
 				}
 			}
 		} catch (SQLException e) {
-			throw new DAOException("Unable to get user count", e);
+			throw new DAOException(UNABLE_USER_COUNT, e);
 		}
 
 		return count;

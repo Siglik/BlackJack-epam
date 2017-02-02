@@ -28,7 +28,7 @@ public class PlayersListLogic {
 		UserDAO userDAO = daoFactory.getUserDAO();
 		int from = (page - 1) * usersPerPage;
 		try {
-			result = userDAO.findAllLimit(from, usersPerPage);
+			result = userDAO.findAllPaginated(from, usersPerPage);
 		} catch (DAOException e) {
 			throw new LogicException("Unable to get users list.", e);
 		}
