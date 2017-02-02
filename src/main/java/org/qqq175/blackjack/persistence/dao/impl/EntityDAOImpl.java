@@ -219,7 +219,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	}
 
 	/**
-	 * prepare insert or update query. Must be implemented in sublcasses
+	 * prepare insert or update query.
 	 * 
 	 * @param prepStatment
 	 * @param entity
@@ -228,7 +228,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	protected abstract void prepareWithEntity(PreparedStatement prepStatment, T entity) throws DAOException;
 
 	/**
-	 * make specific id from long. Must be implemented in sublcasses
+	 * make specific id from long.
 	 * 
 	 * @param id
 	 * @return
@@ -236,7 +236,7 @@ public abstract class EntityDAOImpl<T extends Entity<I>, I extends EntityId> imp
 	protected abstract I makeId(long id);
 
 	/**
-	 * Fill entity from result set. Must be implemented in sublcasses
+	 * Fill entity from result set.
 	 * 
 	 * @param resultSet
 	 * @return

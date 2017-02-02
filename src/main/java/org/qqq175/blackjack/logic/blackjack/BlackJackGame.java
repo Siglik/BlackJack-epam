@@ -21,6 +21,7 @@ import org.qqq175.blackjack.pool.GamePool;
 
 /**
  * Contains game state and main game logic
+ * 
  * @author qqq175
  */
 public class BlackJackGame {
@@ -41,8 +42,10 @@ public class BlackJackGame {
 
 	/**
 	 * create standard 6 deck multiplayer game
+	 * 
 	 * @param gameId
-	 * @param creator - id of user that created game
+	 * @param creator
+	 *            - id of user that created game
 	 */
 	private BlackJackGame(GameId gameId, User creator) {
 		this(gameId, 6, MAX_PLAYERS, creator);
@@ -50,21 +53,28 @@ public class BlackJackGame {
 
 	/**
 	 * create generic 6 deck game
+	 * 
 	 * @param gameId
-	 * @param creator - user that created game
-	 * @param maxPlayers - max game players
+	 * @param creator
+	 *            - user that created game
+	 * @param maxPlayers
+	 *            - max game players
 	 */
 	private BlackJackGame(GameId gameId, User creator, int maxPlayers) {
-		//max players can't be greater than MAX_PLAYERS constant
+		// max players can't be greater than MAX_PLAYERS constant
 		this(gameId, 6, maxPlayers <= MAX_PLAYERS ? maxPlayers : MAX_PLAYERS, creator);
 	}
 
 	/**
 	 * create generic game
-	 * @param gameId 
-	 * @param decksCount - deck count
-	 * @param maxPlayers  - max game players
-	 * @param creator - id of user that created game
+	 * 
+	 * @param gameId
+	 * @param decksCount
+	 *            - deck count
+	 * @param maxPlayers
+	 *            - max game players
+	 * @param creator
+	 *            - id of user that created game
 	 */
 	private BlackJackGame(GameId gameId, int decksCount, int maxPlayers, User creator) {
 		this.id = gameId;
@@ -73,7 +83,7 @@ public class BlackJackGame {
 
 		this.players = new CopyOnWriteArrayList<>();
 		this.leavingPlayers = new CopyOnWriteArrayList<>();
-		
+
 		Player player = new Player(creator.getId(), true);
 		this.players.add(player);
 		this.activePlayer = null;
@@ -85,9 +95,12 @@ public class BlackJackGame {
 
 	/**
 	 * create generic 6 deck game
+	 * 
 	 * @param gameId
-	 * @param creator - user that created game
-	 * @param maxPlayers - max game players
+	 * @param creator
+	 *            - user that created game
+	 * @param maxPlayers
+	 *            - max game players
 	 * @return
 	 */
 	public static BlackJackGame createGame(GameId gameId, User creator, int maxPlayers) {
@@ -95,11 +108,13 @@ public class BlackJackGame {
 		instance.nextStage();
 		return instance;
 	}
-	
+
 	/**
 	 * create standard 6 deck multiplayer game
+	 * 
 	 * @param gameId
-	 * @param creator - id of user that created game
+	 * @param creator
+	 *            - id of user that created game
 	 */
 	public static BlackJackGame createGame(GameId gameId, User creator) {
 		BlackJackGame instance = new BlackJackGame(gameId, creator);
@@ -109,6 +124,7 @@ public class BlackJackGame {
 
 	/**
 	 * iterate hands to next. (with hand state equals game state)
+	 * 
 	 * @param stage
 	 * @return next hand, or null if not found
 	 */
@@ -133,6 +149,7 @@ public class BlackJackGame {
 
 	/**
 	 * iterate players to next. (with player state equals game state)
+	 * 
 	 * @param stage
 	 * @return next player, or null if not found
 	 */
@@ -168,9 +185,11 @@ public class BlackJackGame {
 
 	/**
 	 * game action - hit.
+	 * 
 	 * @param user
-	 * @throws GameActionDeniedException - thrown if user not allowed perform this action
-	 *  because of some reason
+	 * @throws GameActionDeniedException
+	 *             - thrown if user not allowed perform this action because of
+	 *             some reason
 	 */
 	public void hit(User user) throws GameActionDeniedException {
 		/*
@@ -198,11 +217,12 @@ public class BlackJackGame {
 	}
 
 	/**
-	 * Game action - double.
-	 * Double hand and stay
+	 * Game action - double. Double hand and stay
+	 * 
 	 * @param user
-	 * @throws GameActionDeniedException - thrown if user not allowed perform this action
-	 *  because of some reason
+	 * @throws GameActionDeniedException
+	 *             - thrown if user not allowed perform this action because of
+	 *             some reason
 	 */
 	public void doubleBet(User user) throws GameActionDeniedException {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
@@ -225,9 +245,11 @@ public class BlackJackGame {
 
 	/**
 	 * Game action - split.
+	 * 
 	 * @param user
-	 * @throws GameActionDeniedException - thrown if user not allowed perform this action
-	 *  because of some reason
+	 * @throws GameActionDeniedException
+	 *             - thrown if user not allowed perform this action because of
+	 *             some reason
 	 */
 	public void split(User user) throws GameActionDeniedException {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
@@ -251,11 +273,13 @@ public class BlackJackGame {
 	}
 
 	/**
-	 * Game action - surrender.
-	 * after surrender hand wait for game end to get money back
+	 * Game action - surrender. after surrender hand wait for game end to get
+	 * money back
+	 * 
 	 * @param user
-	 * @throws GameActionDeniedException - thrown if user not allowed perform this action
-	 *  because of some reason
+	 * @throws GameActionDeniedException
+	 *             - thrown if user not allowed perform this action because of
+	 *             some reason
 	 */
 	public void surrender(User user) throws GameActionDeniedException {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
@@ -279,10 +303,13 @@ public class BlackJackGame {
 
 	/**
 	 * Game action - deal.
-	 * @param player
-	 * @param bid - bid size
-	 * @throws GameActionDeniedException - thrown if user not allowed perform this action
-	 *  because of some reason
+	 * 
+	 * @param user
+	 * @param bid
+	 *            - bid size
+	 * @throws GameActionDeniedException
+	 *             - thrown if user not allowed perform this action because of
+	 *             some reason
 	 */
 	public void deal(User user, BigDecimal bid) throws GameActionDeniedException {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
@@ -306,9 +333,11 @@ public class BlackJackGame {
 
 	/**
 	 * Game action - insurance.
+	 * 
 	 * @param user
-	 * @throws GameActionDeniedException - thrown if user not allowed perform this action
-	 *  because of some reason
+	 * @throws GameActionDeniedException
+	 *             - thrown if user not allowed perform this action because of
+	 *             some reason
 	 */
 	public void insurance(User user) throws GameActionDeniedException {
 		if (activePlayer != null && user.getId().equals(activePlayer.getUserId())) {
@@ -348,6 +377,7 @@ public class BlackJackGame {
 
 	/**
 	 * Try to join user into a game
+	 * 
 	 * @param user
 	 * @return
 	 */
@@ -372,6 +402,7 @@ public class BlackJackGame {
 
 	/**
 	 * Leave user from game.
+	 * 
 	 * @param user
 	 */
 	public void leave(User user) {
@@ -422,8 +453,8 @@ public class BlackJackGame {
 	}
 
 	/**
-	 * Change game state to next, and perform all necessary operations (leave, join, pay out, 
-	 * calculate result, dealer play, etc.)
+	 * Change game state to next, and perform all necessary operations (leave,
+	 * join, pay out, calculate result, dealer play, etc.)
 	 */
 	private void nextStage() {
 
@@ -438,8 +469,11 @@ public class BlackJackGame {
 		}
 
 		GameStage newStage = gameStage = gameStage.nextState();
-		
-		/* next stage active Players. On game stage DEAL activete UNACTIVE players */
+
+		/*
+		 * next stage active Players. On game stage DEAL activete UNACTIVE
+		 * players
+		 */
 		for (Player player : players) {
 			GameStage plStage = player.getStage();
 			if ((plStage != GameStage.UNACTIVE && plStage.compareTo(gameStage) < 0) || gameStage == GameStage.DEAL) {
@@ -498,7 +532,7 @@ public class BlackJackGame {
 				GamePool.getInstance().remove(player.getUserId(), this);
 			}
 			leavingPlayers.clear();
-			/*next stage if is not empty */
+			/* next stage if is not empty */
 			lock.lock();
 			if (players.size() > 0) {
 				lock.unlock();
@@ -553,7 +587,7 @@ public class BlackJackGame {
 	public Deck getDeck() {
 		return deck;
 	}
-	
+
 	/**
 	 * @return copy of players list
 	 */
@@ -568,6 +602,7 @@ public class BlackJackGame {
 
 	/**
 	 * return count of available to enter palyers slots
+	 * 
 	 * @return
 	 */
 	public int getFreeSlots() {
@@ -584,6 +619,7 @@ public class BlackJackGame {
 
 	/**
 	 * Check if user already in game
+	 * 
 	 * @param user
 	 * @return
 	 */
@@ -593,6 +629,7 @@ public class BlackJackGame {
 
 	/**
 	 * find user in players list and return id
+	 * 
 	 * @param userId
 	 * @return
 	 */

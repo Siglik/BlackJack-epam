@@ -101,7 +101,7 @@ public class GameLogic {
 						result = true;
 					}
 				} catch (DAOException e) {
-					log.error(GAME_ACTION_ERROR + e.getMessage(),e);
+					log.error(GAME_ACTION_ERROR + e.getMessage(), e);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ public class GameLogic {
 					result = true;
 				}
 			} catch (DAOException e) {
-				log.error(GAME_ACTION_ERROR + e.getMessage(),e);
+				log.error(GAME_ACTION_ERROR + e.getMessage(), e);
 				e.printStackTrace();
 
 			}
@@ -176,7 +176,7 @@ public class GameLogic {
 					result = true;
 				}
 			} catch (DAOException e) {
-				log.error(GAME_ACTION_ERROR + e.getMessage(),e);
+				log.error(GAME_ACTION_ERROR + e.getMessage(), e);
 				e.printStackTrace();
 			}
 		}
@@ -211,7 +211,7 @@ public class GameLogic {
 					result = true;
 				}
 			} catch (DAOException e) {
-				log.error(GAME_ACTION_ERROR + e.getMessage(),e);
+				log.error(GAME_ACTION_ERROR + e.getMessage(), e);
 				e.printStackTrace();
 			}
 		}
@@ -220,8 +220,8 @@ public class GameLogic {
 	}
 
 	/**
-	 * Try to perform SURRENDER game action for active Hand. If success return true, else -
-	 * false. 
+	 * Try to perform SURRENDER game action for active Hand. If success return
+	 * true, else - false.
 	 * 
 	 * @param player
 	 * @return
@@ -246,10 +246,13 @@ public class GameLogic {
 	}
 
 	/**
-	 * Try to perform SURRENDER game action for active Hand if player not leaving, or to all players hand if leaving game. If success return true, else -
-	 * false. 
+	 * Try to perform SURRENDER game action for active Hand if player not
+	 * leaving, or to all players hand if leaving game. If success return true,
+	 * else - false.
+	 * 
 	 * @param player
-	 * @param isLeaving - is surrender caused by player's leaving
+	 * @param isLeaving
+	 *            - is surrender caused by player's leaving
 	 * @return
 	 */
 	public static boolean trySurrender(Player player, boolean isLeaving) {
@@ -278,8 +281,9 @@ public class GameLogic {
 	}
 
 	/**
-	 * Try to perform HIT game action for active Hand. If success return true, else -
-	 * false. 
+	 * Try to perform HIT game action for active Hand. If success return true,
+	 * else - false.
+	 * 
 	 * @param player
 	 * @param deck
 	 * @return
@@ -299,8 +303,9 @@ public class GameLogic {
 	}
 
 	/**
-	 * Try to perform STAY game action for active Hand. If success return true, else -
-	 * false. 
+	 * Try to perform STAY game action for active Hand. If success return true,
+	 * else - false.
+	 * 
 	 * @param player
 	 * @return
 	 */
@@ -318,10 +323,13 @@ public class GameLogic {
 	}
 
 	/**
-	 * Try to perform STAY game action for active Hand if player not leaving, or to all players hand if leaving game. If success return true, else -
-	 * false. 
+	 * Try to perform STAY game action for active Hand if player not leaving, or
+	 * to all players hand if leaving game. If success return true, else -
+	 * false.
+	 * 
 	 * @param player
-	 * @param isLeaving - is surrender caused by player's leaving	 * @return
+	 * @param isLeaving
+	 *            - is surrender caused by player's leaving * @return
 	 */
 	public static boolean tryStay(Player player, boolean isLeaving) {
 		boolean result = false;
@@ -351,6 +359,7 @@ public class GameLogic {
 
 	/**
 	 * Check is user able to DEAL
+	 * 
 	 * @param activePlayer
 	 * @return
 	 */
@@ -384,6 +393,7 @@ public class GameLogic {
 
 	/**
 	 * Check is user able to STAY
+	 * 
 	 * @param activePlayer
 	 * @return
 	 */
@@ -401,13 +411,11 @@ public class GameLogic {
 	}
 
 	/**
-	 * Check is user able to INSURANCE
-	 * Player can insurance if dealer first card is Ace and player has enough
-	 * money
+	 * Check is user able to INSURANCE Player can insurance if dealer first card
+	 * is Ace and player has enough money
 	 * 
 	 * @param dealer
 	 * @param activePlayer
-	 * @param activeHand
 	 * @return
 	 */
 	public static boolean canInsurance(Dealer dealer, Player activePlayer) {
@@ -419,8 +427,7 @@ public class GameLogic {
 		Hand activeHand = activePlayer.getActiveHand();
 		if (dealerHand != null) {
 			List<Card> dealerCards = dealerHand.getCardsListCopy();
-			if (activeHand != null && activeHand.isFirstAction()
-					&& activeHand.getInsurance().equals(new BigDecimal(0.0)) && dealerCards != null
+			if (activeHand != null && activeHand.isFirstAction() && activeHand.getInsurance().equals(new BigDecimal(0.0)) && dealerCards != null
 					&& dealerCards.size() == 2) {
 				Card firstCard = dealerCards.get(0);
 				if (firstCard.getRank() == Card.Rank.ACE) {
@@ -438,6 +445,7 @@ public class GameLogic {
 
 	/**
 	 * Check is user able to SURRENDER
+	 * 
 	 * @param activePlayer
 	 * @return
 	 */
@@ -456,6 +464,7 @@ public class GameLogic {
 
 	/**
 	 * Check is user able to HIT
+	 * 
 	 * @param activePlayer
 	 * @return
 	 */
@@ -472,8 +481,9 @@ public class GameLogic {
 	}
 
 	/**
-	 * Check is user able to SPLIT
-	 * Player can split he has less than 4 hands and enough money
+	 * Check is user able to SPLIT Player can split he has less than 4 hands and
+	 * enough money
+	 * 
 	 * @param activePlayer
 	 * @return
 	 */
@@ -496,8 +506,7 @@ public class GameLogic {
 
 	/* HAND OPERATIONS */
 	/**
-	 * Check is hand able to HIT
-	 * Player can hit hand if score is less than 21
+	 * Check is hand able to HIT Player can hit hand if score is less than 21
 	 * 
 	 * @param activeHand
 	 * @return
@@ -513,8 +522,8 @@ public class GameLogic {
 	}
 
 	/**
-	 * Check is hand able to DOUBLE
-	 * player can double hand if hand score beetween 9 and 11
+	 * Check is hand able to DOUBLE player can double hand if hand score
+	 * beetween 9 and 11
 	 * 
 	 * @param activeHand
 	 * @return
@@ -525,9 +534,8 @@ public class GameLogic {
 	}
 
 	/**
-	 * Check is hand able to STAY
-	 * player can STAY hand if hand score is lesser than or equal to 21 and
-	 * isnt Blackjack;
+	 * Check is hand able to STAY player can STAY hand if hand score is lesser
+	 * than or equal to 21 and isnt Blackjack;
 	 * 
 	 * @param activeHand
 	 * @return
@@ -537,31 +545,28 @@ public class GameLogic {
 	}
 
 	/**
-	 * Check is hand able to SPLIT
-	 * player can split hand if it contain two cards and both cards have same
-	 * rank
+	 * Check is hand able to SPLIT player can split hand if it contain two cards
+	 * and both cards have same rank
 	 * 
 	 * @param activeHand
 	 * @return
 	 */
 	public static boolean canSplit(Hand activeHand) {
 		List<Card> cards = activeHand.getCardsListCopy();
-		return activeHand.getStage() == GameStage.PLAY && cards.size() == 2
-				&& cards.get(0).getRank().equals(cards.get(1).getRank());
+		return activeHand.getStage() == GameStage.PLAY && cards.size() == 2 && cards.get(0).getRank().equals(cards.get(1).getRank());
 	}
 
 	/**
-	 * Check is hand able to SURRENDER
-	 * player can surrender hand if only on first action and if it is not
-	 * BlackJack (or if it lesser or equal 21? but at first action is impossible
-	 * to have score greater than 21, so it's not necessary to check)
+	 * Check is hand able to SURRENDER player can surrender hand if only on
+	 * first action and if it is not BlackJack (or if it lesser or equal 21? but
+	 * at first action is impossible to have score greater than 21, so it's not
+	 * necessary to check)
 	 * 
 	 * @param activeHand
 	 * @return boolean is able to surrender
 	 */
 	public static boolean canSurrender(Hand activeHand) {
-		return activeHand.getStage().compareTo(GameStage.RESULT) < 0 && activeHand.isFirstAction()
-				&& !activeHand.getScore().isBlackJack();
+		return activeHand.getStage().compareTo(GameStage.RESULT) < 0 && activeHand.isFirstAction() && !activeHand.getScore().isBlackJack();
 	}
 
 	/**
@@ -601,7 +606,8 @@ public class GameLogic {
 	/* OTHER OPERATIONS */
 
 	/**
-	 * Make hand pay out depends on hand GameResult 
+	 * Make hand pay out depends on hand GameResult
+	 * 
 	 * @param gameId
 	 * @param activePlayer
 	 * @param activeHand
@@ -618,8 +624,7 @@ public class GameLogic {
 			BigDecimal betSize = activeHand.getBid();
 			BigDecimal insurance = activeHand.getInsurance();
 			GameResult gameResult = activeHand.getResult();
-			String comment = "Game: " + gameId.getValue() + " Result: " + gameResult.name() + " Bet: " + betSize
-					+ " Insurance: " + insurance;
+			String comment = "Game: " + gameId.getValue() + " Result: " + gameResult.name() + " Bet: " + betSize + " Insurance: " + insurance;
 			AccountOperationLogic.Result operResult = null;
 
 			try {
@@ -627,8 +632,8 @@ public class GameLogic {
 				switch (gameResult) {
 
 				case BLACKJACK:
-					operResult = aoLogic.doGamePayment(betSize.multiply(BLACK_JACK_MULTIPLER), betSize, BigDecimal.ZERO,
-							userId, AccountOperation.Type.WIN, comment);
+					operResult = aoLogic.doGamePayment(betSize.multiply(BLACK_JACK_MULTIPLER), betSize, BigDecimal.ZERO, userId,
+							AccountOperation.Type.WIN, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementBlackjack(userId);
 						ustatDAO.incrementWin(userId);
@@ -636,16 +641,16 @@ public class GameLogic {
 					}
 					break;
 				case WIN:
-					operResult = aoLogic.doGamePayment(betSize.multiply(WIN_MULTIPLER), betSize, insurance, userId,
-							AccountOperation.Type.WIN, comment);
+					operResult = aoLogic.doGamePayment(betSize.multiply(WIN_MULTIPLER), betSize, insurance, userId, AccountOperation.Type.WIN,
+							comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementWin(userId);
 						result = true;
 					}
 					break;
 				case BLACKJACK_INSURANCE:
-					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER_PAY),
-							betSize.add(insurance), BigDecimal.ZERO, userId, AccountOperation.Type.WIN, comment);
+					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER_PAY), betSize.add(insurance), BigDecimal.ZERO, userId,
+							AccountOperation.Type.WIN, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementBlackjack(userId);
 						ustatDAO.incrementWin(userId);
@@ -653,8 +658,8 @@ public class GameLogic {
 					}
 					break;
 				case LOSS_WIN_INSURANCE:
-					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER_PAY), insurance, betSize,
-							userId, AccountOperation.Type.WIN, comment);
+					operResult = aoLogic.doGamePayment(insurance.multiply(INSURANCE_MULTIPLER_PAY), insurance, betSize, userId,
+							AccountOperation.Type.WIN, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementLoss(userId);
 						result = true;
@@ -662,24 +667,22 @@ public class GameLogic {
 					}
 					break;
 				case TIE:
-					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, betSize, BigDecimal.ZERO, userId, null,
-							comment);
+					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, betSize, BigDecimal.ZERO, userId, null, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementTie(userId);
 						result = true;
 					}
 					break;
 				case TIE_LOSS_INSURANCE:
-					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, betSize, insurance, userId,
-							AccountOperation.Type.LOSS, comment);
+					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, betSize, insurance, userId, AccountOperation.Type.LOSS, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementTie(userId);
 						result = true;
 					}
 					break;
 				case LOSS:
-					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, BigDecimal.ZERO, betSize.add(insurance), userId,
-							AccountOperation.Type.LOSS, comment);
+					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, BigDecimal.ZERO, betSize.add(insurance), userId, AccountOperation.Type.LOSS,
+							comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementLoss(userId);
 						result = true;
@@ -687,8 +690,7 @@ public class GameLogic {
 					break;
 				case SURRENDER:
 					operResult = aoLogic.doGamePayment(BigDecimal.ZERO, betSize.multiply(SURRENDER_MULTIPLER),
-							betSize.subtract(betSize.multiply(SURRENDER_MULTIPLER)), userId, AccountOperation.Type.LOSS,
-							comment);
+							betSize.subtract(betSize.multiply(SURRENDER_MULTIPLER)), userId, AccountOperation.Type.LOSS, comment);
 					if (operResult == AccountOperationLogic.Result.OK) {
 						ustatDAO.incrementLoss(userId);
 						result = true;
@@ -712,7 +714,9 @@ public class GameLogic {
 	}
 
 	/**
-	 * Calculate hand GameResult out based on hand's Score and dealer's hand's Score  
+	 * Calculate hand GameResult out based on hand's Score and dealer's hand's
+	 * Score
+	 * 
 	 * @param playerHand
 	 * @param dealerHand
 	 */

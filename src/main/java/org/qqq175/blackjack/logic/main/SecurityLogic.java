@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.qqq175.blackjack.exception.DAOException;
 import org.qqq175.blackjack.exception.LogicException;
 import org.qqq175.blackjack.persistence.dao.util.Settings;
 
@@ -22,7 +21,6 @@ public class SecurityLogic {
 	 * @param input
 	 * @return
 	 * @throws LogicException
-	 * @throws DAOException
 	 */
 	public String calcSHA(String input) throws LogicException {
 		MessageDigest md;

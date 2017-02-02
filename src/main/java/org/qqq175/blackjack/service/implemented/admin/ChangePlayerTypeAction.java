@@ -12,7 +12,7 @@ import org.qqq175.blackjack.service.Action;
 import org.qqq175.blackjack.service.ActionResult;
 
 /**
- * Toogles user's rank ADMIN<-PLAYER
+ * Toogles user's rank beetween ADMIN and PLAYER
  * request param - "id" 
  * @author qqq175
  */

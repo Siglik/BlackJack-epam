@@ -39,7 +39,6 @@ public class RankLogic {
 	/**
 	 * change user state and return json object with operation result
 	 * 
-	 * @param ban
 	 * @param id
 	 * @param curUser
 	 * @return

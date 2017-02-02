@@ -12,8 +12,7 @@ public interface ActionFactory {
 	/**
 	 * Define action by it's scope and name
 	 * 
-	 * @param scope
-	 * @param action
+	 * @param context
 	 * @return
 	 */
 	Action defineAction(CommandContext context);

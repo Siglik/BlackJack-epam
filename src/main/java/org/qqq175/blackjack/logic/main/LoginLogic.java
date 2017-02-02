@@ -3,8 +3,6 @@
  */
 package org.qqq175.blackjack.logic.main;
 
-import java.sql.SQLException;
-
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,11 +36,10 @@ public class LoginLogic {
 	/**
 	 * If user and pass is match return true, else return false
 	 * 
-	 * @param login
-	 * @param passwordHash
-	 * @param connection
+	 * @param email
+	 * @param password
+	 * @param session
 	 * @return
-	 * @throws SQLException
 	 */
 	public Result loginUser(String email, String password, HttpSession session) {
 		SecurityLogic sLogic = new SecurityLogic();

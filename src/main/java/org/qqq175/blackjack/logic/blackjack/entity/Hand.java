@@ -71,6 +71,7 @@ public class Hand {
 	}
 
 	/**
+	 * Remove card from hand
 	 * 
 	 * @param card
 	 * @return
@@ -84,9 +85,9 @@ public class Hand {
 	}
 
 	/**
+	 * Take and remove last hand card
 	 * 
-	 * @param card
-	 * @return
+	 * @return card
 	 */
 	public Card takeLastCard() {
 		Card card = null;

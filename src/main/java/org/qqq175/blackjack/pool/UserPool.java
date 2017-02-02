@@ -92,7 +92,6 @@ public class UserPool implements Serializable {
 	}
 
 	/**
-	 * @param key
 	 * @param value
 	 * @return
 	 * @see java.util.concurrent.ConcurrentHashMap#put(java.lang.Object,
@@ -103,7 +102,6 @@ public class UserPool implements Serializable {
 	}
 
 	/**
-	 * @param key
 	 * @param value
 	 * @return
 	 * @see java.util.concurrent.ConcurrentHashMap#replace(java.lang.Object,

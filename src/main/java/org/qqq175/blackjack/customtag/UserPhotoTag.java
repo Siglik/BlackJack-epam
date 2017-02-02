@@ -12,7 +12,8 @@ import org.qqq175.blackjack.persistence.dao.util.PhotoManager;
 import org.qqq175.blackjack.persistence.entity.User;
 
 /**
- * Custom tag to define user avatar path and output it as <img> tag
+ * Custom tag to define user avatar path and output it as &lt;img&gt; tag
+ * 
  * @author qqq175
  */
 public class UserPhotoTag extends TagSupport {
@@ -32,7 +33,7 @@ public class UserPhotoTag extends TagSupport {
 	@Override
 	public int doEndTag() throws JspException {
 		try {
-			/* reset params for enable proper reuse*/
+			/* reset params for enable proper reuse */
 			user = null;
 			className = null;
 			JspWriter out = pageContext.getOut();
@@ -69,7 +70,7 @@ public class UserPhotoTag extends TagSupport {
 				System.out.println("TAG user - null");
 			}
 			out.write("'");
-			/* if className is defined - output tag css class*/
+			/* if className is defined - output tag css class */
 			if (className != null) {
 				out.write(" class='");
 				out.write(className);

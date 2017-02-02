@@ -71,7 +71,7 @@ public class Settings {
 	}
 
 	/**
-	 * Double Checked Locking & volatile singleton get instance method
+	 * Double Checked singleton get instance method
 	 * 
 	 * @return Settings instance
 	 */
@@ -82,7 +82,9 @@ public class Settings {
 			} catch (InterruptedException e) {
 				log.warn(UNEXPECTED_INTERRUPT, e);
 			}
-			instance.compareAndSet(null, new Settings());
+			if (instance.get() == null) {
+				instance.set(new Settings());
+			}
 			semaphore.release();
 		}
 
