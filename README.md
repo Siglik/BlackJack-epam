@@ -1,2 +1,2 @@
-EPAM training final project.
 # BlackJack-epam
+EPAM Systems java training final project.
